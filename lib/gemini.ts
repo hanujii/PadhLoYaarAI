@@ -3,10 +3,16 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const openRouterKey = process.env.OPENROUTER_API_KEY;
 const googleKey = process.env.GEMINI_API_KEY;
+const sambanovaKey = process.env.SAMBANOVA_API_KEY;
 
 const openai = openRouterKey ? new OpenAI({
     apiKey: openRouterKey,
     baseURL: 'https://openrouter.ai/api/v1',
+}) : null;
+
+const sambanova = sambanovaKey ? new OpenAI({
+    apiKey: sambanovaKey,
+    baseURL: 'https://api.sambanova.ai/v1',
 }) : null;
 
 const genAI = googleKey ? new GoogleGenerativeAI(googleKey) : null;
@@ -15,15 +21,18 @@ const genAI = googleKey ? new GoogleGenerativeAI(googleKey) : null;
 const MODEL_MAP = {
     flash: {
         openrouter: 'google/gemini-2.0-flash-exp:free',
-        google: 'gemini-2.0-flash-exp'
+        google: 'gemini-2.0-flash-exp',
+        sambanova: 'Meta-Llama-3.1-8B-Instruct',
     },
     pro: {
         openrouter: 'google/gemini-exp-1206:free',
-        google: 'gemini-exp-1206'
+        google: 'gemini-exp-1206',
+        sambanova: 'Meta-Llama-3.1-70B-Instruct',
     },
     nano: { // Fallback
         openrouter: 'google/gemini-2.0-flash-exp:free',
-        google: 'gemini-2.0-flash-exp'
+        google: 'gemini-2.0-flash-exp',
+        sambanova: 'Meta-Llama-3.1-8B-Instruct',
     }
 };
 
@@ -38,11 +47,25 @@ export async function generateText(modelType: 'flash' | 'pro' | 'nano', prompt: 
             });
             return completion.choices[0].message.content || "";
         } catch (error) {
-            console.warn("[OpenRouter] Failed, trying fallback...", error);
+            console.warn("[OpenRouter] Failed, trying fallback to Sambanova...", error);
         }
     }
 
-    // 2. Fallback to Google AI
+    // 2. Fallback to Sambanova
+    if (sambanova) {
+        try {
+            console.log(`[Sambanova] Generating text with model: ${modelType}`);
+            const completion = await sambanova.chat.completions.create({
+                model: MODEL_MAP[modelType].sambanova,
+                messages: [{ role: 'user', content: prompt }],
+            });
+            return completion.choices[0].message.content || "";
+        } catch (error) {
+            console.warn("[Sambanova] Failed, trying fallback to Google...", error);
+        }
+    }
+
+    // 3. Fallback to Google AI
     if (genAI) {
         try {
             console.log(`[GoogleAI] Generating text with model: ${modelType}`);
@@ -87,11 +110,44 @@ export async function generateVision(modelType: 'flash' | 'pro', prompt: string,
 
             return completion.choices[0].message.content || "";
         } catch (error) {
-            console.warn("[OpenRouter] Vision failed, trying fallback...", error);
+            console.warn("[OpenRouter] Vision failed, trying fallback to Sambanova...", error);
         }
     }
 
-    // 2. Fallback to Google AI
+    // 2. Fallback to Sambanova (Vision)
+    if (sambanova) {
+        try {
+            console.log(`[Sambanova] Generating vision with model: ${modelType}`);
+            const formattedContent: any[] = [
+                { type: "text", text: prompt }
+            ];
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            imageParts.forEach((part: any) => {
+                if (part.inlineData) {
+                    formattedContent.push({
+                        type: "image_url",
+                        image_url: {
+                            url: `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`
+                        }
+                    });
+                }
+            });
+
+            const completion = await sambanova.chat.completions.create({
+                model: 'Llama-3.2-11B-Vision-Instruct', // Specific model for vision
+                messages: [{ role: 'user', content: formattedContent }],
+            });
+            return completion.choices[0].message.content || "";
+
+        } catch (error) {
+            console.warn("[Sambanova] Vision failed, trying fallback to Google...", error);
+        }
+
+    }
+
+
+    // 3. Fallback to Google AI
     if (genAI) {
         try {
             console.log(`[GoogleAI] Generating vision with model: ${modelType}`);
