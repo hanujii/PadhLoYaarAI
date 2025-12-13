@@ -20,11 +20,13 @@ export interface SavedItem {
 
 interface HistoryState {
     notes: string;
+    notesTitle: string;
     history: HistoryItem[];
     savedItems: SavedItem[];
 
     // Actions
     updateNotes: (content: string) => void;
+    updateNotesTitle: (title: string) => void;
     addToHistory: (item: Omit<HistoryItem, 'id' | 'timestamp'>) => void;
     saveItem: (item: Omit<SavedItem, 'id' | 'timestamp'>) => void;
     removeFromHistory: (id: string) => void;
@@ -36,10 +38,12 @@ export const useHistoryStore = create<HistoryState>()(
     persist(
         (set) => ({
             notes: '',
+            notesTitle: '',
             history: [],
             savedItems: [],
 
             updateNotes: (content) => set({ notes: content }),
+            updateNotesTitle: (title) => set({ notesTitle: title }),
 
             addToHistory: (item) => set((state) => ({
                 history: [

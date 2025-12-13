@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { solveQuestion } from './actions';
 import { Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function QuestionSolverPage() {
     const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ export default function QuestionSolverPage() {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const outputRef = useRef<HTMLDivElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -123,18 +125,21 @@ export default function QuestionSolverPage() {
                 </Card>
 
                 <Card className="h-full">
-                    <CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle>Solution</CardTitle>
+                        {response && <DownloadPDFButton targetRef={outputRef} filename="solution.pdf" />}
                     </CardHeader>
                     <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px]">
-                        {response ? (
-                            <ReactMarkdown>{response}</ReactMarkdown>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground text-center">
-                                <UplaodPlaceholder />
-                                <p className="mt-4">Upload a question to see the step-by-step solution here.</p>
-                            </div>
-                        )}
+                        <div ref={outputRef}>
+                            {response ? (
+                                <ReactMarkdown>{response}</ReactMarkdown>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground text-center">
+                                    <UplaodPlaceholder />
+                                    <p className="mt-4">Upload a question to see the step-by-step solution here.</p>
+                                </div>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

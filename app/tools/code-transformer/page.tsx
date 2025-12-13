@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { transformCode } from './actions';
 import { Loader2, ArrowRight } from 'lucide-react';
 import Editor from '@monaco-editor/react';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function CodeTransformerPage() {
     const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ export default function CodeTransformerPage() {
     const [fromLang, setFromLang] = useState('javascript');
     const [toLang, setToLang] = useState('python');
     const [style, setStyle] = useState('standard');
+    const outputRef = useRef<HTMLDivElement>(null);
 
     const languages = ['javascript', 'typescript', 'python', 'java', 'csharp', 'cpp', 'go', 'rust', 'php'];
 
@@ -77,17 +79,20 @@ export default function CodeTransformerPage() {
                 </div>
 
                 {/* Output Editor */}
-                <div className="flex flex-col gap-2 rounded-lg border p-1 bg-card">
+                <div className="flex flex-col gap-2 rounded-lg border p-1 bg-card" ref={outputRef}>
                     <div className="flex items-center justify-between px-2 py-1 bg-muted/50 rounded">
                         <span className="text-sm font-medium">Output</span>
-                        <Select value={toLang} onValueChange={setToLang}>
-                            <SelectTrigger className="w-[120px] h-8">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {languages.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
+                        <div className="flex items-center gap-2">
+                            <DownloadPDFButton targetRef={outputRef} filename="code-transformation.pdf" size="icon" variant="ghost" />
+                            <Select value={toLang} onValueChange={setToLang}>
+                                <SelectTrigger className="w-[120px] h-8">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {languages.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                     <Editor
                         height="100%"

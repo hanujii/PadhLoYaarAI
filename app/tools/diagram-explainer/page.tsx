@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,11 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { explainDiagram } from './actions';
 import { Loader2, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function DiagramExplainerPage() {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<string | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const outputRef = useRef<HTMLDivElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -28,7 +30,8 @@ export default function DiagramExplainerPage() {
         if (result.success && result.data) {
             setResponse(result.data);
         } else {
-            setResponse('Error: ' + result.error);
+            console.error("Diagram Analysis Failed:", result.error);
+            setResponse(`**Error Analysis Failed**: ${result.error}. \n\nPlease try again or check if the API key supports the model.`);
         }
         setLoading(false);
     }
@@ -71,9 +74,14 @@ export default function DiagramExplainerPage() {
                 </Card>
 
                 <Card>
-                    <CardHeader><CardTitle>Analysis</CardTitle></CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle>Analysis</CardTitle>
+                        {response && <DownloadPDFButton targetRef={outputRef} filename="diagram-analysis.pdf" />}
+                    </CardHeader>
                     <CardContent className="prose dark:prose-invert max-w-none max-h-[600px] overflow-y-auto">
-                        {response ? <ReactMarkdown>{response}</ReactMarkdown> : <p className="text-muted-foreground">Analysis will appear here...</p>}
+                        <div ref={outputRef}>
+                            {response ? <ReactMarkdown>{response}</ReactMarkdown> : <p className="text-muted-foreground">Analysis will appear here...</p>}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

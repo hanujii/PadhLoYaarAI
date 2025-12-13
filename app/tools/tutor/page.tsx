@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,12 +11,14 @@ import { getTutorResponse } from './actions';
 import ReactMarkdown from 'react-markdown';
 import { Loader2, Bookmark, Check } from 'lucide-react';
 import { useHistoryStore } from '@/lib/history-store';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function TutorPage() {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<string | null>(null);
     const { addToHistory, saveItem } = useHistoryStore();
     const [isSaved, setIsSaved] = useState(false);
+    const outputRef = useRef<HTMLDivElement>(null);
 
     // Reset saved state when response changes
     const [lastResponse, setLastResponse] = useState<string | null>(null);
@@ -116,24 +118,31 @@ export default function TutorPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="h-full min-h-[400px]">
+                <Card className="h-full min-h-[400px] flex flex-col">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle>Explanation</CardTitle>
-                        {response && !response.startsWith('Error:') && (
-                            <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaved}>
-                                {isSaved ? <Check className="w-4 h-4 mr-2" /> : <Bookmark className="w-4 h-4 mr-2" />}
-                                {isSaved ? 'Saved' : 'Save'}
-                            </Button>
-                        )}
+                        <div className="flex gap-2">
+                            {response && !response.startsWith('Error:') && (
+                                <>
+                                    <DownloadPDFButton targetRef={outputRef} filename="tutor-explanation.pdf" />
+                                    <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaved}>
+                                        {isSaved ? <Check className="w-4 h-4 mr-2" /> : <Bookmark className="w-4 h-4 mr-2" />}
+                                        {isSaved ? 'Saved' : 'Save'}
+                                    </Button>
+                                </>
+                            )}
+                        </div>
                     </CardHeader>
-                    <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px]">
-                        {response ? (
-                            <ReactMarkdown>{response}</ReactMarkdown>
-                        ) : (
-                            <div className="text-center text-muted-foreground py-12">
-                                result will appear here...
-                            </div>
-                        )}
+                    <CardContent className="flex-1 overflow-y-auto max-h-[600px] p-4">
+                        <div ref={outputRef} className="prose dark:prose-invert max-w-none">
+                            {response ? (
+                                <ReactMarkdown>{response}</ReactMarkdown>
+                            ) : (
+                                <div className="text-center text-muted-foreground py-12">
+                                    result will appear here...
+                                </div>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

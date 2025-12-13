@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { chatTeacher } from './actions';
 import { Mic, MicOff, Volume2, StopCircle, Send } from 'lucide-react';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function TeacherChatPage() {
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
@@ -14,6 +15,7 @@ export default function TeacherChatPage() {
     const [inputText, setInputText] = useState('');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [recognition, setRecognition] = useState<any>(null);
+    const chatRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -124,25 +126,28 @@ export default function TeacherChatPage() {
             </div>
 
             <Card className="min-h-[400px]">
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
                         <Volume2 className="w-5 h-5" /> Conversation
                     </CardTitle>
+                    {messages.length > 0 && <DownloadPDFButton targetRef={chatRef} filename="teacher-conversation.pdf" />}
                 </CardHeader>
                 <CardContent className="space-y-4 max-h-[500px] overflow-y-auto">
-                    {messages.length === 0 && (
-                        <p className="text-center text-muted-foreground italic">
-                            Tap the microphone or type below to start.
-                        </p>
-                    )}
-                    {messages.map((m, i) => (
-                        <div key={i} className={`flex ${m.role === 'student' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] p-3 rounded-lg ${m.role === 'student' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                                <p className="text-xs font-semibold mb-1 opacity-70 uppercase">{m.role}</p>
-                                <p>{m.content}</p>
+                    <div ref={chatRef} className="space-y-4">
+                        {messages.length === 0 && (
+                            <p className="text-center text-muted-foreground italic">
+                                Tap the microphone or type below to start.
+                            </p>
+                        )}
+                        {messages.map((m, i) => (
+                            <div key={i} className={`flex ${m.role === 'student' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] p-3 rounded-lg ${m.role === 'student' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                                    <p className="text-xs font-semibold mb-1 opacity-70 uppercase">{m.role}</p>
+                                    <p>{m.content}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </CardContent>
             </Card>
         </div>

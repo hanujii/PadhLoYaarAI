@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,10 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { generateExam } from './actions';
 import ReactMarkdown from 'react-markdown';
 import { Loader2, Download } from 'lucide-react';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function ExamGeneratorPage() {
     const [loading, setLoading] = useState(false);
     const [examContent, setExamContent] = useState<string | null>(null);
+    const examRef = useRef<HTMLDivElement>(null);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -122,20 +124,25 @@ export default function ExamGeneratorPage() {
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle>Exam Preview</CardTitle>
                         {examContent && (
-                            <Button variant="ghost" size="sm" onClick={downloadExam}>
-                                <Download className="w-4 h-4 mr-2" />
-                                Download
-                            </Button>
+                            <div className="flex gap-2">
+                                <DownloadPDFButton targetRef={examRef} filename="generated-exam.pdf" />
+                                <Button variant="ghost" size="sm" onClick={downloadExam}>
+                                    <Download className="w-4 h-4 mr-2" />
+                                    Download MD
+                                </Button>
+                            </div>
                         )}
                     </CardHeader>
                     <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px] mt-4">
-                        {examContent ? (
-                            <ReactMarkdown>{examContent}</ReactMarkdown>
-                        ) : (
-                            <div className="text-center text-muted-foreground py-12">
-                                Exam will appear here...
-                            </div>
-                        )}
+                        <div ref={examRef}>
+                            {examContent ? (
+                                <ReactMarkdown>{examContent}</ReactMarkdown>
+                            ) : (
+                                <div className="text-center text-muted-foreground py-12">
+                                    Exam will appear here...
+                                </div>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

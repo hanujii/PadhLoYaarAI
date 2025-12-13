@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2 } from 'lucide-react';
+import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, Library } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
     DropdownMenu,
@@ -172,9 +172,16 @@ export function Header() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </nav>
+
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-4">
+                    <Link href="/history" className="hidden md:flex items-center justify-center mr-2">
+                        <Button variant="ghost" size="icon" title="My Library">
+                            <Library className="h-[1.2rem] w-[1.2rem]" />
+                            <span className="sr-only">My Library</span>
+                        </Button>
+                    </Link>
                     {/* Timer Display with Popover */}
                     <div className="flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-full border border-border">
                         <DropdownMenu>

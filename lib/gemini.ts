@@ -20,24 +20,38 @@ const genAI = googleKey ? new GoogleGenerativeAI(googleKey) : null;
 // Map to OpenRouter's specifically free models and Google's models
 const MODEL_MAP = {
     flash: {
-        openrouter: 'google/gemini-2.0-flash-exp:free',
-        google: 'gemini-2.0-flash-exp',
+        openrouter: 'google/gemini-2.0-flash-exp:free', // Use 2.0 Flash Exp (High Rate Limit)
+        google: 'gemini-1.5-flash', // Stable Flash
         sambanova: 'Meta-Llama-3.1-8B-Instruct',
     },
     pro: {
-        openrouter: 'google/gemini-exp-1206:free',
-        google: 'gemini-exp-1206',
+        // "Pro" tasks will now aggressively try to use high-capacity free models
+        // effectively making "Pro" == "Best Free Smart Model"
+        openrouter: 'google/gemini-2.0-flash-thinking-exp:free', // Experimental thinking model (very smart, free)
+        google: 'gemini-1.5-flash', // Fallback to Flash if Pro isn't available/paid
         sambanova: 'Meta-Llama-3.1-70B-Instruct',
     },
     nano: { // Fallback
         openrouter: 'google/gemini-2.0-flash-exp:free',
-        google: 'gemini-2.0-flash-exp',
+        google: 'gemini-1.5-flash',
         sambanova: 'Meta-Llama-3.1-8B-Instruct',
     }
 };
 
 export async function generateText(modelType: 'flash' | 'pro' | 'nano', prompt: string) {
-    // 1. Try OpenRouter First
+    // 1. Try Google AI First (Most reliable if key works)
+    if (genAI) {
+        try {
+            console.log(`[GoogleAI] Generating text with model: ${modelType}`);
+            const model = genAI.getGenerativeModel({ model: MODEL_MAP[modelType].google });
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        } catch (error) {
+            console.error("[GoogleAI] Error generating text, trying fallbacks...", error);
+        }
+    }
+
+    // 2. Try OpenRouter Second
     if (openai) {
         try {
             console.log(`[OpenRouter] Generating text with model: ${modelType}`);
@@ -51,7 +65,7 @@ export async function generateText(modelType: 'flash' | 'pro' | 'nano', prompt: 
         }
     }
 
-    // 2. Fallback to Sambanova
+    // 3. Fallback to Sambanova
     if (sambanova) {
         try {
             console.log(`[Sambanova] Generating text with model: ${modelType}`);
@@ -61,29 +75,29 @@ export async function generateText(modelType: 'flash' | 'pro' | 'nano', prompt: 
             });
             return completion.choices[0].message.content || "";
         } catch (error) {
-            console.warn("[Sambanova] Failed, trying fallback to Google...", error);
+            console.warn("[Sambanova] Failed (Final Fallback)...", error);
         }
     }
 
-    // 3. Fallback to Google AI
-    if (genAI) {
-        try {
-            console.log(`[GoogleAI] Generating text with model: ${modelType}`);
-            const model = genAI.getGenerativeModel({ model: MODEL_MAP[modelType].google });
-            const result = await model.generateContent(prompt);
-            return result.response.text();
-        } catch (error) {
-            console.error("[GoogleAI] Error generating text:", error);
-            throw error;
-        }
-    }
-
-    throw new Error("No available AI providers configured (Check keys).");
+    throw new Error("All AI providers failed. Please check your API keys.");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function generateVision(modelType: 'flash' | 'pro', prompt: string, imageParts: any[]) {
-    // 1. Try OpenRouter First
+    // 1. Try Google AI First (Best native vision support)
+    if (genAI) {
+        try {
+            console.log(`[GoogleAI] Generating vision with model: ${modelType}`);
+            // Force use of 1.5 Flash for vision as it is very good and stable
+            const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+            const result = await model.generateContent([prompt, ...imageParts]);
+            return result.response.text();
+        } catch (error) {
+            console.error("[GoogleAI] Vision Error, trying fallbacks:", error);
+        }
+    }
+
+    // 2. Try OpenRouter
     if (openai) {
         try {
             console.log(`[OpenRouter] Generating vision with model: ${modelType}`);
@@ -103,8 +117,9 @@ export async function generateVision(modelType: 'flash' | 'pro', prompt: string,
                 }
             });
 
+            // Use free vision model on OR
             const completion = await openai.chat.completions.create({
-                model: MODEL_MAP[modelType].openrouter,
+                model: 'google/gemini-2.0-flash-exp:free',
                 messages: [{ role: 'user', content: formattedContent }],
             });
 
@@ -114,7 +129,7 @@ export async function generateVision(modelType: 'flash' | 'pro', prompt: string,
         }
     }
 
-    // 2. Fallback to Sambanova (Vision)
+    // 3. Fallback to Sambanova (Vision)
     if (sambanova) {
         try {
             console.log(`[Sambanova] Generating vision with model: ${modelType}`);
@@ -135,30 +150,15 @@ export async function generateVision(modelType: 'flash' | 'pro', prompt: string,
             });
 
             const completion = await sambanova.chat.completions.create({
-                model: 'Llama-3.2-11B-Vision-Instruct', // Specific model for vision
+                model: 'Llama-3.2-11B-Vision-Instruct',
                 messages: [{ role: 'user', content: formattedContent }],
             });
             return completion.choices[0].message.content || "";
 
         } catch (error) {
-            console.warn("[Sambanova] Vision failed, trying fallback to Google...", error);
-        }
-
-    }
-
-
-    // 3. Fallback to Google AI
-    if (genAI) {
-        try {
-            console.log(`[GoogleAI] Generating vision with model: ${modelType}`);
-            const model = genAI.getGenerativeModel({ model: MODEL_MAP[modelType].google });
-            const result = await model.generateContent([prompt, ...imageParts]);
-            return result.response.text();
-        } catch (error) {
-            console.error("[GoogleAI] Vision Error:", error);
-            throw error;
+            console.warn("[Sambanova] Vision failed (Final Fallback)...", error);
         }
     }
 
-    throw new Error("No available AI providers configured (Check keys).");
+    throw new Error("No available AI providers configured for Vision.");
 }

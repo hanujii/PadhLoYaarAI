@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { chatWithPDF, summarizePDF } from './actions';
 import { Loader2, Upload, FileText, Send } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 // Use CDN for worker to avoid build hassles
 // pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -25,6 +26,7 @@ export default function PDFExplainerPage() {
     const [input, setInput] = useState('');
     const [summary, setSummary] = useState<string | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
+    const chatRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,14 +42,19 @@ export default function PDFExplainerPage() {
         setSummary(null);
 
         try {
-            // Dynamically import pdfjs-dist matches standard Next.js client-side only usage
+            console.log("Loading PDF.js...");
             const pdfjsLib = await import('pdfjs-dist');
-            pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+            // Force HTTPS and ensure version match
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
+            console.log("Reading file buffer...");
             const arrayBuffer = await file.arrayBuffer();
+
+            console.log("Parsing PDF document...");
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             let fullText = '';
 
+            console.log(`PDF loaded. Pages: ${pdf.numPages}`);
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const textContent = await page.getTextContent();
@@ -55,18 +62,22 @@ export default function PDFExplainerPage() {
                 fullText += pageText + '\n\n';
             }
 
+            console.log("Text extraction complete. Length:", fullText.length);
             setPdfText(fullText);
 
             // Generate initial summary
+            console.log("Generating summary...");
             const summaryResult = await summarizePDF(fullText);
             if (summaryResult.success && summaryResult.data) {
                 setSummary(summaryResult.data);
                 setMessages([{ role: 'assistant', content: "I've analyzed your PDF. Here is a summary. Ask me anything about it!" }]);
+            } else {
+                console.error("Summary failed:", summaryResult.error);
             }
 
         } catch (error) {
-            console.error("PDF Parse Error", error);
-            alert("Failed to parse PDF. Please try another file.");
+            console.error("PDF Parse/Process Error", error);
+            alert(`Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             setLoading(false);
         }
@@ -132,23 +143,27 @@ export default function PDFExplainerPage() {
 
             {/* Main Chat Area */}
             <Card className="flex-1 flex flex-col shadow-lg border-2">
-                <CardHeader className="border-b">
+                <CardHeader className="border-b flex flex-row items-center justify-between">
                     <CardTitle>Chat with Document</CardTitle>
+                    {messages.length > 0 && <DownloadPDFButton targetRef={chatRef} filename="pdf-chat-session.pdf" />}
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {messages.length === 0 && !loading && (
-                        <div className="h-full flex items-center justify-center text-muted-foreground">
-                            Upload a PDF to start chatting.
-                        </div>
-                    )}
-
-                    {messages.map((m, i) => (
-                        <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] p-3 rounded-lg ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                                <ReactMarkdown>{m.content}</ReactMarkdown>
+                    <div ref={chatRef} className="space-y-4">
+                        {messages.length === 0 && !loading && (
+                            <div className="h-full flex items-center justify-center text-muted-foreground">
+                                Upload a PDF to start chatting.
                             </div>
-                        </div>
-                    ))}
+                        )}
+
+                        {messages.map((m, i) => (
+                            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] p-3 rounded-lg ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {/* ... existing loading and scroll ref */}
                     {loading && (
                         <div className="flex justify-start">
                             <div className="bg-muted p-3 rounded-lg">

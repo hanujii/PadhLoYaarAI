@@ -5,12 +5,26 @@ import { useHistoryStore } from '@/lib/history-store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
-import { Trash2, Copy, Bookmark, Clock, Check } from 'lucide-react';
+import { Trash2, Copy, Bookmark, Clock, Check, Maximize2, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "../../components/ui/dialog";
+
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function HistoryPage() {
     const { history, savedItems, removeFromHistory, removeFromSaved, saveItem } = useHistoryStore();
     const [copiedId, setCopiedId] = React.useState<string | null>(null);
+    const [selectedItem, setSelectedItem] = React.useState<any>(null); // For full view dialog
+    const contentRef = React.useRef<HTMLDivElement>(null);
 
     const handleCopy = (text: string, id: string) => {
         navigator.clipboard.writeText(text);
@@ -19,10 +33,11 @@ export default function HistoryPage() {
     };
 
     const handleSaveFromHistory = (item: any) => {
+        const content = item.tool === 'code-transformer' || item.tool === 'cheat-sheet' || item.tool === 'exam-generator' ? item.result : `Query: ${item.query}\n\nResult:\n${item.result}`;
         saveItem({
             type: 'result',
             title: `Saved ${item.tool} Result`,
-            content: `Query: ${item.query}\n\nResult:\n${item.result}`,
+            content: content,
         });
     };
 
@@ -67,14 +82,18 @@ export default function HistoryPage() {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="bg-muted/50 p-4 rounded-md whitespace-pre-wrap text-sm font-mono max-h-60 overflow-y-auto">
-                                        {item.content}
+                                    <div className="bg-muted/50 p-4 rounded-md text-sm max-h-60 overflow-y-auto prose dark:prose-invert max-w-none">
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.content}</ReactMarkdown>
                                     </div>
                                 </CardContent>
                                 <CardFooter className="justify-end gap-2">
                                     <Button size="sm" variant="outline" onClick={() => handleCopy(item.content, item.id)}>
                                         {copiedId === item.id ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-                                        {copiedId === item.id ? 'Copied' : 'Copy Content'}
+                                        {copiedId === item.id ? 'Copied' : 'Copy'}
+                                    </Button>
+                                    <Button size="sm" onClick={() => setSelectedItem({ ...item, isSaved: true })}>
+                                        <Maximize2 className="w-4 h-4 mr-2" />
+                                        Expand
                                     </Button>
                                 </CardFooter>
                             </Card>
@@ -107,8 +126,17 @@ export default function HistoryPage() {
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="bg-muted/30 p-3 rounded text-sm text-muted-foreground line-clamp-3">
-                                        {item.result}
+                                    <div
+                                        className="bg-muted/30 p-3 rounded text-sm text-muted-foreground line-clamp-3 cursor-pointer hover:bg-muted/50 transition-colors prose dark:prose-invert max-w-none"
+                                        onClick={() => setSelectedItem({
+                                            id: item.id,
+                                            title: `History: ${item.tool}`,
+                                            content: `Query: ${item.query}\n\nResult:\n${item.result}`,
+                                            timestamp: item.timestamp,
+                                            isSaved: false
+                                        })}
+                                    >
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.result}</ReactMarkdown>
                                     </div>
                                 </CardContent>
                                 <CardFooter className="justify-end gap-2 pt-0">
@@ -125,6 +153,49 @@ export default function HistoryPage() {
                     )}
                 </TabsContent>
             </Tabs>
+
+            {/* Full Content Dialog */}
+            <Dialog open={!!selectedItem} onOpenChange={(open: boolean) => !open && setSelectedItem(null)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <div className="flex items-center justify-between pr-8">
+                            <DialogTitle className="text-xl">{selectedItem?.title}</DialogTitle>
+                            {selectedItem && (
+                                <DownloadPDFButton
+                                    targetRef={contentRef}
+                                    filename={`${selectedItem.title.replace(/\s+/g, '-').toLowerCase()}.pdf`}
+                                    size="sm"
+                                    variant="outline"
+                                />
+                            )}
+                        </div>
+                        <DialogDescription>
+                            {selectedItem?.timestamp && formatDistanceToNow(selectedItem.timestamp, { addSuffix: true })}
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="flex-1 overflow-y-auto p-6 bg-background border rounded-md">
+                        <div ref={contentRef} className="prose dark:prose-invert max-w-none">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {selectedItem?.content || ''}
+                            </ReactMarkdown>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="gap-2 sm:justify-between w-full">
+                        <div className="text-xs text-muted-foreground self-center italic hidden sm:block">
+                            Formatted with Markdown
+                        </div>
+                        <div className="flex gap-2">
+                            <Button variant="outline" onClick={() => handleCopy(selectedItem?.content || '', selectedItem?.id)}>
+                                {copiedId === selectedItem?.id ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                                {copiedId === selectedItem?.id ? 'Copied' : 'Copy Content'}
+                            </Button>
+                            <Button onClick={() => setSelectedItem(null)}>Close</Button>
+                        </div>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

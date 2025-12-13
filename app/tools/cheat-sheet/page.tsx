@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,10 +8,12 @@ import { generateCheatSheet } from './actions';
 import ReactMarkdown from 'react-markdown';
 import { Loader2, Download, Table } from 'lucide-react';
 import remarkGfm from 'remark-gfm';
+import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 
 export default function CheatSheetPage() {
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState<string | null>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -60,12 +62,17 @@ export default function CheatSheetPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="flex items-center gap-2"><Table className="w-5 h-5" /> Result</CardTitle>
-                        <Button variant="outline" size="sm" onClick={downloadSheet}>
-                            <Download className="w-4 h-4 mr-2" /> Download Markdown
-                        </Button>
+                        <div className="flex gap-2">
+                            <DownloadPDFButton targetRef={contentRef} filename="cheat-sheet.pdf" />
+                            <Button variant="outline" size="sm" onClick={downloadSheet}>
+                                <Download className="w-4 h-4 mr-2" /> Download Markdown
+                            </Button>
+                        </div>
                     </CardHeader>
                     <CardContent className="prose dark:prose-invert max-w-none overflow-x-auto">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                        <div ref={contentRef}>
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                        </div>
                     </CardContent>
                 </Card>
             )}
