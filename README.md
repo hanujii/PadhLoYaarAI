@@ -23,12 +23,28 @@ A comprehensive AI-powered study toolbox built with Next.js 14, TailwindCSS, sha
 - **Editor**: Monaco Editor
 - **Docs**: pdfjs-dist
 
+## 🎨 Themes & Customization
+Padh Lo Yaar features a dynamic theme system inspired by popular culture and aesthetics:
+- **Standard**: Light, Dark, Pitch Black (OLED)
+- **Colors**: Red, Cyan
+- **Series Inspired**:
+  - **Stranger Things**: 80s Retro Serif, Neon Red, Deep Eerie Black.
+  - **Money Heist**: Industrial Sans, Jumpsuit Red, Gold Accents.
+  - **Dark**: Gloomy Atmos, Raincoat Yellow, Monospace Time-Travel vibe.
+
+## Tech Stack
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS, shadcn/ui, framer-motion
+- **State Management**: Zustand
+- **AI Models**: Google Gemini (Flash 1.5 & Pro 1.5) via `google-generative-ai`
+- **Editor**: Monaco Editor for code transformation
+
 ## Getting Started
 
 1. **Clone the repository**:
    ```bash
    git clone <your-repo-url>
-   cd study-bandit-clone
+   cd padh-lo-yaar-ai
    ```
 
 2. **Install dependencies**:
@@ -37,9 +53,9 @@ A comprehensive AI-powered study toolbox built with Next.js 14, TailwindCSS, sha
    ```
 
 3. **Environment Setup**:
-   Create a `.env` or `.env.local` file in the root directory:
+   Create a `.env` file in the root directory:
    ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
+   NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
    ```
 
 4. **Run the development server**:
@@ -47,16 +63,13 @@ A comprehensive AI-powered study toolbox built with Next.js 14, TailwindCSS, sha
    npm run dev
    ```
 
-   Open [http://localhost:3000](http://localhost:3000) with your browser.
+5. **Build for Production**:
+   ```bash
+   npm run build
+   ```
 
 ## Deployment
-
-Deploy easily on Vercel:
-
-1. Push your code to GitHub.
-2. Import the project in Vercel.
-3. Add the `GEMINI_API_KEY` to the Vercel Environment Variables.
-4. Deploy!
+The app is optimized for Vercel. Simply import the repo and add your environment variables.
 
 ## License
 

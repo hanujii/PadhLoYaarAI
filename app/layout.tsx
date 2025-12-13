@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/global/Header";
 import { Footer } from "@/components/global/Footer";
 import { NotesWidget } from "@/components/global/NotesWidget";
+import { ThemeProvider } from "@/components/global/theme-provider";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -21,12 +22,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn("min-h-screen bg-background font-sans antialiased flex flex-col", inter.variable)}>
-        <Header />
-        <main className="flex-1 container py-6">
-          {children}
-        </main>
-        <Footer />
-        <NotesWidget />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          themes={['light', 'dark', 'pitch-black', 'theme-red', 'theme-cyan', 'theme-stranger-things', 'theme-money-heist', 'theme-dark-series']}
+        >
+          <Header />
+          <main className="flex-1 container py-6">
+            {children}
+          </main>
+          <Footer />
+          <NotesWidget />
+        </ThemeProvider>
       </body>
     </html>
   );

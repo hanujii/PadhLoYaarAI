@@ -4,12 +4,20 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
-import { StickyNote, Save } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StickyNote, Maximize2, Minimize2 } from 'lucide-react';
 import { useHistoryStore } from '@/lib/history-store';
+import { Tldraw } from 'tldraw';
+import 'tldraw/tldraw.css';
+import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 
 export function NotesWidget() {
     const { notes, notesTitle, updateNotes, updateNotesTitle } = useHistoryStore();
     const [isOpen, setIsOpen] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [activeTab, setActiveTab] = useState('text');
+    const { theme } = useTheme();
 
     // Local state for immediate feedback
     const [localNotes, setLocalNotes] = useState(notes);
@@ -34,6 +42,10 @@ export function NotesWidget() {
         updateNotes(val);
     };
 
+    const toggleExpand = () => {
+        setIsExpanded(!isExpanded);
+    };
+
     return (
         <div className="fixed bottom-6 right-6 z-50">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -46,37 +58,79 @@ export function NotesWidget() {
                         <StickyNote className="h-6 w-6" />
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[400px] sm:w-[540px] flex flex-col p-0 sm:max-w-md border-l">
+                <SheetContent
+                    side="right"
+                    className={cn(
+                        "flex flex-col p-0 border-l transition-all duration-300",
+                        isExpanded ? "w-[100vw] sm:w-[100vw] sm:max-w-none" : "w-[400px] sm:w-[540px] sm:max-w-md"
+                    )}
+                >
                     <SheetTitle className="sr-only">Scratch Pad</SheetTitle>
-                    <div className="flex-1 flex flex-col bg-background">
-                        {/* Notion-like Header (Minimal) */}
-                        <div className="pt-12 px-8 pb-4">
-                            {/* Icon or Cover could go here */}
-                            <div className="text-4xl mb-4">📝</div>
-                            <input
-                                type="text"
-                                value={localTitle}
-                                onChange={handleTitleChange}
-                                placeholder="Untitled"
-                                className="w-full text-4xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50 text-foreground"
-                            />
+                    <div className="flex-1 flex flex-col bg-background h-full">
+                        {/* Header */}
+                        <div className="pt-6 px-6 pr-12 pb-2 border-b flex justify-between items-start">
+                            <div className="flex-1">
+                                <div className="text-2xl mb-2">📝</div>
+                                <input
+                                    type="text"
+                                    value={localTitle}
+                                    onChange={handleTitleChange}
+                                    placeholder="Untitled"
+                                    className="w-full text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50 text-foreground"
+                                />
+                            </div>
                         </div>
 
-                        {/* Body */}
-                        <div className="flex-1 px-8 pb-8 overflow-y-auto">
-                            <Textarea
-                                value={localNotes}
-                                onChange={handleNotesChange}
-                                placeholder="Type something..." // 'Press '/' for commands' is too ambitious for now
-                                className="w-full h-full min-h-[500px] resize-none bg-transparent border-none focus-visible:ring-0 p-0 text-base leading-relaxed selection:bg-primary/20"
-                            />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={toggleExpand}
+                            title={isExpanded ? "Collapse" : "Maximize"}
+                            className="absolute right-12 top-4 h-8 w-8 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        >
+                            {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                        </Button>
+
+                        {/* Content */}
+                        <div className="flex-1 overflow-hidden relative">
+                            <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+                                <div className="px-6 py-2 bg-muted/20 border-b">
+                                    <TabsList className="grid w-full grid-cols-2 max-w-[200px]">
+                                        <TabsTrigger value="text">Text Note</TabsTrigger>
+                                        <TabsTrigger value="canvas">Whiteboard</TabsTrigger>
+                                    </TabsList>
+                                </div>
+
+                                <TabsContent value="text" className="flex-1 p-0 m-0 h-full overflow-hidden">
+                                    <div className="h-full w-full overflow-y-auto px-6 py-4">
+                                        <Textarea
+                                            value={localNotes}
+                                            onChange={handleNotesChange}
+                                            placeholder="Write something..."
+                                            className="w-full h-full min-h-[500px] resize-none bg-transparent border-none focus-visible:ring-0 p-0 text-base leading-relaxed selection:bg-primary/20"
+                                        />
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="canvas" className="flex-1 p-0 m-0 h-full relative isolate">
+                                    {/* Tldraw Whiteboard */}
+                                    <div className="absolute inset-0 w-full h-full bg-white">
+                                        {/* Force white background container for tldraw to ensure visibility, 
+                                            though tldraw handles its own dark mode usually. 
+                                            We can try to sync theme if needed, but 'system' default is safest. */}
+                                        <Tldraw persistenceKey="scratchpad-whiteboard" />
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
                         </div>
 
-                        {/* Footer / Status */}
-                        <div className="px-4 py-2 text-xs text-muted-foreground border-t bg-muted/20 flex justify-between items-center">
-                            <span>Markdown supported</span>
-                            <span>{localNotes.length} chars</span>
-                        </div>
+                        {/* Footer (Text Mode Only) */}
+                        {activeTab === 'text' && (
+                            <div className="px-4 py-2 text-xs text-muted-foreground border-t bg-muted/20 flex justify-between items-center">
+                                <span>Markdown supported</span>
+                                <span>{localNotes.length} chars</span>
+                            </div>
+                        )}
                     </div>
                 </SheetContent>
             </Sheet>

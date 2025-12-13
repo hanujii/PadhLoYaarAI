@@ -48,28 +48,20 @@
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
-
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
-
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 0 0% 98%;
     --primary-foreground: 0 0% 9%;
-
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-
     --accent: 0 0% 14.9%;
     --accent-foreground: 0 0% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
@@ -79,13 +71,181 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  .pitch-black {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 100%;
+    --chart-1: 220 70% 50%;
+  }
+
+  .theme-red {
+    --background: 0 20% 4%;
+    --foreground: 0 10% 98%;
+    --card: 0 20% 6%;
+    --card-foreground: 0 10% 98%;
+    --popover: 0 20% 6%;
+    --popover-foreground: 0 10% 98%;
+    --primary: 0 72% 51%;
+    /* Red */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 20% 12%;
+    --secondary-foreground: 0 10% 98%;
+    --muted: 0 20% 12%;
+    --muted-foreground: 0 10% 65%;
+    --accent: 0 30% 15%;
+    --accent-foreground: 0 10% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 20% 15%;
+    --input: 0 20% 15%;
+    --ring: 0 72% 51%;
+  }
+
+  .theme-cyan {
+    --background: 200 30% 5%;
+    --foreground: 200 20% 96%;
+    --card: 200 30% 7%;
+    --card-foreground: 200 20% 96%;
+    --popover: 200 30% 7%;
+    --popover-foreground: 200 20% 96%;
+    --primary: 190 90% 50%;
+    /* Cyan */
+    --primary-foreground: 200 30% 5%;
+    --secondary: 200 30% 15%;
+    --secondary-foreground: 200 20% 96%;
+    --muted: 200 30% 15%;
+    --muted-foreground: 200 20% 65%;
+    --accent: 200 35% 18%;
+    --accent-foreground: 200 20% 96%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 200 30% 18%;
+    --input: 200 30% 18%;
+    --ring: 190 90% 50%;
+  }
+
+  /* Stranger Things: 80s Retro, Red/Black, Neon, Serif Fonts */
+  .theme-stranger-things {
+    --background: 260 30% 8%;
+    /* Darker, more eerie */
+    --foreground: 0 100% 90%;
+    /* Glowing Red/White tint */
+    --card: 260 25% 12%;
+    --card-foreground: 0 100% 90%;
+    --popover: 260 25% 12%;
+    --popover-foreground: 0 100% 90%;
+    --primary: 0 100% 63%;
+    /* Neon Red */
+    --primary-foreground: 260 30% 8%;
+    --secondary: 260 40% 18%;
+    --secondary-foreground: 0 100% 90%;
+    --muted: 260 30% 20%;
+    --muted-foreground: 0 60% 70%;
+    --accent: 0 90% 20%;
+    /* Dark Blood Red */
+    --accent-foreground: 0 100% 95%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 80% 40%;
+    /* Red borders */
+    --input: 260 30% 18%;
+    --ring: 0 100% 63%;
+    /* Neon Ring */
+
+    /* Font: "Benguiat" vibe using serif stack */
+    --font-theme: "Times New Roman", Times, serif;
+    --radius: 0.2rem;
+    /* Sharper corners */
+  }
+
+  /* Money Heist: Dali Mask Colors, Industrial, Bold Sans */
+  .theme-money-heist {
+    --background: 0 0% 92%;
+    /* Concrete/paper grey */
+    --foreground: 0 0% 10%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 354 85% 44%;
+    /* Deep Jumpsuit Red */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 45 100% 50%;
+    /* Gold Accent (Gold Vault) */
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 85%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 354 85% 90%;
+    --accent-foreground: 354 85% 30%;
+    --destructive: 0 90% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    /* Strict contrast */
+    --input: 0 0% 90%;
+    --ring: 354 85% 44%;
+
+    /* Font: Strong Industrial Sans */
+    --font-theme: "Impact", "Arial Black", "Arial", sans-serif;
+    --radius: 0px;
+    /* Brutalist squared */
+  }
+
+  /* Dark (Netflix Series): Gloomy, Yellow Raincoats, Monospace Time Travel */
+  .theme-dark-series {
+    --background: 210 15% 8%;
+    /* Cold Forest Dark */
+    --foreground: 210 10% 80%;
+    /* Faded Grey Text */
+    --card: 210 15% 12%;
+    --card-foreground: 210 10% 80%;
+    --popover: 210 15% 12%;
+    --popover-foreground: 210 10% 80%;
+    --primary: 45 100% 50%;
+    /* Raincoat Yellow */
+    --primary-foreground: 210 15% 8%;
+    --secondary: 210 10% 20%;
+    --secondary-foreground: 45 100% 50%;
+    --muted: 210 10% 20%;
+    --muted-foreground: 210 5% 50%;
+    --accent: 210 10% 25%;
+    --accent-foreground: 45 100% 50%;
+    --destructive: 0 60% 40%;
+    --destructive-foreground: 210 10% 80%;
+    --border: 210 5% 25%;
+    --input: 210 10% 15%;
+    --ring: 45 100% 50%;
+
+    /* Font: Typewriter / Technical */
+    --font-theme: "Courier New", Courier, monospace;
+    --radius: 1rem;
+    /* Softer, organic or time-loop circles? Let's keep distinct */
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-theme, var(--font-sans));
   }
 }

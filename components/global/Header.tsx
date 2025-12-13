@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ const MUSIC_URLS: Record<string, string> = {
 };
 
 export function Header() {
+    const { setTheme } = useTheme();
     const pathname = usePathname();
     const {
         timeLeft, isActive, duration, startTimer, stopTimer, resetTimer, setDuration,
@@ -271,6 +273,38 @@ export function Header() {
                                     <span>History</span>
                                 </Link>
                             </DropdownMenuItem>
+
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>Themes</DropdownMenuLabel>
+                            <div className="grid grid-cols-2 gap-2 p-2">
+                                <DropdownMenuItem onClick={() => setTheme("light")}>
+                                    <span className="w-4 h-4 rounded-full bg-white border mr-2"></span> Light
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                    <span className="w-4 h-4 rounded-full bg-slate-900 border mr-2"></span> Dark
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("pitch-black")}>
+                                    <span className="w-4 h-4 rounded-full bg-black border mr-2"></span> Pitch Black
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("theme-red")}>
+                                    <span className="w-4 h-4 rounded-full bg-red-600 border mr-2"></span> Red
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("theme-cyan")}>
+                                    <span className="w-4 h-4 rounded-full bg-cyan-500 border mr-2"></span> Cyan
+                                </DropdownMenuItem>
+                            </div>
+                            <DropdownMenuLabel className="mt-2">Inspired By</DropdownMenuLabel>
+                            <div className="flex flex-col gap-1 p-2">
+                                <DropdownMenuItem onClick={() => setTheme("theme-stranger-things")} className="cursor-pointer">
+                                    <span className="text-red-600 font-bold mr-2">S</span> Stranger Things
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("theme-money-heist")} className="cursor-pointer">
+                                    <span className="text-red-700 font-bold mr-2">M</span> Money Heist
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setTheme("theme-dark-series")} className="cursor-pointer">
+                                    <span className="text-yellow-500 font-bold mr-2">D</span> Dark Series
+                                </DropdownMenuItem>
+                            </div>
 
                             <DropdownMenuSeparator />
                             <DropdownMenuLabel>Connect</DropdownMenuLabel>
