@@ -16,7 +16,9 @@ import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Typewriter } from '@/components/global/Typewriter';
 
-export default function TutorPage() {
+import { Suspense } from 'react';
+
+function TutorContent() {
     const searchParams = useSearchParams();
     const initialTopic = searchParams.get('topic') || '';
 
@@ -165,5 +167,13 @@ export default function TutorPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function TutorPage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center items-center h-full"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <TutorContent />
+        </Suspense>
     );
 }

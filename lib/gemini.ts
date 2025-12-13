@@ -1,5 +1,17 @@
 import OpenAI from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import 'server-only';
+
+// Define strict types for image parts
+interface InlineData {
+    mimeType: string;
+    data: string;
+}
+
+interface ImagePart {
+    inlineData?: InlineData;
+}
+
 
 const openRouterKey = process.env.OPENROUTER_API_KEY;
 const googleKey = process.env.GEMINI_API_KEY;
@@ -101,12 +113,12 @@ export async function generateVision(modelType: 'flash' | 'pro', prompt: string,
     if (openai) {
         try {
             console.log(`[OpenRouter] Generating vision with model: ${modelType}`);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const formattedContent: any[] = [
                 { type: "text", text: prompt }
             ];
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            imageParts.forEach((part: any) => {
+            imageParts.forEach((part: ImagePart) => {
                 if (part.inlineData) {
                     formattedContent.push({
                         type: "image_url",
@@ -133,12 +145,12 @@ export async function generateVision(modelType: 'flash' | 'pro', prompt: string,
     if (sambanova) {
         try {
             console.log(`[Sambanova] Generating vision with model: ${modelType}`);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const formattedContent: any[] = [
                 { type: "text", text: prompt }
             ];
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            imageParts.forEach((part: any) => {
+            imageParts.forEach((part: ImagePart) => {
                 if (part.inlineData) {
                     formattedContent.push({
                         type: "image_url",

@@ -9,12 +9,12 @@ export function parseAIJSON(text: string) {
   try {
     // 1. Try direct parse
     return JSON.parse(text);
-  } catch (e) {
+  } catch {
     // 2. Try stripping markdown code blocks
     const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
     try {
       return JSON.parse(cleanText);
-    } catch (e2) {
+    } catch {
       // 3. Try finding the first '[' or '{' and last ']' or '}'
       const firstOpenBrace = cleanText.indexOf('{');
       const firstOpenBracket = cleanText.indexOf('[');

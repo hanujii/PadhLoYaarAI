@@ -17,6 +17,7 @@ export function NotesWidget() {
 
     // Sync on mount
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         setLocalNotes(notes);
         setLocalTitle(notesTitle);
     }, [notes, notesTitle]);

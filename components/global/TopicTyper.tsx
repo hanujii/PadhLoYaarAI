@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 interface TopicTyperProps {
@@ -24,38 +23,37 @@ export function TopicTyper({
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
-    // Shuffle topics locally on mount to avoid same sequence
+    // Generic shuffle in useEffect to avoid purity issues with useMemo
     const [shuffledTopics, setShuffledTopics] = useState<string[]>([]);
 
     useEffect(() => {
-        // Simple Fisher-Yates shuffle or just random sort for this purpose
-        const shuffled = [...topics].sort(() => Math.random() - 0.5);
-        setShuffledTopics(shuffled);
+        // eslint-disable-next-line react-hooks/wait-for-previous-tools
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        setShuffledTopics([...topics].sort(() => Math.random() - 0.5));
     }, [topics]);
 
     useEffect(() => {
         if (shuffledTopics.length === 0) return;
 
         let timer: NodeJS.Timeout;
-
         const currentTopic = shuffledTopics[topicIndex] || "";
 
         if (isDeleting) {
             timer = setTimeout(() => {
                 setDisplayText(prev => prev.slice(0, -1));
-                if (displayText.length === 0) {
+                if (displayText.length <= 1) {
                     setIsDeleting(false);
                     setTopicIndex((prev) => (prev + 1) % shuffledTopics.length);
                 }
             }, deletingSpeed);
         } else {
-            timer = setTimeout(() => {
-                setDisplayText(currentTopic.slice(0, displayText.length + 1));
-                if (displayText.length === currentTopic.length) {
-                    // Pause before deleting
-                    setTimeout(() => setIsDeleting(true), pauseDuration);
-                }
-            }, typingSpeed);
+            if (displayText === currentTopic) {
+                timer = setTimeout(() => setIsDeleting(true), pauseDuration);
+            } else {
+                timer = setTimeout(() => {
+                    setDisplayText(currentTopic.slice(0, displayText.length + 1));
+                }, typingSpeed);
+            }
         }
 
         return () => clearTimeout(timer);
