@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/global/Header";
 import { Footer } from "@/components/global/Footer";
+import { NotesWidget } from "@/components/global/NotesWidget";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -25,6 +26,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <NotesWidget />
       </body>
     </html>
   );

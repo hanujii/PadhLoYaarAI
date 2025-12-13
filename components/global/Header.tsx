@@ -83,6 +83,7 @@ export function Header() {
 
     // Tools list for dropdown
     const tools = [
+        { name: 'My Library', href: '/history' },
         { name: 'Tutor Tool', href: '/tools/tutor' },
         { name: 'Code Transformer', href: '/tools/code-transformer' },
         { name: 'Question Solver', href: '/tools/question-solver' },

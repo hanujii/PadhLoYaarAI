@@ -9,11 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getTutorResponse } from './actions';
 import ReactMarkdown from 'react-markdown';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Bookmark, Check } from 'lucide-react';
+import { useHistoryStore } from '@/lib/history-store';
 
 export default function TutorPage() {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<string | null>(null);
+    const { addToHistory, saveItem } = useHistoryStore();
+    const [isSaved, setIsSaved] = useState(false);
+
+    // Reset saved state when response changes
+    const [lastResponse, setLastResponse] = useState<string | null>(null);
+    if (response !== lastResponse) {
+        setIsSaved(false);
+        setLastResponse(response);
+    }
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -25,11 +35,30 @@ export default function TutorPage() {
 
         if (result.success && result.data) {
             setResponse(result.data);
+
+            // Auto-add to history
+            addToHistory({
+                type: 'generation',
+                tool: 'Tutor',
+                query: (formData.get('topic') as string) || 'Unknown Topic',
+                result: result.data
+            });
         } else {
             setResponse('Error: ' + (result.error || 'Something went wrong'));
         }
         setLoading(false);
     }
+
+    const handleSave = () => {
+        if (!response) return;
+        const topic = (document.getElementById('topic') as HTMLInputElement)?.value || 'Tutor Result';
+        saveItem({
+            type: 'result',
+            title: `Tutor: ${topic}`,
+            content: response
+        });
+        setIsSaved(true);
+    };
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
@@ -88,8 +117,14 @@ export default function TutorPage() {
                 </Card>
 
                 <Card className="h-full min-h-[400px]">
-                    <CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle>Explanation</CardTitle>
+                        {response && !response.startsWith('Error:') && (
+                            <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaved}>
+                                {isSaved ? <Check className="w-4 h-4 mr-2" /> : <Bookmark className="w-4 h-4 mr-2" />}
+                                {isSaved ? 'Saved' : 'Save'}
+                            </Button>
+                        )}
                     </CardHeader>
                     <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px]">
                         {response ? (
