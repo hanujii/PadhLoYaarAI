@@ -2,14 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { NotesEditor } from '@/components/global/NotesEditor';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StickyNote, Maximize2, Minimize2 } from 'lucide-react';
 import { useHistoryStore } from '@/lib/history-store';
-import { Tldraw } from 'tldraw';
+import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
+
+// Dynamically import Tldraw to avoid SSR issues
+const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
+    ssr: false,
+    loading: () => <div className="w-full h-full flex items-center justify-center text-muted-foreground">Loading Canvas...</div>
+});
 
 export function NotesWidget() {
     const { notes, notesTitle, updateNotes, updateNotesTitle } = useHistoryStore();
@@ -35,10 +41,9 @@ export function NotesWidget() {
         updateNotesTitle(val);
     };
 
-    const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const val = e.target.value;
-        setLocalNotes(val);
-        updateNotes(val);
+    const handleNotesChange = (content: string) => {
+        setLocalNotes(content);
+        updateNotes(content);
     };
 
     const toggleExpand = () => {
@@ -101,12 +106,10 @@ export function NotesWidget() {
                                 </div>
 
                                 <TabsContent value="text" className="flex-1 p-0 m-0 h-full overflow-hidden">
-                                    <div className="h-full w-full overflow-y-auto px-6 py-4">
-                                        <Textarea
-                                            value={localNotes}
+                                    <div className="h-full w-full px-0 py-0 overflow-hidden">
+                                        <NotesEditor
+                                            content={localNotes}
                                             onChange={handleNotesChange}
-                                            placeholder="Write something..."
-                                            className="w-full h-full min-h-[500px] resize-none bg-transparent border-none focus-visible:ring-0 p-0 text-base leading-relaxed selection:bg-primary/20"
                                         />
                                     </div>
                                 </TabsContent>
@@ -114,9 +117,7 @@ export function NotesWidget() {
                                 <TabsContent value="canvas" className="flex-1 p-0 m-0 h-full relative isolate">
                                     {/* Tldraw Whiteboard */}
                                     <div className="absolute inset-0 w-full h-full bg-white">
-                                        {/* Force white background container for tldraw to ensure visibility, 
-                                            though tldraw handles its own dark mode usually. 
-                                            We can try to sync theme if needed, but 'system' default is safest. */}
+                                        {/* Force white background container for tldraw to ensure visibility */}
                                         <Tldraw persistenceKey="scratchpad-whiteboard" />
                                     </div>
                                 </TabsContent>

@@ -13,14 +13,18 @@ A comprehensive AI-powered study toolbox built with Next.js 14, TailwindCSS, sha
 - **Diagram Explainer**: Understand complex diagrams and charts visually.
 - **Cheat Sheet Generator**: Instant summaries, formulas, and tables.
 - **Study Tools**: Pomodoro Timer, Music Player (Mock), Social Links.
+- **Scratchpad**: Floating widget with Tabs for **Rich Text Notes** (TipTap) and **Infinite Whiteboard** (tldraw).
 
 ## Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS, shadcn/ui
-- **State Management**: Zustand
-- **AI**: Google Generative AI (Gemini Flash & Pro)
-- **Editor**: Monaco Editor
+- **Styling**: Tailwind CSS, shadcn/ui, framer-motion
+- **State Management**: Zustand, Persist Middleware
+- **AI Models**: Google Gemini (Flash 1.5 & Pro 1.5) via `google-generative-ai`
+- **Editors**: 
+  - **Code**: Monaco Editor
+  - **Text**: TipTap (Rich Text)
+  - **Visual**: tldraw (Whiteboard)
 - **Docs**: pdfjs-dist
 
 ## 🎨 Themes & Customization
@@ -31,13 +35,6 @@ Padh Lo Yaar features a dynamic theme system inspired by popular culture and aes
   - **Stranger Things**: 80s Retro Serif, Neon Red, Deep Eerie Black.
   - **Money Heist**: Industrial Sans, Jumpsuit Red, Gold Accents.
   - **Dark**: Gloomy Atmos, Raincoat Yellow, Monospace Time-Travel vibe.
-
-## Tech Stack
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS, shadcn/ui, framer-motion
-- **State Management**: Zustand
-- **AI Models**: Google Gemini (Flash 1.5 & Pro 1.5) via `google-generative-ai`
-- **Editor**: Monaco Editor for code transformation
 
 ## Getting Started
 
