@@ -131,13 +131,25 @@ export function Header() {
                                             </Link>
                                         ))}
                                     </div>
+                                    <div className="mt-4 flex items-center gap-2">
+                                        <Link href="https://www.linkedin.com/in/ayush-gupta-creative?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer">
+                                            <Button variant="ghost" size="icon">
+                                                <Linkedin className="w-5 h-5" />
+                                            </Button>
+                                        </Link>
+                                        <Link href="https://www.instagram.com/hanu3040?igsh=enB0amxuMjdwZm0x" target="_blank" rel="noreferrer">
+                                            <Button variant="ghost" size="icon">
+                                                <Instagram className="w-5 h-5" />
+                                            </Button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </SheetContent>
                         </Sheet>
                     </div>
 
                     <Link href="/" className="flex items-center space-x-2 font-bold text-xl">
-                        <span>Padh Lo Yaar</span>
+                        <span>plyAI</span>
                     </Link>
                     <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
                         <Link href="/" className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? "text-foreground" : "text-foreground/60")}>
@@ -227,7 +239,7 @@ export function Header() {
                     </Popover>
 
                     {/* Socials */}
-                    <div className="flex items-center gap-1">
+                    <div className="hidden md:flex items-center gap-1">
                         <Link href="https://www.linkedin.com/in/ayush-gupta-creative?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer">
                             <Button variant="ghost" size="icon">
                                 <Linkedin className="w-5 h-5" />
