@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StickyNote, Maximize2, Minimize2 } from 'lucide-react';
 import { useHistoryStore } from '@/lib/history-store';
 import { Tldraw } from 'tldraw';
-import 'tldraw/tldraw.css';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
 
