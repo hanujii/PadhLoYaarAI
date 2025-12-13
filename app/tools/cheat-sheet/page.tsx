@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import { Loader2, Download, Table } from 'lucide-react';
 import remarkGfm from 'remark-gfm';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
+import { Typewriter } from '@/components/global/Typewriter';
 
 export default function CheatSheetPage() {
     const [loading, setLoading] = useState(false);
@@ -71,7 +72,7 @@ export default function CheatSheetPage() {
                     </CardHeader>
                     <CardContent className="prose dark:prose-invert max-w-none overflow-x-auto">
                         <div ref={contentRef}>
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                            <Typewriter content={content} speed={1} />
                         </div>
                     </CardContent>
                 </Card>

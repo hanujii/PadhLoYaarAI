@@ -8,6 +8,7 @@ import { solveQuestion } from './actions';
 import { Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
+import { Typewriter } from '@/components/global/Typewriter';
 
 export default function QuestionSolverPage() {
     const [loading, setLoading] = useState(false);
@@ -132,7 +133,7 @@ export default function QuestionSolverPage() {
                     <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px]">
                         <div ref={outputRef}>
                             {response ? (
-                                <ReactMarkdown>{response}</ReactMarkdown>
+                                <Typewriter content={response} speed={5} />
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground text-center">
                                     <UplaodPlaceholder />

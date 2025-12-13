@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, Library } from 'lucide-react';
+import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
     DropdownMenu,
@@ -92,6 +92,13 @@ export function Header() {
         { name: 'Teacher Chat', href: '/tools/teacher-chat' },
         { name: 'Diagram Explainer', href: '/tools/diagram-explainer' },
         { name: 'Cheat Sheet', href: '/tools/cheat-sheet' },
+        { name: 'Flashcard Genius', href: '/tools/flashcards' },
+        { name: 'YouTube Note-Taker', href: '/tools/youtube-notes' },
+        { name: 'Roadmap Architect', href: '/tools/roadmap' },
+        { name: 'The Reverse Exam', href: '/tools/reverse-exam' },
+        { name: 'Syllabus Sentinel', href: '/tools/syllabus' },
+        { name: 'Meme-ory Mode', href: '/tools/meme' },
+        { name: 'The Analogy Engine', href: '/tools/analogy' },
     ];
 
     const timerPresets = [10, 15, 25, 45, 60];
@@ -176,12 +183,6 @@ export function Header() {
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-4">
-                    <Link href="/history" className="hidden md:flex items-center justify-center mr-2">
-                        <Button variant="ghost" size="icon" title="My Library">
-                            <Library className="h-[1.2rem] w-[1.2rem]" />
-                            <span className="sr-only">My Library</span>
-                        </Button>
-                    </Link>
                     {/* Timer Display with Popover */}
                     <div className="flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-full border border-border">
                         <DropdownMenu>
@@ -246,19 +247,49 @@ export function Header() {
                         </PopoverContent>
                     </Popover>
 
-                    {/* Socials */}
-                    <div className="hidden md:flex items-center gap-1">
-                        <Link href="https://www.linkedin.com/in/ayush-gupta-creative?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer">
-                            <Button variant="ghost" size="icon">
-                                <Linkedin className="w-5 h-5" />
+                    {/* Profile Menu */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="rounded-full">
+                                <User className="w-5 h-5" />
                             </Button>
-                        </Link>
-                        <Link href="https://www.instagram.com/hanu3040?igsh=enB0amxuMjdwZm0x" target="_blank" rel="noreferrer">
-                            <Button variant="ghost" size="icon">
-                                <Instagram className="w-5 h-5" />
-                            </Button>
-                        </Link>
-                    </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+
+                            <DropdownMenuItem asChild>
+                                <Link href="/history" className="cursor-pointer">
+                                    <Bookmark className="mr-2 h-4 w-4" />
+                                    <span>Saved Messages</span>
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <Link href="/history" className="cursor-pointer">
+                                    <History className="mr-2 h-4 w-4" />
+                                    <span>History</span>
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>Connect</DropdownMenuLabel>
+
+                            <DropdownMenuItem asChild>
+                                <Link href="https://www.linkedin.com/in/ayush-gupta-creative?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer" className="cursor-pointer">
+                                    <Linkedin className="mr-2 h-4 w-4" />
+                                    <span>LinkedIn</span>
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <Link href="https://www.instagram.com/hanu3040?igsh=enB0amxuMjdwZm0x" target="_blank" rel="noreferrer" className="cursor-pointer">
+                                    <Instagram className="mr-2 h-4 w-4" />
+                                    <span>Instagram</span>
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
         </header>

@@ -27,6 +27,8 @@ export async function explainDiagram(formData: FormData) {
         return { success: true, data: text };
 
     } catch (error) {
-        return { success: false, error: 'Failed to analyze diagram.' };
+        console.error("Diagram Action Error:", error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return { success: false, error: errorMessage };
     }
 }
