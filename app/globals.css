@@ -173,8 +173,7 @@
     --ring: 0 100% 63%;
     /* Neon Ring */
 
-    /* Font: "Benguiat" vibe using serif stack */
-    --font-theme: "Times New Roman", Times, serif;
+    /* Font: "Benguiat" vibe using serif stack - REMOVED for consistency */
     --radius: 0.2rem;
     /* Sharper corners */
   }
@@ -205,8 +204,7 @@
     --input: 0 0% 90%;
     --ring: 354 85% 44%;
 
-    /* Font: Strong Industrial Sans */
-    --font-theme: "Impact", "Arial Black", "Arial", sans-serif;
+    /* Font: Strong Industrial Sans - REMOVED */
     --radius: 0px;
     /* Brutalist squared */
   }
@@ -236,8 +234,7 @@
     --input: 210 10% 15%;
     --ring: 45 100% 50%;
 
-    /* Font: Typewriter / Technical */
-    --font-theme: "Courier New", Courier, monospace;
+    /* Font: Typewriter / Technical - REMOVED */
     --radius: 1rem;
     /* Softer, organic or time-loop circles? Let's keep distinct */
   }
@@ -250,6 +247,12 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-theme, var(--font-sans));
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {}
 }

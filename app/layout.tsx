@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import 'tldraw/tldraw.css';
 import "./globals.css";
 import { Header } from "@/components/global/Header";
@@ -8,7 +8,11 @@ import { NotesWidget } from "@/components/global/NotesWidget";
 import { ThemeProvider } from "@/components/global/theme-provider";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-sans"
+});
 
 export const metadata: Metadata = {
   title: "Padh Lo Yaar",
@@ -22,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("min-h-screen bg-background font-sans antialiased flex flex-col", inter.variable)}>
+      <body className={cn("min-h-screen bg-background font-sans antialiased flex flex-col", poppins.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
