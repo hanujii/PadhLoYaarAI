@@ -3,10 +3,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-
-import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
 import { AtSign, Paperclip, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -88,10 +84,28 @@ export function LearningCommandInput({
                     size="icon"
                     variant="ghost"
                     className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
-                    onClick={(e) => { e.stopPropagation(); /* TODO: Attach */ }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        const fileInput = document.getElementById('chat-file-input');
+                        fileInput?.click();
+                    }}
                 >
                     <Paperclip className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
+                <input
+                    type="file"
+                    id="chat-file-input"
+                    className="hidden"
+                    onChange={(e) => {
+                        if (e.target.files?.length) {
+                            // Temporarily just show an alert or log it to prove it works, 
+                            // or pass to parent. 
+                            // Ideally we'd have onAttach(file).
+                            console.log("File selected:", e.target.files[0]);
+                            alert(`Selected: ${e.target.files[0].name} (Attachment logic pending backend implementation)`);
+                        }
+                    }}
+                />
             </div>
 
             {/* Separator */}

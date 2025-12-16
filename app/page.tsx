@@ -8,164 +8,18 @@ import { CardHeader, CardTitle, CardDescription, CardContent } from '@/component
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { DashboardChat } from '@/components/dashboard/DashboardChat';
-import {
-  ArrowRight,
-  BookOpen,
-  Code,
-  FileQuestion,
-  FileText,
-  Brain,
-  MessageSquare,
-  Image,
-  // ...
-
-  Database,
-  GraduationCap,
-  Calculator,
-  PenTool,
-  Mic,
-  Table,
-  Layers,
-  Youtube,
-  Map,
-  RotateCcw,
-  ListChecks,
-  Smile,
-  Link as LinkIcon,
-  Sparkles,
-  Github,
-  Flame,
-  Gamepad2
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TopicTyper } from '@/components/global/TopicTyper';
 import { TOPICS } from '@/lib/topics';
 import { CommandCenter } from '@/components/global/CommandCenter';
 
+import { TOOLS } from '@/lib/tools-data';
+
 export default function Home() {
   const [chatTopic, setChatTopic] = useState<string | null>(null);
 
-  const tools = [
-    {
-      title: "Tutor Tool",
-      description: "Get step-by-step explanations for any topic.",
-      href: "/tools/tutor",
-      icon: <GraduationCap className="w-8 h-8 mb-2 text-primary" />,
-      color: "bg-blue-50 dark:bg-blue-950/20"
-    },
-    {
-      title: "Code Transformer",
-      description: "Convert, style, and fix code snippets.",
-      href: "/tools/code-transformer",
-      icon: <Code className="w-8 h-8 mb-2 text-green-600" />,
-      color: "bg-green-50 dark:bg-green-950/20"
-    },
-    {
-      title: "Question Solver",
-      description: "Solve problems from text or images.",
-      href: "/tools/question-solver",
-      icon: <Calculator className="w-8 h-8 mb-2 text-orange-600" />,
-      color: "bg-orange-50 dark:bg-orange-950/20"
-    },
-    {
-      title: "PDF Explainer",
-      description: "Chat with your PDF documents.",
-      href: "/tools/pdf-explainer",
-      icon: <FileText className="w-8 h-8 mb-2 text-red-600" />,
-      color: "bg-red-50 dark:bg-red-950/20"
-    },
-    {
-      title: "Exam Generator",
-      description: "Create practice exams on any subject.",
-      href: "/tools/exam-generator",
-      icon: <PenTool className="w-8 h-8 mb-2 text-purple-600" />,
-      color: "bg-purple-50 dark:bg-purple-950/20"
-    },
-    {
-      title: "Teacher Chat",
-      description: "Conversational voice practice.",
-      href: "/tools/teacher-chat",
-      icon: <Mic className="w-8 h-8 mb-2 text-yellow-600" />,
-      color: "bg-yellow-50 dark:bg-yellow-950/20"
-    },
-    {
-      title: "Diagram Explainer",
-      description: "Understand complex diagrams visually.",
-      href: "/tools/diagram-explainer",
-      icon: <Image className="w-8 h-8 mb-2 text-pink-600" />,
-      color: "bg-pink-50 dark:bg-pink-950/20"
-    },
-    {
-      title: "Cheat Sheet",
-      description: "Generate summaries and tables instantly.",
-      href: "/tools/cheat-sheet",
-      icon: <Table className="w-8 h-8 mb-2 text-cyan-600" />,
-      color: "bg-cyan-50 dark:bg-cyan-950/20"
-    },
-    {
-      title: "Flashcard Genius",
-      description: "Master topics with active recall cards.",
-      href: "/tools/flashcards",
-      icon: <Layers className="w-8 h-8 mb-2 text-indigo-500" />,
-      color: "bg-indigo-50 dark:bg-indigo-950/20"
-    },
-    {
-      title: "YouTube Note-Taker",
-      description: "Summarize video lectures instantly.",
-      href: "/tools/youtube-notes",
-      icon: <Youtube className="w-8 h-8 mb-2 text-red-500" />,
-      color: "bg-red-50 dark:bg-red-950/20"
-    },
-    {
-      title: "Roadmap Architect",
-      description: "Generate day-by-day study plans.",
-      href: "/tools/roadmap",
-      icon: <Map className="w-8 h-8 mb-2 text-blue-500" />,
-      color: "bg-blue-50 dark:bg-blue-950/20"
-    },
-    {
-      title: "The Reverse Exam",
-      description: "Catch the AI's mistakes.",
-      href: "/tools/reverse-exam",
-      icon: <RotateCcw className="w-8 h-8 mb-2 text-orange-500" />,
-      color: "bg-orange-50 dark:bg-orange-950/20"
-    },
-    {
-      title: "Syllabus Sentinel",
-      description: "Track progress from your PDF syllabus.",
-      href: "/tools/syllabus",
-      icon: <ListChecks className="w-8 h-8 mb-2 text-emerald-500" />,
-      color: "bg-emerald-50 dark:bg-emerald-950/20"
-    },
-    {
-      title: "Meme-ory Mode",
-      description: "Learn concepts through memes.",
-      href: "/tools/meme",
-      icon: <Smile className="w-8 h-8 mb-2 text-yellow-500" />,
-      color: "bg-yellow-50 dark:bg-yellow-950/20"
-    },
-    {
-      title: "Analogy Engine",
-      description: "Explain things with your interests.",
-      href: "/tools/analogy",
-      icon: <LinkIcon className="w-8 h-8 mb-2 text-pink-500" />,
-      color: "bg-pink-50 dark:bg-pink-950/20"
-    },
-    {
-      title: "Roast My Code",
-      description: "Get sarcastic, fiery feedback on your code.",
-      href: "/tools/roast-my-code",
-      icon: <Brain className="w-8 h-8 mb-2 text-red-600" />,
-      color: "bg-red-50 dark:bg-red-950/20"
-    },
-    {
-      title: "Exam Simulator",
-      description: "Practice under pressure with AI exams.",
-      href: "/tools/exam-simulator",
-      icon: <FileQuestion className="w-8 h-8 mb-2 text-blue-600" />,
-      color: "bg-blue-50 dark:bg-blue-950/20"
-    },
-  ];
+  // No need to redeclare tools, we use TOOLS directly from lib
 
   const container = {
     hidden: { opacity: 0 },
@@ -216,12 +70,12 @@ export default function Home() {
           animate="show"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
-          {tools.map((tool) => (
+          {TOOLS.map((tool) => (
             <motion.div key={tool.href} variants={item} className="h-full">
               <Link href={tool.href} className="block h-full">
-                <GlassCard className="group h-full flex flex-col justify-between cursor-pointer hover:border-primary/50 transition-colors" enableTilt={true}>
+                <GlassCard className="group h-full flex flex-col justify-between cursor-pointer hover:border-primary/50 transition-colors" enableTilt={false}>
                   <CardHeader className={`${tool.color} bg-opacity-20 rounded-t-lg pb-4`}>
-                    {tool.icon}
+                    <tool.icon className="w-8 h-8 mb-2 text-primary" />
                     <CardTitle className="text-xl">{tool.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-4 space-y-4 flex-1 flex flex-col justify-between">

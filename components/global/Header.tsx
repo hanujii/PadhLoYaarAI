@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History } from 'lucide-react';
 import { Logo } from '@/components/global/Logo';
 import { cn } from '@/lib/utils';
+import { TOOLS } from '@/lib/tools-data';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -87,15 +88,7 @@ export function Header() {
     };
 
     // Tools list for dropdown
-    const tools = [
-        { name: 'My Library', href: '/history' },
-        { name: 'Tutor Tool', href: '/tools/tutor' },
-        { name: 'Code Transformer', href: '/tools/code-transformer' },
-        { name: 'Roast My Code', href: '/tools/roast-my-code' },
-        { name: 'Exam Simulator', href: '/tools/exam-simulator' },
-        { name: 'Teacher Chat', href: '/tools/teacher-chat' },
-        // ... other tools if needed
-    ];
+    const tools = TOOLS.map(t => ({ name: t.title, href: t.href }));
 
     const timerPresets = [10, 15, 25, 45, 60];
 

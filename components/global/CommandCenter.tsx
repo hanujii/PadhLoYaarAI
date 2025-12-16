@@ -1,15 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { LearningCommandInput } from "@/components/global/LearningCommandInput";
-import { Sparkles, Command, Check } from 'lucide-react';
-import { TOPICS } from '@/lib/topics';
-import { cn } from '@/lib/utils';
+"use client";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LearningCommandInput } from "@/components/global/LearningCommandInput";
 import { Sparkles, Command, Check } from 'lucide-react';
 import { TOPICS } from '@/lib/topics';
+import { cn } from '@/lib/utils';
+import { TOOLS } from '@/lib/tools-data';
 import {
     CommandDialog,
     CommandEmpty,
@@ -30,16 +27,6 @@ export function CommandCenter({ onChatStart }: CommandCenterProps) {
     const [isCommandOpen, setIsCommandOpen] = useState(false);
     const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
-    // Tools list for @ selection
-    const tools = [
-        { label: 'Tutor', value: 'tutor', path: '/tools/tutor' },
-        { label: 'Code Transformer', value: 'code-transformer', path: '/tools/code-transformer' },
-        { label: 'Roast My Code', value: 'roast-my-code', path: '/tools/roast-my-code' },
-        { label: 'Exam Simulator', value: 'exam-simulator', path: '/tools/exam-simulator' },
-        { label: 'Question Solver', value: 'question-solver', path: '/tools/question-solver' },
-        // Add others
-    ];
-
     useEffect(() => {
         setPlaceholders([...TOPICS].sort(() => 0.5 - Math.random()).slice(0, 30));
     }, []);
@@ -59,11 +46,10 @@ export function CommandCenter({ onChatStart }: CommandCenterProps) {
 
         if (selectedTool) {
             // Redirect to specific tool
-            const tool = tools.find(t => t.value === selectedTool);
+            const tool = TOOLS.find(t => t.value === selectedTool);
             if (tool) {
-                // For tutor loop, query param is 'topic', for others it might be 'q'
-                const param = tool.value === 'tutor' || tool.value === 'exam-simulator' ? 'topic' : 'q';
-                router.push(`${tool.path}?${param}=${encoded}`);
+                const param = tool.queryParam || 'q';
+                router.push(`${tool.href}?${param}=${encoded}`);
             }
         } else {
             // INLINE CHAT (Default)
@@ -103,7 +89,7 @@ export function CommandCenter({ onChatStart }: CommandCenterProps) {
                 <CommandList>
                     <CommandEmpty>No tool found.</CommandEmpty>
                     <CommandGroup heading="Tools">
-                        {tools.map((tool) => (
+                        {TOOLS.map((tool) => (
                             <CommandItem
                                 key={tool.value}
                                 onSelect={() => {
@@ -116,7 +102,7 @@ export function CommandCenter({ onChatStart }: CommandCenterProps) {
                                 }}
                             >
                                 <Check className={cn("mr-2 h-4 w-4", selectedTool === tool.value ? "opacity-100" : "opacity-0")} />
-                                {tool.label}
+                                {tool.title}
                             </CommandItem>
                         ))}
                     </CommandGroup>

@@ -12,6 +12,7 @@ import { getTutorResponse } from './actions';
 import ReactMarkdown from 'react-markdown';
 import { Loader2, Bookmark, Check, Brain } from 'lucide-react';
 import { useHistoryStore } from '@/lib/history-store';
+import { useCacheStore } from '@/lib/cache-store';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -39,10 +40,21 @@ function TutorContent() {
         setLastResponse(response);
     }
 
+
+
     // Unified generation function
     const generateAnswer = async (topicToSearch: string, modeToUse: string, instructionsToUse: string) => {
         setLoading(true);
         setResponse(null);
+
+        const cacheKey = `tutor-${topicToSearch}-${modeToUse}-${instructionsToUse}`;
+        const cached = useCacheStore.getState().getCache(cacheKey);
+
+        if (cached) {
+            setResponse(cached);
+            setLoading(false);
+            return;
+        }
 
         const formData = new FormData();
         formData.append('topic', topicToSearch);
@@ -53,6 +65,7 @@ function TutorContent() {
 
         if (result.success && result.data) {
             setResponse(result.data);
+            useCacheStore.getState().setCache(cacheKey, result.data);
 
             // Auto-add to history
             addToHistory({
