@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,7 +26,7 @@ interface ExamData {
     }[];
 }
 
-export default function ExamSimulatorPage() {
+function ExamSimulatorContent() {
     const [topic, setTopic] = useState('');
     const [difficulty, setDifficulty] = useState('Medium');
     const [loading, setLoading] = useState(false);
@@ -45,7 +45,6 @@ export default function ExamSimulatorPage() {
         const target = initialTopic || q;
         if (target && !topic) {
             setTopic(target);
-            // Optional: Auto-start if desired, but user might want to pick difficulty
         }
     }, [searchParams, topic]);
 
@@ -91,16 +90,6 @@ export default function ExamSimulatorPage() {
             query: `Exam on ${topic}`,
             result: `Score: ${calculatedScore}/${totalQuestions} (${percentage}%)`
         });
-    };
-
-    const resetExam = () => {
-        setExam(null);
-        setSubmitted(false);
-        setUserAnswers({});
-        setScore(0);
-        setShowResults(false);
-        setTopic('');
-        setDifficulty('Medium');
     };
 
     return (
@@ -235,5 +224,13 @@ export default function ExamSimulatorPage() {
                 </motion.div>
             )}
         </div>
+    );
+}
+
+export default function ExamSimulatorPage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <ExamSimulatorContent />
+        </Suspense>
     );
 }
