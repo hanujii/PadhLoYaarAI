@@ -26,7 +26,11 @@ function TutorContent() {
 
     const [topicInput, setTopicInput] = useState(initialTopic);
 
-    // ... (keep outputRef and other states)
+    const [loading, setLoading] = useState(false);
+    const [response, setResponse] = useState<string | null>(null);
+    const { addToHistory, saveItem } = useHistoryStore();
+    const [isSaved, setIsSaved] = useState(false);
+    const outputRef = useRef<HTMLDivElement>(null);
 
     // Reset saved state when response changes
     const [lastResponse, setLastResponse] = useState<string | null>(null);
