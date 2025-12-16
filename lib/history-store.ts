@@ -3,7 +3,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface HistoryItem {
     id: string;
-    tool: 'roast-my-code' | 'tutor' | 'code-transformer' | 'exam-simulator';
+    tool: string;
+    type?: string;
     query: string;
     result: string;
     timestamp: number;
@@ -20,11 +21,15 @@ export interface SavedItem {
 interface HistoryState {
     history: HistoryItem[];
     savedItems: SavedItem[];
+    notes: string;
+    notesTitle: string;
     addToHistory: (item: Omit<HistoryItem, 'id' | 'timestamp'>) => void;
     removeFromHistory: (id: string) => void;
     clearHistory: () => void;
     saveItem: (item: Omit<SavedItem, 'id' | 'timestamp'>) => void;
     removeFromSaved: (id: string) => void;
+    updateNotes: (content: string) => void;
+    updateNotesTitle: (title: string) => void;
 }
 
 export const useHistoryStore = create<HistoryState>()(
@@ -32,6 +37,8 @@ export const useHistoryStore = create<HistoryState>()(
         (set) => ({
             history: [],
             savedItems: [],
+            notes: '',
+            notesTitle: '',
             addToHistory: (item) => set((state) => ({
                 history: [
                     { ...item, id: crypto.randomUUID(), timestamp: Date.now() },
@@ -51,6 +58,8 @@ export const useHistoryStore = create<HistoryState>()(
             removeFromSaved: (id) => set((state) => ({
                 savedItems: state.savedItems.filter((i) => i.id !== id)
             })),
+            updateNotes: (content) => set({ notes: content }),
+            updateNotesTitle: (title) => set({ notesTitle: title }),
         }),
         {
             name: 'padhloyaar-history-storage',

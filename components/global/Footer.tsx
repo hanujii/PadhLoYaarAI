@@ -28,7 +28,7 @@ export function Footer() {
                     </p>
                 </div>
                 <p className="text-center text-sm text-muted-foreground md:text-left">
-                    &copy; {new Date().getFullYear()} Padh Lo Yaar
+                    &copy; {new Date().getFullYear()} plyAI. All rights reserved.
                 </p>
             </div>
         </footer>

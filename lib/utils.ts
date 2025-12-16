@@ -5,17 +5,24 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/**
+ * Safely parses JSON returned by an AI model.
+ * AI models often wrap JSON in Markdown code blocks (```json ... ```) or include extra text.
+ * This function attempts multiple strategies to extract valid JSON.
+ */
 export function parseAIJSON(text: string) {
   try {
-    // 1. Try direct parse
+    // Strategy 1: The happy path - direct parse
     return JSON.parse(text);
   } catch {
-    // 2. Try stripping markdown code blocks
+    // Strategy 2: Strip Markdown code blocks
+    // AI often returns: ```json { "foo": "bar" } ```
     const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
     try {
       return JSON.parse(cleanText);
     } catch {
-      // 3. Try finding the first '[' or '{' and last ']' or '}'
+      // Strategy 3: Brute force extraction
+      // Find the first '{' or '[' and the last '}' or ']' to isolate the JSON object/array
       const firstOpenBrace = cleanText.indexOf('{');
       const firstOpenBracket = cleanText.indexOf('[');
 
@@ -35,6 +42,8 @@ export function parseAIJSON(text: string) {
           return JSON.parse(jsonCandidate);
         }
       }
+
+      console.error("Failed to parse JSON:", text);
       throw new Error("Could not parse JSON from AI response: " + text.substring(0, 100) + "...");
     }
   }

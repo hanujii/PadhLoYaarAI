@@ -22,7 +22,7 @@ export function FloatingShapes() {
                 rotateY: [0, 180, 360],
                 y: [0, 20, 0]
             },
-            transition: { duration: 20, repeat: Infinity, ease: "linear" }
+            transition: { duration: 20, repeat: Infinity, ease: "linear" as const }
         },
         // Middle Right - Purple Cube-ish
         {
@@ -32,7 +32,7 @@ export function FloatingShapes() {
                 rotate: [0, 360],
                 scale: [1, 1.1, 1],
             },
-            transition: { duration: 25, repeat: Infinity, ease: "linear" }
+            transition: { duration: 25, repeat: Infinity, ease: "linear" as const }
         },
         // Bottom Left - Blue Triangle/Diamond
         {
@@ -42,7 +42,7 @@ export function FloatingShapes() {
                 rotate: [45, 225],
                 y: [0, -30, 0],
             },
-            transition: { duration: 18, repeat: Infinity, type: "tween", ease: "easeInOut" }
+            transition: { duration: 18, repeat: Infinity, type: "tween" as const, ease: "easeInOut" as const }
         },
         // Top Right - Yellow Ring
         {
@@ -52,7 +52,7 @@ export function FloatingShapes() {
                 scale: [1, 1.2, 1],
                 opacity: [0.3, 0.6, 0.3],
             },
-            transition: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+            transition: { duration: 8, repeat: Infinity, ease: "easeInOut" as const }
         }
     ];
 

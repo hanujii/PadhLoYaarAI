@@ -5,6 +5,10 @@ import { generateObject } from 'ai';
 import { google } from '@ai-sdk/google';
 import { z } from 'zod';
 
+/**
+ * Generates an educational explanation using the AI model.
+ * Adapts the persona based on the selected 'mode'.
+ */
 export async function getTutorResponse(formData: FormData) {
     const topic = formData.get('topic') as string;
     const mode = formData.get('mode') as string;
@@ -12,6 +16,7 @@ export async function getTutorResponse(formData: FormData) {
 
     if (!topic) return { error: 'Topic is required' };
 
+    // Construct a specialized system prompt based on the user's learning style
     let prompt = `You are an expert AI Tutor. Explain the topic: "${topic}".`;
 
     if (mode === 'detailed') {
@@ -29,9 +34,7 @@ export async function getTutorResponse(formData: FormData) {
     prompt += `\n\nFormat your response in clean Markdown.`;
 
     try {
-        console.log("[Tutor Action] Sending request to Gemini...");
         const text = await generateText('flash', prompt);
-        console.log("[Tutor Action] Received response length:", text.length);
         return { success: true, data: text };
     } catch (error) {
         console.error("Tutor Error:", error);

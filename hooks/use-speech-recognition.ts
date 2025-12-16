@@ -2,7 +2,24 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-// Define the interface for the Web Speech API
+// Define types for the Web Speech API to satisfy TypeScript
+interface SpeechRecognitionEvent {
+    resultIndex: number;
+    results: {
+        length: number;
+        [key: number]: {
+            isFinal: boolean;
+            [key: number]: {
+                transcript: string;
+            };
+        };
+    };
+}
+
+interface SpeechRecognitionErrorEvent {
+    error: string;
+}
+
 interface IWindow extends Window {
     webkitSpeechRecognition: any;
     SpeechRecognition: any;
@@ -15,14 +32,15 @@ export function useSpeechRecognition() {
     const [recognition, setRecognition] = useState<any>(null);
 
     useEffect(() => {
+        // Safe access to window object for Next.js SSR compatibility
         if (typeof window !== 'undefined') {
             const { webkitSpeechRecognition, SpeechRecognition } = window as unknown as IWindow;
             const SpeechRecognitionConstructor = SpeechRecognition || webkitSpeechRecognition;
 
             if (SpeechRecognitionConstructor) {
                 const recognitionInstance = new SpeechRecognitionConstructor();
-                recognitionInstance.continuous = false; // Stop after one sentence/pause
-                recognitionInstance.interimResults = true;
+                recognitionInstance.continuous = false; // We want short command-like inputs
+                recognitionInstance.interimResults = true; // Show text as user speaks
                 recognitionInstance.lang = 'en-US';
 
                 recognitionInstance.onstart = () => {
@@ -34,13 +52,11 @@ export function useSpeechRecognition() {
                     setIsListening(false);
                 };
 
-                recognitionInstance.onresult = (event: any) => {
+                recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
                     let finalTranscript = '';
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         if (event.results[i].isFinal) {
                             finalTranscript += event.results[i][0].transcript;
-                        } else {
-                            // Interim results if needed
                         }
                     }
                     if (finalTranscript) {
@@ -48,14 +64,14 @@ export function useSpeechRecognition() {
                     }
                 };
 
-                recognitionInstance.onerror = (event: any) => {
+                recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
                     setError(event.error);
                     setIsListening(false);
                 };
 
                 setRecognition(recognitionInstance);
             } else {
-                setError('Speech recognition not supported in this browser.');
+                setError('Speech recognition is not supported in this browser.');
             }
         }
     }, []);

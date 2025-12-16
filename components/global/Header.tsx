@@ -305,14 +305,19 @@ export function Header() {
                             <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Appearance</DropdownMenuLabel>
 
                             <div className="grid grid-cols-4 gap-1 p-1">
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-white border-2 border-transparent hover:border-black/20 dark:hover:border-white/50" onClick={() => setTheme("light")} title="Light Mode" />
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-slate-900 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("dark")} title="Dark Mode" />
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-black border-2 border-transparent hover:border-white/50" onClick={() => setTheme("pitch-black")} title="Pitch Black" />
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-red-600 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-red")} title="Red Theme" />
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-red-900 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-stranger-things")} title="Stranger Things" />
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-emerald-900 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-money-heist")} title="Money Heist" />
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-slate-800 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-dark-series")} title="Dark Series" />
-                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-cyan-600 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-cyan")} title="Cyan Theme" />
+                                {THEME_PRESETS.map((t) => (
+                                    <Button
+                                        key={t.id}
+                                        size="icon"
+                                        variant="outline"
+                                        className={cn(
+                                            "h-8 w-8 rounded-full border-2 border-transparent hover:border-white/50 transition-all",
+                                            t.className
+                                        )}
+                                        onClick={() => setTheme(t.id)}
+                                        title={t.label}
+                                    />
+                                ))}
                             </div>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -321,3 +326,16 @@ export function Header() {
         </header>
     );
 }
+
+// --- Constants ---
+
+const THEME_PRESETS = [
+    { id: 'light', label: 'Light Mode', className: 'bg-white hover:border-black/20' },
+    { id: 'dark', label: 'Dark Mode', className: 'bg-slate-900' },
+    { id: 'pitch-black', label: 'Pitch Black', className: 'bg-black' },
+    { id: 'theme-red', label: 'Red Theme', className: 'bg-red-600' },
+    { id: 'theme-stranger-things', label: 'Stranger Things', className: 'bg-red-900' },
+    { id: 'theme-money-heist', label: 'Money Heist', className: 'bg-emerald-900' },
+    { id: 'theme-dark-series', label: 'Dark Series', className: 'bg-slate-800' },
+    { id: 'theme-cyan', label: 'Cyan Theme', className: 'bg-cyan-600' },
+];

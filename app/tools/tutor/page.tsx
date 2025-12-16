@@ -21,14 +21,9 @@ import { CheckUnderstandingSection } from './CheckUnderstanding';
 import { Suspense } from 'react';
 
 function TutorContent() {
-    const searchParams = useSearchParams();
-    const initialTopic = searchParams.get('topic') || '';
+    const [topicInput, setTopicInput] = useState(initialTopic);
 
-    const [loading, setLoading] = useState(false);
-    const [response, setResponse] = useState<string | null>(null);
-    const { addToHistory, saveItem } = useHistoryStore();
-    const [isSaved, setIsSaved] = useState(false);
-    const outputRef = useRef<HTMLDivElement>(null);
+    // ... (keep outputRef and other states)
 
     // Reset saved state when response changes
     const [lastResponse, setLastResponse] = useState<string | null>(null);
@@ -86,10 +81,11 @@ function TutorContent() {
 
     const handleSave = () => {
         if (!response) return;
-        const topic = (document.getElementById('topic') as HTMLInputElement)?.value || 'Tutor Result';
+        // Use state instead of direct DOM access
+        const title = topicInput || 'Tutor Result';
         saveItem({
             type: 'result',
-            title: `Tutor: ${topic}`,
+            title: `Tutor: ${title}`,
             content: response
         });
         setIsSaved(true);
@@ -120,7 +116,15 @@ function TutorContent() {
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="topic">Topic</Label>
-                                    <Input id="topic" name="topic" defaultValue={initialTopic} placeholder="e.g. Quantum Entanglement" required className="bg-background/50 border-white/10" />
+                                    <Input
+                                        id="topic"
+                                        name="topic"
+                                        value={topicInput}
+                                        onChange={(e) => setTopicInput(e.target.value)}
+                                        placeholder="e.g. Quantum Entanglement"
+                                        required
+                                        className="bg-background/50 border-white/10"
+                                    />
                                 </div>
 
                                 <div className="space-y-2">
