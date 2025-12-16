@@ -183,12 +183,13 @@ export function Header() {
 
                 <div className="flex items-center gap-2 sm:gap-4">
                     {/* Timer Display with Popover */}
-                    <div className="flex items-center gap-1 bg-secondary/30 backdrop-blur-sm px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
+                    <div className="flex items-center gap-1 bg-secondary/30 backdrop-blur-sm px-1.5 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
                                     <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-primary mr-1 sm:mr-2 group-hover:text-purple-500 transition-colors" />
-                                    {formattedTime}
+                                    <span className="hidden sm:inline">{formattedTime}</span>
+                                    <span className="sm:hidden">{minutes}:{seconds.toString().padStart(2, '0')}</span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">

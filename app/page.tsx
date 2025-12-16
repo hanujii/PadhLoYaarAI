@@ -187,7 +187,7 @@ export default function Home() {
           <Hero3D />
         </div>
 
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl pt-32 sm:pt-40">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl pt-24 sm:pt-32 md:pt-40 px-4">
           Padh Lo Yaar <span className="text-primary">AI</span>
         </h1>
 

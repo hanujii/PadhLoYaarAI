@@ -13,6 +13,8 @@ import { Flame, Loader2, RefreshCcw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
 
+// ... imports
+
 function RoastMyCodeContent() {
     const [code, setCode] = useState('');
     const [roast, setRoast] = useState('');
