@@ -21,6 +21,9 @@ import { CheckUnderstandingSection } from './CheckUnderstanding';
 import { Suspense } from 'react';
 
 function TutorContent() {
+    const searchParams = useSearchParams();
+    const initialTopic = searchParams.get('topic') || '';
+
     const [topicInput, setTopicInput] = useState(initialTopic);
 
     // ... (keep outputRef and other states)
