@@ -105,12 +105,14 @@ export function Header() {
             <audio ref={audioRef} src={MUSIC_URLS[genre]} loop />
 
             <div className="container flex h-16 items-center justify-between px-4">
-                <div className="flex items-center gap-6">
+
+                {/* LEFT: Mobile Menu + Logo */}
+                <div className="flex items-center gap-2 md:gap-6">
                     {/* Mobile Menu */}
                     <div className="md:hidden">
                         <Sheet open={isOpen} onOpenChange={setIsOpen}>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="mr-2">
+                                <Button variant="ghost" size="icon" className="mr-0 hover:bg-transparent">
                                     <Menu className="h-5 w-5" />
                                 </Button>
                             </SheetTrigger>
@@ -136,33 +138,32 @@ export function Header() {
                                         ))}
                                     </div>
                                     <Separator className="my-2" />
-                                    <Separator className="my-2" />
-                                    <Link href="/history">
-                                        <Button variant="outline" className="w-full justify-start">
-                                            <History className="mr-2 h-4 w-4" />
-                                            History
-                                        </Button>
+                                    <Link href="/history" className="flex items-center gap-2 text-base font-medium">
+                                        <History className="h-4 w-4" />
+                                        History
+                                    </Link>
+                                    <Link href="/history" className="flex items-center gap-2 text-base font-medium">
+                                        <Bookmark className="h-4 w-4" />
+                                        Saved Items
                                     </Link>
                                 </div>
                             </SheetContent>
                         </Sheet>
                     </div>
 
-
-
                     {/* BRAND LOGO */}
-                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <Logo className="w-8 h-8 text-foreground" />
-                        <span className="text-xl font-bold tracking-tight text-foreground">
+                    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                        <Logo className="w-8 h-8 text-foreground shrink-0" />
+                        <span className="text-lg sm:text-xl font-bold tracking-tight text-foreground truncate">
                             plyAI
                         </span>
                     </Link>
 
+                    {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-6 text-sm font-medium ml-4">
                         <Link href="/" className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? "text-foreground" : "text-foreground/60")}>
                             Dashboard
                         </Link>
-
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-auto px-2 font-normal text-foreground/60 hover:text-foreground">
@@ -178,18 +179,17 @@ export function Header() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </nav>
-
                 </div>
 
-                <div className="flex items-center gap-2 sm:gap-4">
-                    {/* Timer Display with Popover */}
-                    <div className="flex items-center gap-1 bg-secondary/30 backdrop-blur-sm px-1.5 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
+                {/* RIGHT: Timer, Music, Profile */}
+                <div className="flex items-center gap-1 sm:gap-4">
+                    {/* Timer Display with Popover (Compact on Mobile) */}
+                    <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
-                                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-primary mr-1 sm:mr-2 group-hover:text-purple-500 transition-colors" />
+                                    <Clock className="w-3.5 h-3.5 text-primary sm:mr-2 group-hover:text-purple-500 transition-colors" />
                                     <span className="hidden sm:inline">{formattedTime}</span>
-                                    <span className="sm:hidden">{minutes}:{seconds.toString().padStart(2, '0')}</span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -202,22 +202,22 @@ export function Header() {
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        <div className="w-px h-4 bg-border/50 mx-1" />
+                        <div className="w-px h-3 bg-border/50 mx-0.5" />
 
                         <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={toggleTimer}>
                             {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
                         </Button>
                         <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={() => resetTimer()}>
-                            <span className="text-xs">↺</span>
+                            <span className="text-[10px]">↺</span>
                         </Button>
                     </div>
 
                     {/* Music Popover */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="ghost" size="icon" className={cn("relative transition-transform hover:scale-105", isPlaying && "text-primary")}>
-                                <Music className="w-5 h-5" />
-                                {isPlaying && <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(var(--primary))] " />}
+                            <Button variant="ghost" size="icon" className={cn("relative transition-transform hover:scale-105 h-8 w-8 sm:h-9 sm:w-9", isPlaying && "text-primary")}>
+                                <Music className="w-4 h-4 sm:w-5 sm:h-5" />
+                                {isPlaying && <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(var(--primary))] " />}
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-56" align="end">
@@ -250,7 +250,7 @@ export function Header() {
                     {/* Profile & Unified Menu */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="rounded-full overflow-hidden border border-border/50 hover:bg-transparent hover:border-primary/50 transition-all duration-300 hover:ring-2 hover:ring-primary/20 hover:ring-offset-1 hover:ring-offset-background group">
+                            <Button variant="ghost" size="icon" className="rounded-full overflow-hidden border border-border/50 hover:bg-transparent hover:border-primary/50 transition-all duration-300 hover:ring-2 hover:ring-primary/20 hover:ring-offset-1 hover:ring-offset-background group w-8 h-8 sm:w-9 sm:h-9">
                                 <div className="h-full w-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center group-hover:from-primary/20">
                                     <User className="h-4 w-4 text-foreground/80 group-hover:text-primary transition-colors" />
                                 </div>

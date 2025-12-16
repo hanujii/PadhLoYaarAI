@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { GlassCard } from '@/components/ui/glass-card';
 import { Hero3D } from '@/components/global/Hero3D';
 import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { DashboardChat } from '@/components/dashboard/DashboardChat';
 import {
   ArrowRight,
   BookOpen,
@@ -14,6 +17,8 @@ import {
   Brain,
   MessageSquare,
   Image,
+  // ...
+
   Database,
   GraduationCap,
   Calculator,
@@ -38,6 +43,8 @@ import { TOPICS } from '@/lib/topics';
 import { CommandCenter } from '@/components/global/CommandCenter';
 
 export default function Home() {
+  const [chatTopic, setChatTopic] = useState<string | null>(null);
+
   const tools = [
     {
       title: "Tutor Tool",
@@ -187,43 +194,50 @@ export default function Home() {
           <Hero3D />
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight lg:text-5xl pt-24 sm:pt-32 md:pt-40 px-4">
+        <h1 className={cn(
+          "font-extrabold tracking-tight pt-24 sm:pt-32 md:pt-40 px-4 transition-all duration-500",
+          chatTopic ? "text-2xl sm:text-3xl lg:text-4xl" : "text-3xl sm:text-4xl lg:text-5xl"
+        )}>
           Padh Lo Yaar <span className="text-primary">AI</span>
         </h1>
 
         <div className="w-full max-w-3xl mx-auto px-4 py-8">
-          <CommandCenter />
+          <CommandCenter onChatStart={setChatTopic} />
         </div>
 
       </motion.div>
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      >
-        {tools.map((tool) => (
-          <motion.div key={tool.href} variants={item} className="h-full">
-            <GlassCard className="group h-full flex flex-col justify-between" enableTilt={true}>
-              <CardHeader className={`${tool.color} bg-opacity-20 rounded-t-lg pb-4`}>
-                {tool.icon}
-                <CardTitle className="text-xl">{tool.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4 space-y-4 flex-1 flex flex-col justify-between">
-                <CardDescription className="text-base min-h-[3rem] text-foreground/80">
-                  {tool.description}
-                </CardDescription>
-                <Button asChild className="w-full group-hover:bg-primary/90 shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
-                  <Link href={tool.href}>
-                    Open Tool <ArrowRight className="ml-2 w-4 h-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </GlassCard>
-          </motion.div>
-        ))}
-      </motion.div>
+      {chatTopic ? (
+        <DashboardChat initialTopic={chatTopic} onReset={() => setChatTopic(null)} />
+      ) : (
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          {tools.map((tool) => (
+            <motion.div key={tool.href} variants={item} className="h-full">
+              <Link href={tool.href} className="block h-full">
+                <GlassCard className="group h-full flex flex-col justify-between cursor-pointer hover:border-primary/50 transition-colors" enableTilt={true}>
+                  <CardHeader className={`${tool.color} bg-opacity-20 rounded-t-lg pb-4`}>
+                    {tool.icon}
+                    <CardTitle className="text-xl">{tool.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-4 space-y-4 flex-1 flex flex-col justify-between">
+                    <CardDescription className="text-base min-h-[3rem] text-foreground/80">
+                      {tool.description}
+                    </CardDescription>
+                    <div className="w-full flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                      Open Tool <ArrowRight className="ml-2 w-4 h-4" />
+                    </div>
+                  </CardContent>
+                </GlassCard>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </div>
   );
 }

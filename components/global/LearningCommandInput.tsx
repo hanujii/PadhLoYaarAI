@@ -4,16 +4,28 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
+import { AtSign, Paperclip, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 export function LearningCommandInput({
     placeholders,
     onChange,
     onSubmit,
     onTopicSelect,
+    onAtClick,
+    selectedTool,
+    onClearTool
 }: {
     placeholders: string[];
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     onTopicSelect?: (topic: string) => void;
+    onAtClick?: () => void;
+    selectedTool?: string | null;
+    onClearTool?: () => void;
 }) {
     const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
     const [inputValue, setInputValue] = useState("");
@@ -36,11 +48,9 @@ export function LearningCommandInput({
         const topic = placeholders[currentPlaceholder];
         setInputValue(topic);
 
-        // If onTopicSelect is provided, trigger it immediately (essentially an auto-submit)
         if (onTopicSelect) {
             onTopicSelect(topic);
         } else {
-            // Fallback to minimal update if no auto-submit handler
             if (inputRef.current) {
                 inputRef.current.value = topic;
                 const syntheticEvent = {
@@ -52,60 +62,82 @@ export function LearningCommandInput({
         }
     };
 
-    // Focus input on container click
     const handleContainerClick = () => {
         inputRef.current?.focus();
     }
 
     return (
         <form
-            className="w-full relative max-w-2xl mx-auto bg-white/10 dark:bg-black/20 backdrop-blur-md h-16 rounded-full overflow-hidden shadow-2xl border border-white/20 transition duration-200 flex items-center"
+            className="w-full relative max-w-2xl mx-auto bg-background/80 dark:bg-black/40 backdrop-blur-xl h-14 sm:h-16 rounded-full overflow-hidden shadow-2xl border border-white/20 dark:border-white/10 transition-all duration-300 focus-within:ring-2 focus-within:ring-primary/50 flex items-center pr-2"
             onSubmit={onSubmit}
             onClick={handleContainerClick}
         >
-            {/* Prefix */}
-            <div className="pl-6 pr-2 whitespace-nowrap text-muted-foreground font-medium select-none text-lg">
-                I want to learn about
+            {/* Buttons Left */}
+            <div className="flex items-center gap-1 pl-2 sm:pl-3">
+                <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    onClick={(e) => { e.stopPropagation(); onAtClick?.(); }}
+                >
+                    <AtSign className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+                <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    onClick={(e) => { e.stopPropagation(); /* TODO: Attach */ }}
+                >
+                    <Paperclip className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
             </div>
 
-            <div className="relative flex-1 h-full flex items-center">
+            {/* Separator */}
+            <div className="w-px h-6 bg-border mx-2" />
+
+            {/* Prefix / Selected Tool */}
+            {selectedTool ? (
+                <div className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap mr-2">
+                    @{selectedTool}
+                    <button type="button" onClick={(e) => { e.stopPropagation(); onClearTool?.(); }} className="hover:text-red-500">
+                        <X className="h-3 w-3" />
+                    </button>
+                </div>
+            ) : (
+                <div className="hidden sm:block whitespace-nowrap text-muted-foreground font-medium select-none text-base sm:text-lg mr-2">
+                    I want to learn about
+                </div>
+            )}
+
+            <div className="relative flex-1 h-full flex items-center min-w-0">
                 <input
                     ref={inputRef}
                     onChange={handleInputChange}
                     value={inputValue}
-                    className="w-full relative z-10 bg-transparent text-foreground h-full rounded-r-full focus:outline-none focus:ring-0 text-lg font-bold placeholder:text-transparent"
+                    className="w-full relative z-10 bg-transparent text-foreground h-full rounded-none focus:outline-none focus:ring-0 text-base sm:text-lg font-medium placeholder:text-transparent"
                     spellCheck={false}
+                    autoComplete="off"
                 />
 
-                {/* Animated Placeholder (Visible when input is empty) */}
+                {/* Animated Placeholder */}
                 <div className={cn(
-                    "absolute inset-0 flex items-center z-20 pointer-events-none",
-                    { "pointer-events-auto": !inputValue } // Enable clicks only when visible
+                    "absolute inset-0 flex items-center z-20 pointer-events-none overflow-hidden",
+                    { "pointer-events-auto": !inputValue }
                 )}>
                     <AnimatePresence mode="wait">
                         {!inputValue && (
                             <motion.p
-                                initial={{
-                                    y: 5,
-                                    opacity: 0,
-                                }}
+                                initial={{ y: 5, opacity: 0 }}
                                 key={`current-placeholder-${currentPlaceholder}`}
-                                animate={{
-                                    y: 0,
-                                    opacity: 1,
-                                }}
-                                exit={{
-                                    y: -15,
-                                    opacity: 0,
-                                }}
-                                transition={{
-                                    duration: 0.3,
-                                    ease: "linear",
-                                }}
-                                className="text-lg font-bold text-muted-foreground/50 text-left truncate cursor-pointer hover:text-primary transition-colors pointer-events-auto"
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -15, opacity: 0 }}
+                                transition={{ duration: 0.3, ease: "linear" }}
+                                className="text-base sm:text-lg font-medium text-muted-foreground/50 text-left truncate cursor-pointer hover:text-primary transition-colors pointer-events-auto w-full"
                                 onClick={(e) => {
-                                    e.stopPropagation(); // Prevent container click
-                                    e.preventDefault(); // Prevent default
+                                    e.stopPropagation();
+                                    e.preventDefault();
                                     handlePlaceholderClick();
                                 }}
                             >
@@ -116,10 +148,11 @@ export function LearningCommandInput({
                 </div>
             </div>
 
+            {/* Submit Button */}
             <button
                 disabled={!inputValue}
                 type="submit"
-                className="absolute right-2 top-1/2 z-50 -translate-y-1/2 h-10 w-10 rounded-full bg-primary disabled:bg-muted disabled:text-muted-foreground text-primary-foreground transition duration-200 flex items-center justify-center hover:scale-105 active:scale-95"
+                className="ml-2 h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-primary disabled:bg-muted disabled:text-muted-foreground text-primary-foreground transition duration-200 flex items-center justify-center hover:scale-105 active:scale-95 shrink-0"
             >
                 <motion.svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -131,18 +164,13 @@ export function LearningCommandInput({
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-5 w-5"
+                    className="h-4 w-4 sm:h-5 sm:w-5"
                 >
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <motion.path
                         d="M5 12l14 0"
-                        initial={{
-                            strokeDasharray: "50%",
-                            strokeDashoffset: "50%",
-                        }}
-                        animate={{
-                            strokeDashoffset: 0,
-                        }}
+                        initial={{ strokeDasharray: "50%", strokeDashoffset: "50%" }}
+                        animate={{ strokeDashoffset: 0 }}
                     />
                     <path d="M13 18l6 -6" />
                     <path d="M13 6l6 6" />

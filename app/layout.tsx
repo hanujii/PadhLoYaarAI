@@ -32,7 +32,7 @@ export default function RootLayout({
         <AuthProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
             themes={['light', 'dark', 'pitch-black', 'theme-red', 'theme-cyan', 'theme-stranger-things', 'theme-money-heist', 'theme-dark-series']}
