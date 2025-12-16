@@ -29,6 +29,7 @@ function TutorContent() {
     const [topicInput, setTopicInput] = useState('');
     const [initialTopic, setInitialTopic] = useState('');
     const [isSaved, setIsSaved] = useState(false);
+    const outputRef = useRef<HTMLDivElement>(null);
 
     const searchParams = useSearchParams();
     const { addToHistory } = useHistoryStore();
