@@ -13,6 +13,7 @@ import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { useTextToSpeech } from '@/hooks/use-text-to-speech';
 import { AudioVisualizer } from '@/components/global/AudioVisualizer';
 import { cn } from '@/lib/utils';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function TeacherChatPage() {
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
@@ -68,7 +69,8 @@ export default function TeacherChatPage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-8">
+        <div className="max-w-2xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

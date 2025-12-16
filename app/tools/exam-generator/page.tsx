@@ -10,6 +10,7 @@ import { generateExam } from './actions';
 import ReactMarkdown from 'react-markdown';
 import { Loader2, Download } from 'lucide-react';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function ExamGeneratorPage() {
     const [loading, setLoading] = useState(false);
@@ -45,7 +46,8 @@ export default function ExamGeneratorPage() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">Exam Generator</h1>
                 <p className="text-muted-foreground">Create practice exams with solutions instantly.</p>

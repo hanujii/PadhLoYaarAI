@@ -10,6 +10,7 @@ import { Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { Typewriter } from '@/components/global/Typewriter';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function QuestionSolverPage() {
     const [loading, setLoading] = useState(false);
@@ -52,7 +53,8 @@ export default function QuestionSolverPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">Question Solver</h1>
                 <p className="text-muted-foreground">Upload a photo of a problem or type it out.</p>

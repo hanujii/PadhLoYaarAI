@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Progress } from '@/components/ui/progress';
 import { useHistoryStore } from '@/lib/history-store';
 import { ShareResult } from '@/components/global/ShareResult';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 interface ExamData {
     examTitle: string;
@@ -93,7 +94,8 @@ function ExamSimulatorContent() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="max-w-3xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

@@ -9,6 +9,7 @@ import { Loader2, GraduationCap, School, Check, X, AlertTriangle } from 'lucide-
 import { motion } from 'framer-motion';
 
 import { useHistoryStore } from '@/lib/history-store';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function ReverseExamPage() {
     const [loading, setLoading] = useState(false);
@@ -61,7 +62,8 @@ export default function ReverseExamPage() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="max-w-3xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2 text-center">
                 <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
                     <GraduationCap className="w-8 h-8 text-indigo-600" />

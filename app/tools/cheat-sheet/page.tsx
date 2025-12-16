@@ -10,6 +10,7 @@ import { Loader2, Download, Table } from 'lucide-react';
 import remarkGfm from 'remark-gfm';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { Typewriter } from '@/components/global/Typewriter';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function CheatSheetPage() {
     const [loading, setLoading] = useState(false);
@@ -42,7 +43,8 @@ export default function CheatSheetPage() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">Cheat Sheet Generator</h1>
                 <p className="text-muted-foreground">Generate tables, formulas, and summaries instantly.</p>

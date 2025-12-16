@@ -27,6 +27,8 @@ export function LearningCommandInput({
     const [inputValue, setInputValue] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
+    const [showPrefix, setShowPrefix] = useState(true);
+
     // Cycle through placeholders
     useEffect(() => {
         const interval = setInterval(() => {
@@ -40,21 +42,26 @@ export function LearningCommandInput({
         onChange(e);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Backspace' && inputValue === '') {
+            setShowPrefix(false);
+        }
+    };
+
     const handlePlaceholderClick = () => {
         const topic = placeholders[currentPlaceholder];
         setInputValue(topic);
 
-        if (onTopicSelect) {
-            onTopicSelect(topic);
-        } else {
-            if (inputRef.current) {
-                inputRef.current.value = topic;
-                const syntheticEvent = {
-                    target: inputRef.current,
-                } as React.ChangeEvent<HTMLInputElement>;
-                onChange(syntheticEvent);
-                inputRef.current.focus();
-            }
+        // Update parent state manually since we are bypassing onTopicSelect (which auto-submits)
+        // We want to just FILL the input, not send it.
+        if (inputRef.current) {
+            inputRef.current.value = topic;
+            const syntheticEvent = {
+                target: inputRef.current,
+                currentTarget: inputRef.current,
+            } as React.ChangeEvent<HTMLInputElement>;
+            onChange(syntheticEvent);
+            inputRef.current.focus();
         }
     };
 
@@ -63,8 +70,9 @@ export function LearningCommandInput({
     }
 
     return (
-        <form
-            className="w-full relative max-w-2xl mx-auto bg-background/80 dark:bg-black/40 backdrop-blur-xl h-14 sm:h-16 rounded-full overflow-hidden shadow-2xl border border-white/20 dark:border-white/10 transition-all duration-300 focus-within:ring-2 focus-within:ring-primary/50 flex items-center pr-2"
+        <motion.form
+            layoutId="hero-search-bar"
+            className="w-full relative max-w-2xl mx-auto bg-background/20 dark:bg-black/20 backdrop-blur-md h-14 sm:h-16 rounded-full overflow-hidden shadow-2xl border border-white/20 hover:border-primary/30 dark:border-white/10 transition-all duration-300 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary/50 flex items-center pr-2"
             onSubmit={onSubmit}
             onClick={handleContainerClick}
         >
@@ -120,15 +128,18 @@ export function LearningCommandInput({
                     </button>
                 </div>
             ) : (
-                <div className="hidden sm:block whitespace-nowrap text-muted-foreground font-medium select-none text-base sm:text-lg mr-2">
-                    I want to learn about
-                </div>
+                showPrefix && (
+                    <div className="hidden sm:block whitespace-nowrap text-muted-foreground font-medium select-none text-base sm:text-lg mr-2 transition-opacity duration-200">
+                        I want to learn about
+                    </div>
+                )
             )}
 
             <div className="relative flex-1 h-full flex items-center min-w-0">
                 <input
                     ref={inputRef}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     value={inputValue}
                     className="w-full relative z-10 bg-transparent text-foreground h-full rounded-none focus:outline-none focus:ring-0 text-base sm:text-lg font-medium placeholder:text-transparent"
                     spellCheck={false}
@@ -141,7 +152,7 @@ export function LearningCommandInput({
                     { "pointer-events-auto": !inputValue }
                 )}>
                     <AnimatePresence mode="wait">
-                        {!inputValue && (
+                        {!inputValue && !selectedTool && (
                             <motion.p
                                 initial={{ y: 5, opacity: 0 }}
                                 key={`current-placeholder-${currentPlaceholder}`}
@@ -190,6 +201,6 @@ export function LearningCommandInput({
                     <path d="M13 6l6 6" />
                 </motion.svg>
             </button>
-        </form>
+        </motion.form>
     );
 }

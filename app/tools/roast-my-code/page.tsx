@@ -12,6 +12,7 @@ import { useHistoryStore } from '@/lib/history-store';
 import { Flame, Loader2, RefreshCcw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 // ... imports
 
@@ -50,7 +51,8 @@ function RoastMyCodeContent() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}

@@ -8,6 +8,7 @@ import { parseSyllabus } from './actions';
 import { Loader2, ShieldCheck, Upload, CheckSquare } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useHistoryStore } from '@/lib/history-store';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function SyllabusPage() {
     const [loading, setLoading] = useState(false);
@@ -82,7 +83,8 @@ export default function SyllabusPage() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2 text-center">
                 <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
                     <ShieldCheck className="w-8 h-8 text-green-600" />

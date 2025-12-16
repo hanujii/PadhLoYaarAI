@@ -12,6 +12,7 @@ import { motion } from 'framer-motion';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { useHistoryStore } from '@/lib/history-store';
 import { ShareResult } from '@/components/global/ShareResult';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function CodeTransformerPage() {
     const [loading, setLoading] = useState(false);
@@ -42,7 +43,10 @@ export default function CodeTransformerPage() {
     }
 
     return (
-        <div className="h-[calc(100vh-8rem)] flex flex-col space-y-4">
+        <div className="min-h-[calc(100vh-8rem)] md:h-[calc(100vh-8rem)] flex flex-col space-y-4 pb-8 md:pb-0">
+            <div className="px-2">
+                <ToolBackButton />
+            </div>
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -82,7 +86,7 @@ export default function CodeTransformerPage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="flex flex-col h-full"
+                    className="flex flex-col h-[500px] md:h-full"
                 >
                     <GlassCard className="flex flex-col gap-2 p-1 h-full border-green-500/10 bg-green-950/5" enableTilt={false}>
                         <div className="flex items-center justify-between px-2 py-1 bg-white/5 rounded-t-lg border-b border-white/5">
@@ -123,7 +127,7 @@ export default function CodeTransformerPage() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="flex flex-col h-full"
+                    className="flex flex-col h-[500px] md:h-full"
                     ref={outputRef}
                 >
                     <GlassCard className="flex flex-col gap-2 p-1 h-full border-blue-500/10 bg-blue-950/5" enableTilt={false}>

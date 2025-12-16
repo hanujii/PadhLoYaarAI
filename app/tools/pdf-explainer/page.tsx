@@ -9,6 +9,7 @@ import { chatWithPDF, summarizePDF } from './actions';
 import { Loader2, Upload, FileText, Send } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 // Use CDN for worker to avoid build hassles
 // pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -102,90 +103,95 @@ export default function PDFExplainerPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto h-[calc(100vh-8rem)] flex gap-6">
-            {/* Sidebar: Upload & Summary */}
-            <div className="w-1/3 flex flex-col gap-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Document</CardTitle>
-                        <CardDescription>Upload a PDF to analyze</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex items-center justify-center w-full">
-                            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50">
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
-                                    <p className="text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> PDF</p>
-                                </div>
-                                <input type="file" className="hidden" accept=".pdf" onChange={handleFileUpload} />
-                            </label>
-                        </div>
-                        {fileName && (
-                            <div className="mt-4 flex items-center gap-2 p-2 bg-muted rounded text-sm">
-                                <FileText className="w-4 h-4" />
-                                <span className="truncate flex-1">{fileName}</span>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-
-                {summary && (
-                    <Card className="flex-1 overflow-hidden flex flex-col">
+        <div className="max-w-6xl mx-auto h-[calc(100vh-8rem)] flex flex-col gap-4">
+            <div className="w-full">
+                <ToolBackButton />
+            </div>
+            <div className="flex-1 flex gap-6 min-h-0">
+                {/* Sidebar: Upload & Summary */}
+                <div className="w-1/3 flex flex-col gap-4 h-full">
+                    <Card>
                         <CardHeader>
-                            <CardTitle>Summary</CardTitle>
+                            <CardTitle>Document</CardTitle>
+                            <CardDescription>Upload a PDF to analyze</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex-1 overflow-y-auto prose dark:prose-invert text-sm">
-                            <ReactMarkdown>{summary}</ReactMarkdown>
+                        <CardContent>
+                            <div className="flex items-center justify-center w-full">
+                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50">
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
+                                        <p className="text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> PDF</p>
+                                    </div>
+                                    <input type="file" className="hidden" accept=".pdf" onChange={handleFileUpload} />
+                                </label>
+                            </div>
+                            {fileName && (
+                                <div className="mt-4 flex items-center gap-2 p-2 bg-muted rounded text-sm">
+                                    <FileText className="w-4 h-4" />
+                                    <span className="truncate flex-1">{fileName}</span>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
-                )}
-            </div>
 
-            {/* Main Chat Area */}
-            <Card className="flex-1 flex flex-col shadow-lg border-2">
-                <CardHeader className="border-b flex flex-row items-center justify-between">
-                    <CardTitle>Chat with Document</CardTitle>
-                    {messages.length > 0 && <DownloadPDFButton targetRef={chatRef} filename="pdf-chat-session.pdf" />}
-                </CardHeader>
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
-                    <div ref={chatRef} className="space-y-4">
-                        {messages.length === 0 && !loading && (
-                            <div className="h-full flex items-center justify-center text-muted-foreground">
-                                Upload a PDF to start chatting.
-                            </div>
-                        )}
+                    {summary && (
+                        <Card className="flex-1 overflow-hidden flex flex-col">
+                            <CardHeader>
+                                <CardTitle>Summary</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-1 overflow-y-auto prose dark:prose-invert text-sm">
+                                <ReactMarkdown>{summary}</ReactMarkdown>
+                            </CardContent>
+                        </Card>
+                    )}
+                </div>
 
-                        {messages.map((m, i) => (
-                            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[80%] p-3 rounded-lg ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                {/* Main Chat Area */}
+                <Card className="flex-1 flex flex-col shadow-lg border-2">
+                    <CardHeader className="border-b flex flex-row items-center justify-between">
+                        <CardTitle>Chat with Document</CardTitle>
+                        {messages.length > 0 && <DownloadPDFButton targetRef={chatRef} filename="pdf-chat-session.pdf" />}
+                    </CardHeader>
+                    <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div ref={chatRef} className="space-y-4">
+                            {messages.length === 0 && !loading && (
+                                <div className="h-full flex items-center justify-center text-muted-foreground">
+                                    Upload a PDF to start chatting.
+                                </div>
+                            )}
+
+                            {messages.map((m, i) => (
+                                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                    <div className={`max-w-[80%] p-3 rounded-lg ${m.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {/* ... existing loading and scroll ref */}
+                        {loading && (
+                            <div className="flex justify-start">
+                                <div className="bg-muted p-3 rounded-lg">
+                                    <Loader2 className="w-4 h-4 animate-spin" />
                                 </div>
                             </div>
-                        ))}
+                        )}
+                        <div ref={bottomRef} />
+                    </CardContent>
+                    <div className="p-4 border-t flex gap-2">
+                        <Input
+                            value={input}
+                            onChange={e => setInput(e.target.value)}
+                            placeholder="Ask a question..."
+                            onKeyDown={e => e.key === 'Enter' && handleSend()}
+                            disabled={!pdfText || loading}
+                        />
+                        <Button onClick={handleSend} disabled={!pdfText || loading} size="icon">
+                            <Send className="w-4 h-4" />
+                        </Button>
                     </div>
-                    {/* ... existing loading and scroll ref */}
-                    {loading && (
-                        <div className="flex justify-start">
-                            <div className="bg-muted p-3 rounded-lg">
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                            </div>
-                        </div>
-                    )}
-                    <div ref={bottomRef} />
-                </CardContent>
-                <div className="p-4 border-t flex gap-2">
-                    <Input
-                        value={input}
-                        onChange={e => setInput(e.target.value)}
-                        placeholder="Ask a question..."
-                        onKeyDown={e => e.key === 'Enter' && handleSend()}
-                        disabled={!pdfText || loading}
-                    />
-                    <Button onClick={handleSend} disabled={!pdfText || loading} size="icon">
-                        <Send className="w-4 h-4" />
-                    </Button>
-                </div>
-            </Card>
+                </Card>
+            </div>
         </div>
     );
 }

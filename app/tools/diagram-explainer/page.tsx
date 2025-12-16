@@ -9,6 +9,7 @@ import { explainDiagram } from './actions';
 import { Loader2, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function DiagramExplainerPage() {
     const [loading, setLoading] = useState(false);
@@ -37,7 +38,8 @@ export default function DiagramExplainerPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">Diagram Explainer</h1>
                 <p className="text-muted-foreground">Upload flowcharts, biology diagrams, or graphs.</p>

@@ -163,12 +163,14 @@ export function Header() {
                                     Tools
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start">
-                                {tools.map((tool) => (
-                                    <DropdownMenuItem key={tool.href} asChild>
-                                        <Link href={tool.href}>{tool.name}</Link>
-                                    </DropdownMenuItem>
-                                ))}
+                            <DropdownMenuContent align="start" className="w-48 max-h-[250px] overflow-y-auto custom-scrollbar">
+                                <div className="flex flex-col p-1">
+                                    {tools.map((tool) => (
+                                        <DropdownMenuItem key={tool.href} asChild className="text-xs px-2 py-1.5 cursor-pointer">
+                                            <Link href={tool.href}>{tool.name}</Link>
+                                        </DropdownMenuItem>
+                                    ))}
+                                </div>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </nav>

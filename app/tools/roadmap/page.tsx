@@ -11,6 +11,7 @@ import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useHistoryStore } from '@/lib/history-store';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 interface DayPlan {
     day: number;
@@ -47,7 +48,8 @@ export default function RoadmapPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2 text-center">
                 <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
                     <MapIcon className="w-8 h-8 text-blue-600" />

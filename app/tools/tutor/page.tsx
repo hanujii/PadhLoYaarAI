@@ -21,98 +21,67 @@ import { CheckUnderstandingSection } from './CheckUnderstanding';
 
 import { Suspense } from 'react';
 
+import { ToolBackButton } from '@/components/global/ToolBackButton';
+
 function TutorContent() {
-    const searchParams = useSearchParams();
-    const initialTopic = searchParams.get('topic') || '';
-
-    const [topicInput, setTopicInput] = useState(initialTopic);
-
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<string | null>(null);
-    const { addToHistory, saveItem } = useHistoryStore();
+    const [topicInput, setTopicInput] = useState('');
+    const [initialTopic, setInitialTopic] = useState('');
     const [isSaved, setIsSaved] = useState(false);
-    const outputRef = useRef<HTMLDivElement>(null);
 
-    // Reset saved state when response changes
-    const [lastResponse, setLastResponse] = useState<string | null>(null);
-    if (response !== lastResponse) {
-        setIsSaved(false);
-        setLastResponse(response);
-    }
+    const searchParams = useSearchParams();
+    const { addToHistory } = useHistoryStore();
 
+    useEffect(() => {
+        const topicParam = searchParams.get('topic');
+        if (topicParam) {
+            setTopicInput(topicParam);
+        }
+    }, [searchParams]);
 
-
-    // Unified generation function
-    const generateAnswer = async (topicToSearch: string, modeToUse: string, instructionsToUse: string) => {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
         setLoading(true);
         setResponse(null);
+        setIsSaved(false);
 
-        const cacheKey = `tutor-${topicToSearch}-${modeToUse}-${instructionsToUse}`;
-        const cached = useCacheStore.getState().getCache(cacheKey);
+        // Capture topic at moment of submission for later use
+        const currentTopic = topicInput;
+        setInitialTopic(currentTopic);
 
-        if (cached) {
-            setResponse(cached);
-            setLoading(false);
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('topic', topicToSearch);
-        formData.append('mode', modeToUse);
-        formData.append('instructions', instructionsToUse);
-
+        const formData = new FormData(event.currentTarget);
         const result = await getTutorResponse(formData);
 
         if (result.success && result.data) {
             setResponse(result.data);
-            useCacheStore.getState().setCache(cacheKey, result.data);
 
-            // Auto-add to history
+            // Allow duplicate history? Maybe just add to history.
             addToHistory({
                 type: 'generation',
-                tool: 'Tutor',
-                query: topicToSearch,
-                result: result.data
+                tool: 'AI Tutor',
+                query: currentTopic,
+                result: result.data.substring(0, 100) + "..." // Store brief result or full? History store usually takes partial. Let's store full for now as needed.
             });
         } else {
             setResponse('Error: ' + (result.error || 'Something went wrong'));
         }
         setLoading(false);
-    };
-
-    // Auto-start if topic is present in URL
-    const hasStarted = useRef(false);
-    useEffect(() => {
-        if (initialTopic && !hasStarted.current) {
-            hasStarted.current = true;
-            generateAnswer(initialTopic, 'concise', '');
-        }
-    }, [initialTopic]);
-
-    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const topic = formData.get('topic') as string;
-        const mode = formData.get('mode') as string;
-        const instructions = formData.get('instructions') as string;
-
-        await generateAnswer(topic, mode, instructions);
     }
 
     const handleSave = () => {
-        if (!response) return;
-        // Use state instead of direct DOM access
-        const title = topicInput || 'Tutor Result';
-        saveItem({
-            type: 'result',
-            title: `Tutor: ${title}`,
-            content: response
+        if (!response || isSaved) return;
+        addToHistory({
+            type: 'generation',
+            tool: 'AI Tutor (Saved)',
+            query: topicInput,
+            result: response
         });
         setIsSaved(true);
     };
-
     return (
         <div className="max-w-4xl mx-auto space-y-8">
+            <ToolBackButton />
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -122,7 +91,7 @@ function TutorContent() {
                 <p className="text-lg text-muted-foreground">Get personalized, step-by-step explanations for any topic.</p>
             </motion.div>
 
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -209,7 +178,7 @@ function TutorContent() {
                                 </div>
                             </CardHeader>
                             <CardContent className="flex-1 overflow-y-auto max-h-[600px] p-4 custom-scrollbar">
-                                <div ref={outputRef} className="prose dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-blue-400">
+                                <div ref={outputRef} className="prose dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-blue-400 prose-p:text-foreground prose-strong:text-foreground prose-code:text-foreground/90">
                                     <Typewriter content={response} speed={3} />
                                 </div>
                             </CardContent>

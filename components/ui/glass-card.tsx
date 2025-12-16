@@ -14,7 +14,7 @@ export const GlassCard = ({ children, enableTilt = false, className, ...props }:
     return (
         <motion.div
             whileHover={{ scale: 1.01 }}
-            className={cn("glass-card h-full transition-colors duration-300", className)}
+            className={cn("glass-card h-full transition-colors duration-300 border border-white/10 hover:border-primary/40", className)}
             {...props as any}
         >
             {children}

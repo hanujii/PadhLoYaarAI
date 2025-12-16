@@ -8,6 +8,7 @@ import { generateMeme } from './actions';
 import { Loader2, Smile, Share2, Flame } from 'lucide-react';
 
 import { useHistoryStore } from '@/lib/history-store';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function MemePage() {
     const [loading, setLoading] = useState(false);
@@ -37,7 +38,8 @@ export default function MemePage() {
     }
 
     return (
-        <div className="max-w-xl mx-auto space-y-8">
+        <div className="max-w-xl mx-auto space-y-8 px-4 md:px-0">
+            <ToolBackButton />
             <div className="space-y-2 text-center">
                 <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
                     <Smile className="w-8 h-8 text-yellow-500" />

@@ -19,6 +19,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "plyAI",
   description: "Your seamless AI study companion.",
+  icons: {
+    icon: "/logo.svg", // Using the logo we're already using in the app
+  }
 };
 
 export default function RootLayout({

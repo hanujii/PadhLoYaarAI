@@ -15,6 +15,7 @@ interface Flashcard {
 }
 
 import { useHistoryStore } from '@/lib/history-store';
+import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function FlashcardsPage() {
     const [loading, setLoading] = useState(false);
@@ -61,7 +62,10 @@ export default function FlashcardsPage() {
     const flipCard = () => setIsFlipped(!isFlipped);
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 h-[calc(100vh-8rem)] flex flex-col">
+        <div className="max-w-4xl mx-auto space-y-8 h-[calc(100vh-8rem)] flex flex-col px-4 md:px-0">
+            <div className="w-full">
+                <ToolBackButton />
+            </div>
             <div className="space-y-2 text-center">
                 <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
                     <Layers className="w-8 h-8 text-primary" />

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 export const Hero3D = () => {
     return (
-        <div className="w-full h-[400px] flex items-center justify-center relative z-0 perspective-[1000px]">
+        <div className="w-full h-full flex items-center justify-center relative z-0 perspective-[1000px]">
             {/* Abstract Geometric Shape created with CSS/divs */}
             <div className="relative w-64 h-64 animate-[spin_20s_linear_infinite]" style={{ transformStyle: 'preserve-3d' }}>
                 <motion.div
