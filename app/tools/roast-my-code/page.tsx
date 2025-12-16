@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,7 +13,7 @@ import { Flame, Loader2, RefreshCcw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
 
-export default function RoastMyCodePage() {
+function RoastMyCodeContent() {
     const [code, setCode] = useState('');
     const [roast, setRoast] = useState('');
     const [loading, setLoading] = useState(false);
@@ -138,5 +138,13 @@ export default function RoastMyCodePage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function RoastMyCodePage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <RoastMyCodeContent />
+        </Suspense>
     );
 }
