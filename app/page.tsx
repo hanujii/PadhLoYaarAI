@@ -2,7 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { GlassCard } from '@/components/ui/glass-card';
+import { Hero3D } from '@/components/global/Hero3D';
+import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import {
   ArrowRight,
   BookOpen,
@@ -160,12 +162,16 @@ export default function Home() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center space-y-4"
+        className="text-center space-y-4 relative z-10"
       >
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
+        <div className="absolute inset-0 -z-10 opacity-50 pointer-events-none">
+          <Hero3D />
+        </div>
+
+        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl pt-32 sm:pt-40">
           Padh Lo Yaar <span className="text-primary">AI</span>
         </h1>
-        <div className="text-lg text-muted-foreground max-w-2xl mx-auto min-h-[3rem] flex items-center justify-center">
+        <div className="text-lg text-muted-foreground max-w-2xl mx-auto min-h-[3rem] flex items-center justify-center bg-background/30 backdrop-blur-sm rounded-full px-6 py-2 border border-white/10">
           <span className="mr-2">I want to learn about</span>
           <TopicTyper
             topics={TOPICS}
@@ -181,23 +187,23 @@ export default function Home() {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
       >
         {tools.map((tool) => (
-          <motion.div key={tool.href} variants={item}>
-            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/50 h-full">
-              <CardHeader className={`${tool.color} rounded-t-lg pb-4`}>
+          <motion.div key={tool.href} variants={item} className="h-full">
+            <GlassCard className="group h-full flex flex-col justify-between" enableTilt={true}>
+              <CardHeader className={`${tool.color} bg-opacity-20 rounded-t-lg pb-4`}>
                 {tool.icon}
                 <CardTitle className="text-xl">{tool.title}</CardTitle>
               </CardHeader>
-              <CardContent className="pt-4 space-y-4">
-                <CardDescription className="text-base min-h-[3rem]">
+              <CardContent className="pt-4 space-y-4 flex-1 flex flex-col justify-between">
+                <CardDescription className="text-base min-h-[3rem] text-foreground/80">
                   {tool.description}
                 </CardDescription>
-                <Button asChild className="w-full group-hover:bg-primary/90">
+                <Button asChild className="w-full group-hover:bg-primary/90 shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
                   <Link href={tool.href}>
                     Open Tool <ArrowRight className="ml-2 w-4 h-4" />
                   </Link>
                 </Button>
               </CardContent>
-            </Card>
+            </GlassCard>
           </motion.div>
         ))}
       </motion.div>

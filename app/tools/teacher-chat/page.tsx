@@ -7,52 +7,35 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { chatTeacher } from './actions';
 import { Mic, MicOff, Volume2, StopCircle, Send } from 'lucide-react';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
+import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
+import { useTextToSpeech } from '@/hooks/use-text-to-speech';
+import { AudioVisualizer } from '@/components/global/AudioVisualizer';
+import { cn } from '@/lib/utils';
 
 export default function TeacherChatPage() {
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
-    const [isListening, setIsListening] = useState(false);
-    const [isSpeaking, setIsSpeaking] = useState(false);
     const [inputText, setInputText] = useState('');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [recognition, setRecognition] = useState<any>(null);
+
+    // New Hooks
+    const { isListening, transcript, startListening, stopListening, resetTranscript, error: speechError } = useSpeechRecognition();
+    const { speak, stop: stopSpeaking, isSpeaking } = useTextToSpeech();
+
     const chatRef = useRef<HTMLDivElement>(null);
 
+    // Auto-fill input with transcript
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                const recognitionInstance = new SpeechRecognition();
-                recognitionInstance.continuous = false;
-                recognitionInstance.interimResults = false;
-                recognitionInstance.lang = 'en-US';
-
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                recognitionInstance.onresult = (event: any) => {
-                    const transcript = event.results[0][0].transcript;
-                    handleUserMessage(transcript);
-                };
-
-                recognitionInstance.onend = () => {
-                    setIsListening(false);
-                };
-
-                setRecognition(recognitionInstance);
-            }
+        if (transcript) {
+            setInputText(transcript);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [transcript]);
 
-    const toggleListening = () => {
-        if (!recognition) return alert('Speech recognition not supported in this browser.');
-
-        if (isListening) {
-            recognition.stop();
-        } else {
-            recognition.start();
-            setIsListening(true);
+    // Auto-submit when listening stops and we have text
+    useEffect(() => {
+        if (!isListening && transcript) {
+            handleUserMessage(transcript);
+            resetTranscript();
         }
-    };
+    }, [isListening, transcript]);
 
     const handleTextSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,6 +47,7 @@ export default function TeacherChatPage() {
     const handleUserMessage = async (text: string) => {
         const newHistory = [...messages, { role: 'student', content: text }];
         setMessages(newHistory);
+        setInputText(''); // Clear input if it was manual
 
         const result = await chatTeacher(text, messages);
         if (result.success && result.data) {
@@ -73,19 +57,12 @@ export default function TeacherChatPage() {
         }
     };
 
-    const speak = (text: string) => {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.onstart = () => setIsSpeaking(true);
-            utterance.onend = () => setIsSpeaking(false);
-            window.speechSynthesis.speak(utterance);
+    const toggleListening = () => {
+        if (isListening) {
+            stopListening();
+        } else {
+            startListening();
         }
-    };
-
-    const stopSpeaking = () => {
-        window.speechSynthesis.cancel();
-        setIsSpeaking(false);
     };
 
     return (
@@ -95,28 +72,43 @@ export default function TeacherChatPage() {
                 <p className="text-muted-foreground">Practice answering questions with an AI teacher.</p>
             </div>
 
-            <div className="flex flex-col items-center gap-6">
-                <div className="flex justify-center gap-4">
+            <div className="flex flex-col items-center gap-8 py-8">
+                {/* Audio Visualizer Area */}
+                <div className="h-16 flex items-center justify-center w-full">
+                    {(isListening || isSpeaking) ? (
+                        <AudioVisualizer isActive={true} color={isListening ? 'bg-red-500' : 'bg-primary'} />
+                    ) : (
+                        <p className="text-sm text-muted-foreground animate-pulse">
+                            Tap the microphone to speak...
+                        </p>
+                    )}
+                </div>
+
+                <div className="flex justify-center gap-6 items-center">
                     <Button
                         size="lg"
-                        className={`rounded-full w-16 h-16 ${isListening ? 'bg-red-500 hover:bg-red-600 animate-pulse' : ''}`}
+                        className={cn("rounded-full w-20 h-20 transition-all duration-300 shadow-xl",
+                            isListening ? 'bg-red-500 hover:bg-red-600 scale-110 ring-4 ring-red-500/30' : 'bg-primary hover:bg-primary/90'
+                        )}
                         onClick={toggleListening}
                     >
-                        {isListening ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+                        {isListening ? <MicOff className="w-8 h-8" /> : <Mic className="w-8 h-8" />}
                     </Button>
 
                     {isSpeaking && (
-                        <Button size="lg" variant="outline" className="rounded-full w-16 h-16" onClick={stopSpeaking}>
-                            <StopCircle className="w-6 h-6" />
+                        <Button size="icon" variant="outline" className="rounded-full w-12 h-12" onClick={stopSpeaking}>
+                            <StopCircle className="w-5 h-5 text-destructive" />
                         </Button>
                     )}
                 </div>
+
+                {speechError && <p className="text-red-500 text-sm">{speechError}</p>}
 
                 <form onSubmit={handleTextSubmit} className="flex gap-2 w-full max-w-md">
                     <Input
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
-                        placeholder="Or type your answer here..."
+                        placeholder="Or type your message..."
                         disabled={isListening}
                     />
                     <Button type="submit" disabled={!inputText.trim() || isListening}>
@@ -136,7 +128,7 @@ export default function TeacherChatPage() {
                     <div ref={chatRef} className="space-y-4">
                         {messages.length === 0 && (
                             <p className="text-center text-muted-foreground italic">
-                                Tap the microphone or type below to start.
+                                Conversation will appear here.
                             </p>
                         )}
                         {messages.map((m, i) => (

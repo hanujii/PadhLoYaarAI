@@ -15,6 +15,7 @@ import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Typewriter } from '@/components/global/Typewriter';
+import { CheckUnderstandingSection } from './CheckUnderstanding';
 
 import { Suspense } from 'react';
 
@@ -166,6 +167,9 @@ function TutorContent() {
                     </div>
                 )}
             </div>
+
+            {/* Check My Understanding Section */}
+            {response && <CheckUnderstandingSection originalTopic={initialTopic || "the topic"} />}
         </div>
     );
 }
