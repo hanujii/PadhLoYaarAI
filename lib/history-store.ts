@@ -1,10 +1,9 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface HistoryItem {
     id: string;
-    type: 'chat' | 'generation';
-    tool: string; // e.g., 'tutor', 'code-transformer'
+    tool: 'roast-my-code' | 'tutor' | 'code-transformer' | 'exam-simulator';
     query: string;
     result: string;
     timestamp: number;
@@ -12,73 +11,50 @@ export interface HistoryItem {
 
 export interface SavedItem {
     id: string;
-    type: 'note' | 'result';
+    type: 'result' | 'note';
     title: string;
     content: string;
     timestamp: number;
 }
 
 interface HistoryState {
-    notes: string;
-    notesTitle: string;
     history: HistoryItem[];
     savedItems: SavedItem[];
-
-    // Actions
-    updateNotes: (content: string) => void;
-    updateNotesTitle: (title: string) => void;
     addToHistory: (item: Omit<HistoryItem, 'id' | 'timestamp'>) => void;
-    saveItem: (item: Omit<SavedItem, 'id' | 'timestamp'>) => void;
     removeFromHistory: (id: string) => void;
-    removeFromSaved: (id: string) => void;
     clearHistory: () => void;
+    saveItem: (item: Omit<SavedItem, 'id' | 'timestamp'>) => void;
+    removeFromSaved: (id: string) => void;
 }
 
 export const useHistoryStore = create<HistoryState>()(
     persist(
         (set) => ({
-            notes: '',
-            notesTitle: '',
             history: [],
             savedItems: [],
-
-            updateNotes: (content) => set({ notes: content }),
-            updateNotesTitle: (title) => set({ notesTitle: title }),
-
             addToHistory: (item) => set((state) => ({
                 history: [
-                    {
-                        ...item,
-                        id: crypto.randomUUID(),
-                        timestamp: Date.now(),
-                    },
+                    { ...item, id: crypto.randomUUID(), timestamp: Date.now() },
                     ...state.history
                 ].slice(0, 50) // Keep last 50 items
             })),
-
-            saveItem: (item) => set((state) => ({
-                savedItems: [
-                    {
-                        ...item,
-                        id: crypto.randomUUID(),
-                        timestamp: Date.now(),
-                    },
-                    ...state.savedItems
-                ]
-            })),
-
             removeFromHistory: (id) => set((state) => ({
                 history: state.history.filter((i) => i.id !== id)
             })),
-
+            clearHistory: () => set({ history: [] }),
+            saveItem: (item) => set((state) => ({
+                savedItems: [
+                    { ...item, id: crypto.randomUUID(), timestamp: Date.now() },
+                    ...state.savedItems
+                ]
+            })),
             removeFromSaved: (id) => set((state) => ({
                 savedItems: state.savedItems.filter((i) => i.id !== id)
             })),
-
-            clearHistory: () => set({ history: [] }),
         }),
         {
-            name: 'padh-lo-yaar-history',
+            name: 'padhloyaar-history-storage',
+            storage: createJSONStorage(() => localStorage),
         }
     )
 );

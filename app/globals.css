@@ -122,6 +122,30 @@
     --ring: 0 72% 51%;
   }
 
+  /* Stranger Things: 80s Retro, Red/Black, Neon */
+  .theme-stranger-things {
+    --background: 260 30% 8%;
+    --foreground: 0 100% 90%;
+    --card: 260 25% 12%;
+    --card-foreground: 0 100% 90%;
+    --popover: 260 25% 12%;
+    --popover-foreground: 0 100% 90%;
+    --primary: 0 100% 63%;
+    --primary-foreground: 260 30% 8%;
+    --secondary: 260 40% 18%;
+    --secondary-foreground: 0 100% 90%;
+    --muted: 260 30% 20%;
+    --muted-foreground: 0 60% 70%;
+    --accent: 0 90% 20%;
+    --accent-foreground: 0 100% 95%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 80% 40%;
+    --input: 260 30% 18%;
+    --ring: 0 100% 63%;
+    --radius: 0.2rem;
+  }
+
   .theme-cyan {
     --background: 200 30% 5%;
     --foreground: 200 20% 96%;
@@ -287,4 +311,27 @@
     animation: gradient-xy 20s ease infinite;
   }
 
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+  }
+
+  @keyframes sheen {
+    0% {
+      transform: translateX(-100%) skewX(-15deg);
+    }
+
+    100% {
+      transform: translateX(200%) skewX(-15deg);
+    }
+  }
 }

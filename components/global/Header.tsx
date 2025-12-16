@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History } from 'lucide-react';
+import { Logo } from '@/components/global/Logo';
 import { cn } from '@/lib/utils';
 import {
     DropdownMenu,
@@ -29,6 +30,8 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { Menu } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+
 
 // Local audio files in public/sounds/
 const MUSIC_URLS: Record<string, string> = {
@@ -42,7 +45,7 @@ export function Header() {
     const { setTheme } = useTheme();
     const pathname = usePathname();
     const {
-        timeLeft, isActive, duration, startTimer, stopTimer, resetTimer, setDuration,
+        timeLeft, isActive, startTimer, stopTimer, resetTimer, setDuration,
         isPlaying, togglePlay, genre, setGenre
     } = useStore();
 
@@ -88,25 +91,16 @@ export function Header() {
         { name: 'My Library', href: '/history' },
         { name: 'Tutor Tool', href: '/tools/tutor' },
         { name: 'Code Transformer', href: '/tools/code-transformer' },
-        { name: 'Question Solver', href: '/tools/question-solver' },
-        { name: 'PDF Explainer', href: '/tools/pdf-explainer' },
-        { name: 'Exam Generator', href: '/tools/exam-generator' },
+        { name: 'Roast My Code', href: '/tools/roast-my-code' },
+        { name: 'Exam Simulator', href: '/tools/exam-simulator' },
         { name: 'Teacher Chat', href: '/tools/teacher-chat' },
-        { name: 'Diagram Explainer', href: '/tools/diagram-explainer' },
-        { name: 'Cheat Sheet', href: '/tools/cheat-sheet' },
-        { name: 'Flashcard Genius', href: '/tools/flashcards' },
-        { name: 'YouTube Note-Taker', href: '/tools/youtube-notes' },
-        { name: 'Roadmap Architect', href: '/tools/roadmap' },
-        { name: 'The Reverse Exam', href: '/tools/reverse-exam' },
-        { name: 'Syllabus Sentinel', href: '/tools/syllabus' },
-        { name: 'Meme-ory Mode', href: '/tools/meme' },
-        { name: 'The Analogy Engine', href: '/tools/analogy' },
+        // ... other tools if needed
     ];
 
     const timerPresets = [10, 15, 25, 45, 60];
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
             {/* Hidden Audio Element */}
             <audio ref={audioRef} src={MUSIC_URLS[genre]} loop />
 
@@ -141,27 +135,30 @@ export function Header() {
                                             </Link>
                                         ))}
                                     </div>
-                                    <div className="mt-4 flex items-center gap-2">
-                                        <Link href="https://www.linkedin.com/in/ayush-gupta-creative?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer">
-                                            <Button variant="ghost" size="icon">
-                                                <Linkedin className="w-5 h-5" />
-                                            </Button>
-                                        </Link>
-                                        <Link href="https://www.instagram.com/hanu3040?igsh=enB0amxuMjdwZm0x" target="_blank" rel="noreferrer">
-                                            <Button variant="ghost" size="icon">
-                                                <Instagram className="w-5 h-5" />
-                                            </Button>
-                                        </Link>
-                                    </div>
+                                    <Separator className="my-2" />
+                                    <Separator className="my-2" />
+                                    <Link href="/history">
+                                        <Button variant="outline" className="w-full justify-start">
+                                            <History className="mr-2 h-4 w-4" />
+                                            History
+                                        </Button>
+                                    </Link>
                                 </div>
                             </SheetContent>
                         </Sheet>
                     </div>
 
-                    <Link href="/" className="flex items-center space-x-2 font-bold text-xl">
-                        <span>plyAI</span>
+
+
+                    {/* BRAND LOGO */}
+                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                        <Logo className="w-8 h-8 text-foreground" />
+                        <span className="text-xl font-bold tracking-tight text-foreground">
+                            plyAI
+                        </span>
                     </Link>
-                    <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+
+                    <nav className="hidden md:flex items-center gap-6 text-sm font-medium ml-4">
                         <Link href="/" className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? "text-foreground" : "text-foreground/60")}>
                             Dashboard
                         </Link>
@@ -186,11 +183,11 @@ export function Header() {
 
                 <div className="flex items-center gap-2 sm:gap-4">
                     {/* Timer Display with Popover */}
-                    <div className="flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-full border border-border">
+                    <div className="flex items-center gap-1 bg-secondary/30 backdrop-blur-sm px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary text-xs sm:text-sm">
-                                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-primary mr-1 sm:mr-2" />
+                                <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
+                                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-primary mr-1 sm:mr-2 group-hover:text-purple-500 transition-colors" />
                                     {formattedTime}
                                 </Button>
                             </DropdownMenuTrigger>
@@ -204,12 +201,12 @@ export function Header() {
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        <div className="w-px h-4 bg-border mx-1" />
+                        <div className="w-px h-4 bg-border/50 mx-1" />
 
-                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={toggleTimer}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={toggleTimer}>
                             {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => resetTimer()}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={() => resetTimer()}>
                             <span className="text-xs">↺</span>
                         </Button>
                     </div>
@@ -217,9 +214,9 @@ export function Header() {
                     {/* Music Popover */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="ghost" size="icon" className={cn("relative", isPlaying && "text-primary")}>
+                            <Button variant="ghost" size="icon" className={cn("relative transition-transform hover:scale-105", isPlaying && "text-primary")}>
                                 <Music className="w-5 h-5" />
-                                {isPlaying && <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />}
+                                {isPlaying && <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(var(--primary))] " />}
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-56" align="end">
@@ -249,79 +246,74 @@ export function Header() {
                         </PopoverContent>
                     </Popover>
 
-                    {/* Profile Menu */}
+                    {/* Profile & Unified Menu */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="rounded-full">
-                                <User className="w-5 h-5" />
+                            <Button variant="ghost" size="icon" className="rounded-full overflow-hidden border border-border/50 hover:bg-transparent hover:border-primary/50 transition-all duration-300 hover:ring-2 hover:ring-primary/20 hover:ring-offset-1 hover:ring-offset-background group">
+                                <div className="h-full w-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center group-hover:from-primary/20">
+                                    <User className="h-4 w-4 text-foreground/80 group-hover:text-primary transition-colors" />
+                                </div>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuContent align="end" className="w-64 p-2">
+                            {/* ... existing menu content ... */}
+                            <DropdownMenuLabel className="font-normal">
+                                <div className="flex flex-col space-y-1">
+                                    <p className="text-sm font-medium leading-none">My Stuff</p>
+                                    <p className="text-xs leading-none text-muted-foreground">Manage your learning journey</p>
+                                </div>
+                            </DropdownMenuLabel>
                             <DropdownMenuSeparator />
 
-                            <DropdownMenuItem asChild>
-                                <Link href="/history" className="cursor-pointer">
-                                    <Bookmark className="mr-2 h-4 w-4" />
-                                    <span>Saved Messages</span>
+                            <DropdownMenuItem asChild className="cursor-pointer">
+                                <Link href="/history" className="flex items-center gap-2">
+                                    <History className="h-4 w-4 text-blue-500" />
+                                    <div className="flex flex-col">
+                                        <span>History</span>
+                                        <span className="text-[10px] text-muted-foreground">View past generations</span>
+                                    </div>
                                 </Link>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem asChild>
-                                <Link href="/history" className="cursor-pointer">
-                                    <History className="mr-2 h-4 w-4" />
-                                    <span>History</span>
+                            <DropdownMenuItem asChild className="cursor-pointer">
+                                <Link href="/history" className="flex items-center gap-2">
+                                    <Bookmark className="h-4 w-4 text-purple-500" />
+                                    <div className="flex flex-col">
+                                        <span>Saved Items</span>
+                                        <span className="text-[10px] text-muted-foreground">Your bookmarked content</span>
+                                    </div>
                                 </Link>
                             </DropdownMenuItem>
 
                             <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Themes</DropdownMenuLabel>
-                            <div className="grid grid-cols-2 gap-2 p-2">
-                                <DropdownMenuItem onClick={() => setTheme("light")}>
-                                    <span className="w-4 h-4 rounded-full bg-white border mr-2"></span> Light
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                    <span className="w-4 h-4 rounded-full bg-slate-900 border mr-2"></span> Dark
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("pitch-black")}>
-                                    <span className="w-4 h-4 rounded-full bg-black border mr-2"></span> Pitch Black
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("theme-red")}>
-                                    <span className="w-4 h-4 rounded-full bg-red-600 border mr-2"></span> Red
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("theme-cyan")}>
-                                    <span className="w-4 h-4 rounded-full bg-cyan-500 border mr-2"></span> Cyan
-                                </DropdownMenuItem>
-                            </div>
-                            <DropdownMenuLabel className="mt-2">Inspired By</DropdownMenuLabel>
-                            <div className="flex flex-col gap-1 p-2">
-                                <DropdownMenuItem onClick={() => setTheme("theme-stranger-things")} className="cursor-pointer">
-                                    <span className="text-red-600 font-bold mr-2">S</span> Stranger Things
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("theme-money-heist")} className="cursor-pointer">
-                                    <span className="text-red-700 font-bold mr-2">M</span> Money Heist
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setTheme("theme-dark-series")} className="cursor-pointer">
-                                    <span className="text-yellow-500 font-bold mr-2">D</span> Dark Series
-                                </DropdownMenuItem>
-                            </div>
+                            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Socials</DropdownMenuLabel>
 
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Connect</DropdownMenuLabel>
-
-                            <DropdownMenuItem asChild>
-                                <Link href="https://www.linkedin.com/in/ayush-gupta-creative?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer" className="cursor-pointer">
-                                    <Linkedin className="mr-2 h-4 w-4" />
+                            <DropdownMenuItem asChild className="cursor-pointer">
+                                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                    <Linkedin className="h-4 w-4 text-[#0077b5]" />
                                     <span>LinkedIn</span>
-                                </Link>
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild className="cursor-pointer">
+                                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                    <Instagram className="h-4 w-4 text-[#E1306C]" />
+                                    <span>Instagram</span>
+                                </a>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem asChild>
-                                <Link href="https://www.instagram.com/hanu3040?igsh=enB0amxuMjdwZm0x" target="_blank" rel="noreferrer" className="cursor-pointer">
-                                    <Instagram className="mr-2 h-4 w-4" />
-                                    <span>Instagram</span>
-                                </Link>
-                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Appearance</DropdownMenuLabel>
+
+                            <div className="grid grid-cols-4 gap-1 p-1">
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-white border-2 border-transparent hover:border-black/20 dark:hover:border-white/50" onClick={() => setTheme("light")} title="Light Mode" />
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-slate-900 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("dark")} title="Dark Mode" />
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-black border-2 border-transparent hover:border-white/50" onClick={() => setTheme("pitch-black")} title="Pitch Black" />
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-red-600 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-red")} title="Red Theme" />
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-red-900 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-stranger-things")} title="Stranger Things" />
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-emerald-900 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-money-heist")} title="Money Heist" />
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-slate-800 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-dark-series")} title="Dark Series" />
+                                <Button size="icon" variant="outline" className="h-8 w-8 rounded-full bg-cyan-600 border-2 border-transparent hover:border-white/50" onClick={() => setTheme("theme-cyan")} title="Cyan Theme" />
+                            </div>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

@@ -9,6 +9,8 @@ interface AuthContextType {
     session: Session | null;
     isLoading: boolean;
     signInWithGoogle: () => Promise<void>;
+    signInWithGithub: () => Promise<void>;
+    signInWithFacebook: () => Promise<void>;
     signOut: () => Promise<void>;
 }
 
@@ -51,6 +53,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const signInWithGithub = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'github',
+            });
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error signing in with GitHub:', error);
+            alert('Failed to sign in. Please check your Supabase configuration.');
+        }
+    };
+
+    const signInWithFacebook = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'facebook',
+            });
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error signing in with Facebook:', error);
+            alert('Failed to sign in. Please check your Supabase configuration.');
+        }
+    };
+
     const signOut = async () => {
         try {
             const { error } = await supabase.auth.signOut();
@@ -61,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, isLoading, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, session, isLoading, signInWithGoogle, signInWithGithub, signInWithFacebook, signOut }}>
             {children}
         </AuthContext.Provider>
     );

@@ -17,8 +17,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Padh Lo Yaar",
-  description: "AI-powered study toolbox",
+  title: "plyAI",
+  description: "Your seamless AI study companion.",
 };
 
 export default function RootLayout({

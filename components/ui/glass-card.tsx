@@ -60,6 +60,9 @@ export const GlassCard = ({ children, enableTilt = true, className, ...props }: 
                 <div style={{ transform: "translateZ(50px)" }} className="h-full">
                     {children}
                 </div>
+                {/* Sheen Effect */}
+                <div className="absolute inset-0 z-[-1] bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:animate-[sheen_1s_ease-in-out_infinite]" />
+
             </motion.div>
         );
     }

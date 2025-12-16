@@ -26,11 +26,16 @@ import {
   RotateCcw,
   ListChecks,
   Smile,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Sparkles,
+  Github,
+  Flame,
+  Gamepad2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TopicTyper } from '@/components/global/TopicTyper';
 import { TOPICS } from '@/lib/topics';
+import { CommandCenter } from '@/components/global/CommandCenter';
 
 export default function Home() {
   const tools = [
@@ -139,6 +144,20 @@ export default function Home() {
       icon: <LinkIcon className="w-8 h-8 mb-2 text-pink-500" />,
       color: "bg-pink-50 dark:bg-pink-950/20"
     },
+    {
+      title: "Roast My Code",
+      description: "Get sarcastic, fiery feedback on your code.",
+      href: "/tools/roast-my-code",
+      icon: <Brain className="w-8 h-8 mb-2 text-red-600" />,
+      color: "bg-red-50 dark:bg-red-950/20"
+    },
+    {
+      title: "Exam Simulator",
+      description: "Practice under pressure with AI exams.",
+      href: "/tools/exam-simulator",
+      icon: <FileQuestion className="w-8 h-8 mb-2 text-blue-600" />,
+      color: "bg-blue-50 dark:bg-blue-950/20"
+    },
   ];
 
   const container = {
@@ -171,13 +190,11 @@ export default function Home() {
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl pt-32 sm:pt-40">
           Padh Lo Yaar <span className="text-primary">AI</span>
         </h1>
-        <div className="text-lg text-muted-foreground max-w-2xl mx-auto min-h-[3rem] flex items-center justify-center bg-background/30 backdrop-blur-sm rounded-full px-6 py-2 border border-white/10">
-          <span className="mr-2">I want to learn about</span>
-          <TopicTyper
-            topics={TOPICS}
-            className="font-semibold text-primary underline decoration-dotted underline-offset-4"
-          />
+
+        <div className="w-full max-w-3xl mx-auto px-4 py-8">
+          <CommandCenter />
         </div>
+
       </motion.div>
 
       <motion.div

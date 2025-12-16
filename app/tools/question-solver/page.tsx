@@ -3,7 +3,8 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { GlassCard } from '@/components/ui/glass-card';
 import { solveQuestion } from './actions';
 import { Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -58,7 +59,7 @@ export default function QuestionSolverPage() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-2">
-                <Card>
+                <GlassCard className="h-full border-primary/20" enableTilt={false}>
                     <CardHeader>
                         <CardTitle>Input</CardTitle>
                     </CardHeader>
@@ -70,14 +71,14 @@ export default function QuestionSolverPage() {
                                 <Textarea
                                     name="question"
                                     placeholder="Type your question here or add context to the image..."
-                                    className="resize-none min-h-[100px]"
+                                    className="resize-none min-h-[100px] bg-background/50 border-white/10"
                                 />
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Image (Optional)</label>
                                 <div
-                                    className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors"
+                                    className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors border-white/20"
                                     onClick={() => fileInputRef.current?.click()}
                                 >
                                     {previewUrl ? (
@@ -123,32 +124,32 @@ export default function QuestionSolverPage() {
                             </Button>
                         </form>
                     </CardContent>
-                </Card>
+                </GlassCard>
 
-                <Card className="h-full">
+                <GlassCard className="h-full border-primary/20" enableTilt={false}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle>Solution</CardTitle>
                         {response && <DownloadPDFButton targetRef={outputRef} filename="solution.pdf" />}
                     </CardHeader>
-                    <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px]">
+                    <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px] custom-scrollbar">
                         <div ref={outputRef}>
                             {response ? (
                                 <Typewriter content={response} speed={5} />
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground text-center">
-                                    <UplaodPlaceholder />
+                                    <UploadPlaceholder />
                                     <p className="mt-4">Upload a question to see the step-by-step solution here.</p>
                                 </div>
                             )}
                         </div>
                     </CardContent>
-                </Card>
+                </GlassCard>
             </div>
         </div>
     );
 }
 
-function UplaodPlaceholder() {
+function UploadPlaceholder() {
     return (
         <svg className="w-16 h-16 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

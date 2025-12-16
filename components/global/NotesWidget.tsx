@@ -25,14 +25,14 @@ export function NotesWidget() {
     const { theme } = useTheme();
 
     // Local state for immediate feedback
-    const [localNotes, setLocalNotes] = useState(notes);
-    const [localTitle, setLocalTitle] = useState(notesTitle);
+    const [localNotes, setLocalNotes] = useState(notes || '');
+    const [localTitle, setLocalTitle] = useState(notesTitle || '');
 
     // Sync on mount
     useEffect(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        setLocalNotes(notes);
-        setLocalTitle(notesTitle);
+        setLocalNotes(notes || '');
+        setLocalTitle(notesTitle || '');
     }, [notes, notesTitle]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +128,7 @@ export function NotesWidget() {
                         {activeTab === 'text' && (
                             <div className="px-4 py-2 text-xs text-muted-foreground border-t bg-muted/20 flex justify-between items-center">
                                 <span>Markdown supported</span>
-                                <span>{localNotes.length} chars</span>
+                                <span>{(localNotes || '').length} chars</span>
                             </div>
                         )}
                     </div>
