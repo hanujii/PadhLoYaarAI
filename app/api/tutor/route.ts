@@ -4,11 +4,12 @@ import { streamText } from 'ai';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-    const { prompt, inputs } = await req.json();
-    // inputs contains { topic, mode, instructions, image }
+    // useCompletion sends { prompt, ...body } at the top level
+    const { prompt, topic, mode, instructions, image } = await req.json();
 
-    // Construct Prompt (Similar logic to before)
-    const { topic, mode, instructions, image } = inputs || {}; // useCompletion sends 'prompt' as huge string if not careful, better to pass body
+    // Fallback: use 'prompt' as topic if topic is missing (standard useCompletion behavior)
+    const activeTopic = topic || prompt;
+
 
     // Actually useCompletion sends { prompt: ... }. 
     // I can pass additional data in body.
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
     else if (mode === 'eli5') systemPrompt += ` Explain like I'm 5.`;
     else systemPrompt += ` Provide clear, concise explanations.`;
 
-    const userContent: any[] = [{ type: 'text', text: `Topic/Question: "${topic}"` }];
+    const userContent: any[] = [{ type: 'text', text: `Topic/Question: "${activeTopic}"` }];
     if (instructions) userContent.push({ type: 'text', text: `\nInstructions: ${instructions}` });
 
     if (image) {
@@ -29,15 +30,28 @@ export async function POST(req: Request) {
         systemPrompt += `\n\nAnalyze the attached image.`;
     }
 
-    const result = streamText({
-        model: createGoogleGenerativeAI({
-            apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY
-        })('gemini-1.5-flash'),
-        messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userContent as any }
-        ],
-    });
+    try {
+        const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        if (!apiKey) {
+            throw new Error("Missing Google API Key");
+        }
 
-    return result.toTextStreamResponse();
+        const result = streamText({
+            model: createGoogleGenerativeAI({
+                apiKey: apiKey
+            })('gemini-1.5-flash'),
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userContent as any }
+            ],
+            onError: (err) => {
+                console.error("StreamText Error:", err);
+            }
+        });
+
+        return result.toTextStreamResponse();
+    } catch (error: any) {
+        console.error("Tutor API Error:", error);
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    }
 }

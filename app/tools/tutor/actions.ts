@@ -2,71 +2,24 @@
 
 import { aiEngine } from '@/lib/ai/engine';
 import { ProviderId } from '@/lib/ai/types';
-import { generateObject } from 'ai';
+import { generateObject, generateText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 
 
-import { createStreamableValue } from 'ai/rsc';
-import { streamText } from 'ai';
 
-// ... (keep getTutorResponse for fallback or replace it? Let's add new one to follow Open-Closed principle)
-
-export async function streamTutorResponse(formData: FormData) {
-    const topic = formData.get('topic') as string;
-    const mode = formData.get('mode') as string;
-    const instructions = formData.get('instructions') as string;
-    const imageFile = formData.get('image') as File | null;
-
-    const stream = createStreamableValue('');
-
-    (async () => {
-        let systemPrompt = `You are an expert AI Tutor.`;
-        if (mode === 'detailed') systemPrompt += ` Provide detailed, deep-dive explanations.`;
-        else if (mode === 'eli5') systemPrompt += ` Explain like I'm 5.`;
-        else systemPrompt += ` Provide clear, concise explanations.`;
-        systemPrompt += `\n\nFormat your response in clean Markdown.`;
-
-        let userContent: any[] = [{ type: 'text', text: `Topic/Question: "${topic}"` }];
-        if (instructions) userContent.push({ type: 'text', text: `\nInstructions: ${instructions}` });
-
-        if (imageFile && imageFile.size > 0) {
-            const arrayBuffer = await imageFile.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            userContent.push({
-                type: 'image',
-                image: buffer.toString('base64'),
-            });
-            systemPrompt += `\n\nAnalyze the image.`;
-        }
-
-        const { textStream } = await streamText({
-            model: createGoogleGenerativeAI({
-                apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY
-            })('gemini-1.5-flash'),
-            messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: userContent as any }
-            ],
-        });
-
-        for await (const delta of textStream) {
-            stream.update(delta);
-        }
-
-        stream.done();
-    })();
-
-    return { output: stream.value };
-}
-role: 'user' | 'assistant';
-content: string;
-};
+// Removed streamTutorResponse - moved to API route for better streaming support
 
 export type ChatResponse = {
     answer: string;
     suggestions: string[];
 };
+
+export type ChatMessage = {
+    role: 'user' | 'assistant';
+    content: string;
+};
+
 
 /**
  * Generates an educational explanation using the AI model.
@@ -109,23 +62,7 @@ export async function getTutorResponse(formData: FormData) {
     systemPrompt += `\n\nFormat your response in clean Markdown.`;
 
     try {
-        // Use generateText with multi-modal support (messages format)
-        const result = await generateObject({ // Switch to generateText if object not needed, but maintaining return type
-            model: createGoogleGenerativeAI({
-                apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY
-            })('gemini-1.5-flash'), // Force Gemini for Vision
-            messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: userContent as any }
-            ],
-            // For text output we use generateText, let's revert to generateText but with messages
-        }) as any;
-
-        // Wait, generateObject is for JSON. We want text.
-        // Let's use aiEngine logic but ensuring it passes messages.
-        // My aiEngine abstraction might be too simple (takes string prompt).
-        // I will use direct Vercel AI SDK call here to be safe for Vision.
-        const { text } = await import('ai').then(mod => mod.generateText({
+        const { text } = await generateText({
             model: createGoogleGenerativeAI({
                 apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY
             })('gemini-1.5-flash'),
@@ -133,7 +70,7 @@ export async function getTutorResponse(formData: FormData) {
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: userContent as any }
             ]
-        }));
+        });
 
         return { success: true, data: text };
 
