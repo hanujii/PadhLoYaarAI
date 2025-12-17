@@ -19,9 +19,15 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "plyAI",
   description: "Your seamless AI study companion.",
+  manifest: "/manifest.json",
   icons: {
-    icon: "/logo.svg", // Using the logo we're already using in the app
-  }
+    icon: "/logo.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "plyAI",
+  },
 };
 
 export default function RootLayout({

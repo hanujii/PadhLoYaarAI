@@ -19,19 +19,18 @@ import { motion } from 'framer-motion';
 import { Typewriter } from '@/components/global/Typewriter';
 import { CheckUnderstandingSection } from './CheckUnderstanding';
 import { AIModelSelector, AIProviderId } from '@/components/global/AIModelSelector';
-
 import { Suspense } from 'react';
-
 import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 function TutorContent() {
-    const [loading, setLoading] = useState(false);
-    const [response, setResponse] = useState<string | null>(null);
     const [topicInput, setTopicInput] = useState('');
     const [initialTopic, setInitialTopic] = useState('');
+    const [response, setResponse] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [provider, setProvider] = useState<AIProviderId>('auto');
     const outputRef = useRef<HTMLDivElement>(null);
+    const currentGenTopic = useRef('');
 
     const searchParams = useSearchParams();
     const { addToHistory } = useHistoryStore();
@@ -46,30 +45,73 @@ function TutorContent() {
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setLoading(true);
-        setResponse(null);
+        setResponse('');
         setIsSaved(false);
 
-        // Capture topic at moment of submission for later use
-        const currentTopic = topicInput;
+        const formData = new FormData(event.currentTarget);
+        const currentTopic = formData.get('topic') as string;
+        currentGenTopic.current = currentTopic;
         setInitialTopic(currentTopic);
 
-        const formData = new FormData(event.currentTarget);
-        const result = await getTutorResponse(formData);
+        const mode = formData.get('mode') as string;
+        const instructions = formData.get('instructions') as string;
+        const imageFile = formData.get('image') as File | null;
 
-        if (result.success && result.data) {
-            setResponse(result.data);
+        let imageBase64 = null;
+        if (imageFile && imageFile.size > 0) {
+            imageBase64 = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const result = reader.result as string;
+                    const base64 = result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.readAsDataURL(imageFile);
+            });
+        }
 
-            // Allow duplicate history? Maybe just add to history.
+        try {
+            const res = await fetch('/api/tutor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    inputs: {
+                        topic: currentTopic,
+                        mode,
+                        instructions,
+                        image: imageBase64
+                    }
+                })
+            });
+
+            if (!res.ok) throw new Error(res.statusText);
+            if (!res.body) throw new Error('No body');
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let fullText = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const text = decoder.decode(value, { stream: true });
+                fullText += text;
+                setResponse(prev => (prev || '') + text);
+            }
+
+            // Save to history upon completion
             addToHistory({
                 type: 'generation',
                 tool: 'AI Tutor',
-                query: currentTopic,
-                result: result.data.substring(0, 100) + "..." // Store brief result or full? History store usually takes partial. Let's store full for now as needed.
+                query: currentGenTopic.current,
+                result: fullText
             });
-        } else {
-            setResponse('Error: ' + (result.error || 'Something went wrong'));
+
+        } catch (e: any) {
+            setResponse('Error: ' + e.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     const handleSave = () => {
@@ -82,6 +124,7 @@ function TutorContent() {
         });
         setIsSaved(true);
     };
+
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <ToolBackButton />
@@ -119,6 +162,19 @@ function TutorContent() {
                                         className="bg-background/50 border-white/10"
                                     />
                                     <input type="hidden" name="provider" value={provider} />
+                                </div>
+
+                                {/* Vision Input */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="image">Attach Image (Optional)</Label>
+                                    <Input
+                                        type="file"
+                                        id="image"
+                                        name="image"
+                                        accept="image/*"
+                                        className="bg-background/50 border-white/10 file:text-primary file:font-semibold"
+                                    />
+                                    <p className="text-xs text-muted-foreground">Upload diagrams, equations, or notes.</p>
                                 </div>
 
                                 <div className="space-y-2">
@@ -184,7 +240,8 @@ function TutorContent() {
                             </CardHeader>
                             <CardContent className="flex-1 overflow-y-auto max-h-[600px] p-4 custom-scrollbar">
                                 <div ref={outputRef} className="prose dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-blue-400 prose-p:text-foreground prose-strong:text-foreground prose-code:text-foreground/90">
-                                    <Typewriter content={response} speed={3} />
+                                    {/* Use simple markdown for stream */}
+                                    <ReactMarkdown remarkPlugins={[]}>{response}</ReactMarkdown>
                                 </div>
                             </CardContent>
                         </GlassCard>
@@ -210,7 +267,7 @@ function TutorContent() {
             </div>
 
             {/* Check My Understanding Section */}
-            {response && (
+            {response && !loading && (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

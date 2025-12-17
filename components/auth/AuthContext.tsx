@@ -1,102 +1,56 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
 
-interface AuthContextType {
+type AuthContextType = {
     user: User | null;
     session: Session | null;
-    isLoading: boolean;
-    signInWithGoogle: () => Promise<void>;
-    signInWithGithub: () => Promise<void>;
-    signInWithFacebook: () => Promise<void>;
-    signOut: () => Promise<void>;
-}
+    loading: boolean;
+};
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+    user: null,
+    session: null,
+    loading: true,
+});
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const useAuth = () => useContext(AuthContext);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check for active session
+        // 1. Get initial session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setUser(session?.user ?? null);
-            setIsLoading(false);
+            setLoading(false);
         });
 
-        // Listen for changes
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
+        // 2. Listen for changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
             setUser(session?.user ?? null);
-            setIsLoading(false);
+            setLoading(false);
+
+            // Cloud Sync Hook
+            if (session?.user) {
+                import('@/lib/gamification-store').then(mod => {
+                    mod.useGamificationStore.getState().loadFromCloud(session.user.id);
+                });
+            }
         });
 
         return () => subscription.unsubscribe();
     }, []);
 
-    const signInWithGoogle = async () => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-            });
-            if (error) throw error;
-        } catch (error) {
-            console.error('Error signing in with Google:', error);
-            alert('Failed to sign in. Please check your Supabase configuration.');
-        }
-    };
-
-    const signInWithGithub = async () => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'github',
-            });
-            if (error) throw error;
-        } catch (error) {
-            console.error('Error signing in with GitHub:', error);
-            alert('Failed to sign in. Please check your Supabase configuration.');
-        }
-    };
-
-    const signInWithFacebook = async () => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'facebook',
-            });
-            if (error) throw error;
-        } catch (error) {
-            console.error('Error signing in with Facebook:', error);
-            alert('Failed to sign in. Please check your Supabase configuration.');
-        }
-    };
-
-    const signOut = async () => {
-        try {
-            const { error } = await supabase.auth.signOut();
-            if (error) throw error;
-        } catch (error) {
-            console.error('Error signing out:', error);
-        }
-    };
-
     return (
-        <AuthContext.Provider value={{ user, session, isLoading, signInWithGoogle, signInWithGithub, signInWithFacebook, signOut }}>
+        <AuthContext.Provider value={{ user, session, loading }}>
             {children}
         </AuthContext.Provider>
     );
-}
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
 };

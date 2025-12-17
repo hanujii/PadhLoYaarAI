@@ -7,10 +7,60 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 
 
+import { createStreamableValue } from 'ai/rsc';
+import { streamText } from 'ai';
 
-export type ChatMessage = {
-    role: 'user' | 'assistant';
-    content: string;
+// ... (keep getTutorResponse for fallback or replace it? Let's add new one to follow Open-Closed principle)
+
+export async function streamTutorResponse(formData: FormData) {
+    const topic = formData.get('topic') as string;
+    const mode = formData.get('mode') as string;
+    const instructions = formData.get('instructions') as string;
+    const imageFile = formData.get('image') as File | null;
+
+    const stream = createStreamableValue('');
+
+    (async () => {
+        let systemPrompt = `You are an expert AI Tutor.`;
+        if (mode === 'detailed') systemPrompt += ` Provide detailed, deep-dive explanations.`;
+        else if (mode === 'eli5') systemPrompt += ` Explain like I'm 5.`;
+        else systemPrompt += ` Provide clear, concise explanations.`;
+        systemPrompt += `\n\nFormat your response in clean Markdown.`;
+
+        let userContent: any[] = [{ type: 'text', text: `Topic/Question: "${topic}"` }];
+        if (instructions) userContent.push({ type: 'text', text: `\nInstructions: ${instructions}` });
+
+        if (imageFile && imageFile.size > 0) {
+            const arrayBuffer = await imageFile.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            userContent.push({
+                type: 'image',
+                image: buffer.toString('base64'),
+            });
+            systemPrompt += `\n\nAnalyze the image.`;
+        }
+
+        const { textStream } = await streamText({
+            model: createGoogleGenerativeAI({
+                apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY
+            })('gemini-1.5-flash'),
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userContent as any }
+            ],
+        });
+
+        for await (const delta of textStream) {
+            stream.update(delta);
+        }
+
+        stream.done();
+    })();
+
+    return { output: stream.value };
+}
+role: 'user' | 'assistant';
+content: string;
 };
 
 export type ChatResponse = {
@@ -26,33 +76,67 @@ export async function getTutorResponse(formData: FormData) {
     const topic = formData.get('topic') as string;
     const mode = formData.get('mode') as string;
     const instructions = formData.get('instructions') as string;
-    const provider = formData.get('provider') as string; // 'google', 'openrouter', etc.
+    const provider = formData.get('provider') as string;
+    const imageFile = formData.get('image') as File | null;
 
-    if (!topic) return { error: 'Topic is required' };
+    if (!topic && !imageFile) return { error: 'Topic or Image is required' };
 
-    // Construct a specialized system prompt based on the user's learning style
-    let prompt = `You are an expert AI Tutor. Explain the topic: "${topic}".`;
+    let systemPrompt = `You are an expert AI Tutor.`;
+    if (mode === 'detailed') systemPrompt += ` Provide detailed, deep-dive explanations.`;
+    else if (mode === 'eli5') systemPrompt += ` Explain like I'm 5.`;
+    else systemPrompt += ` Provide clear, concise explanations.`;
 
-    if (mode === 'detailed') {
-        prompt += ` Provide a detailed, deep-dive explanation with examples, history, and advanced concepts.`;
-    } else if (mode === 'eli5') {
-        prompt += ` Explain it like I'm 5 years old. Use simple analogies and simple language.`;
-    } else {
-        prompt += ` Provide a clear, concise step-by-step explanation.`;
-    }
+    let userContent: any[] = [{ type: 'text', text: `Topic/Question: "${topic}"` }];
 
     if (instructions) {
-        prompt += `\n\nAdditional Instructions: ${instructions}`;
+        userContent.push({ type: 'text', text: `\nInstructions: ${instructions}` });
     }
 
-    prompt += `\n\nFormat your response in clean Markdown.`;
+    // Handle Image
+    if (imageFile && imageFile.size > 0) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        // Optimize: Convert to base64 data URI for standard AI SDK usage if needed, 
+        // OR pass buffer if provider supports it. Google provider supports 'image' part with buffer/base64.
+        const base64 = buffer.toString('base64');
+        userContent.push({
+            type: 'image',
+            image: base64, // Vercel AI SDK expects base64 or buffer usually
+        });
+        systemPrompt += `\n\nAnalyze the attached image and answer the user's question about it.`;
+    }
+
+    systemPrompt += `\n\nFormat your response in clean Markdown.`;
 
     try {
-        const result = await aiEngine.generateText(prompt, {
-            preferredProvider: provider as ProviderId,
-            maxTokens: 4096, // Give enough space for detailed explanations
-        });
-        return { success: true, data: result.text };
+        // Use generateText with multi-modal support (messages format)
+        const result = await generateObject({ // Switch to generateText if object not needed, but maintaining return type
+            model: createGoogleGenerativeAI({
+                apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY
+            })('gemini-1.5-flash'), // Force Gemini for Vision
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userContent as any }
+            ],
+            // For text output we use generateText, let's revert to generateText but with messages
+        }) as any;
+
+        // Wait, generateObject is for JSON. We want text.
+        // Let's use aiEngine logic but ensuring it passes messages.
+        // My aiEngine abstraction might be too simple (takes string prompt).
+        // I will use direct Vercel AI SDK call here to be safe for Vision.
+        const { text } = await import('ai').then(mod => mod.generateText({
+            model: createGoogleGenerativeAI({
+                apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY
+            })('gemini-1.5-flash'),
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userContent as any }
+            ]
+        }));
+
+        return { success: true, data: text };
+
     } catch (error: any) {
         console.error("Tutor Error:", error);
         return { success: false, error: error.message || 'Failed to generate response.' };

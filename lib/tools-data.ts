@@ -189,4 +189,44 @@ export const TOOLS = [
         keywords: ["simulator", "exam", "test", "practice"],
         queryParam: "topic"
     },
+    {
+        title: "Knowledge Galaxy",
+        description: "Visualize your learning journey in 3D.",
+        href: "/tools/knowledge-galaxy",
+        icon: Brain,
+        color: "bg-purple-900/50 text-white dark:bg-purple-900/50", // Special distinct color
+        value: "knowledge-galaxy",
+        keywords: ["galaxy", "3d", "visualize", "graph", "history"],
+        queryParam: "q"
+    },
+    {
+        title: "Zen Focus Station",
+        description: "Immersive distraction-free study environment.",
+        href: "/tools/zen-station",
+        icon: Brain, // Using Brain temporarily, ideally a Lotus or Focus icon if available, or just reuse Brain
+        color: "bg-emerald-900/50 text-white dark:bg-emerald-900/50",
+        value: "zen-station",
+        keywords: ["zen", "focus", "timer", "distraction", "study"],
+        queryParam: "q"
+    },
+    {
+        title: "AI Podcast Generator",
+        description: "Turn topics into engaging audio conversations.",
+        href: "/tools/podcast",
+        icon: Mic, // Reusing Mic, or use a Podcast icon if available
+        color: "bg-pink-600/50 text-white dark:bg-pink-600/50",
+        value: "podcast",
+        keywords: ["podcast", "audio", "listen", "conversation", "generate"],
+        queryParam: "topic"
+    },
+    {
+        title: "Jarvis Voice Mode",
+        description: "Hands-free AI voice assistant.",
+        href: "/tools/jarvis",
+        icon: Mic, // Using Mic, or Bot
+        color: "bg-cyan-600/50 text-white dark:bg-cyan-600/50",
+        value: "jarvis",
+        keywords: ["jarvis", "voice", "assistant", "speak", "talk"],
+        queryParam: "q"
+    }
 ];

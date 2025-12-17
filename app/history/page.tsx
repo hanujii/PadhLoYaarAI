@@ -97,7 +97,7 @@ export default function HistoryPage() {
                                                 </CardDescription>
                                             </CardHeader>
                                             <CardContent>
-                                                <div className="bg-muted/50 p-4 rounded-md text-sm max-h-60 overflow-y-auto prose dark:prose-invert max-w-none">
+                                                <div className="bg-muted/50 p-4 rounded-md text-sm max-h-96 overflow-y-auto prose dark:prose-invert max-w-none">
                                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.content}</ReactMarkdown>
                                                 </div>
                                             </CardContent>
@@ -172,12 +172,22 @@ export default function HistoryPage() {
                                                 </div>
                                             </CardContent>
                                             <CardFooter className="justify-end gap-2 pt-0">
+                                                <Button size="sm" variant="secondary" onClick={() => setSelectedItem({
+                                                    id: item.id,
+                                                    title: `History: ${item.tool}`,
+                                                    content: `Query: ${item.query}\n\nResult:\n${item.result}`,
+                                                    timestamp: item.timestamp,
+                                                    isSaved: false
+                                                })}>
+                                                    <Maximize2 className="w-3 h-3 mr-2" />
+                                                    View Full
+                                                </Button>
                                                 <Button variant="ghost" size="sm" onClick={() => removeFromHistory(item.id)}>
-                                                    Delete
+                                                    <Trash2 className="w-4 h-4 text-destructive" />
                                                 </Button>
                                                 <Button variant="outline" size="sm" onClick={() => handleSaveFromHistory(item)}>
                                                     <Bookmark className="w-3 h-3 mr-2" />
-                                                    Save to Library
+                                                    Save
                                                 </Button>
                                             </CardFooter>
                                         </Card>
@@ -210,7 +220,7 @@ export default function HistoryPage() {
                     </DialogHeader>
 
                     <div className="flex-1 overflow-y-auto p-6 bg-background border rounded-md">
-                        <div ref={contentRef} className="prose dark:prose-invert max-w-none">
+                        <div ref={contentRef} className="prose dark:prose-invert max-w-none break-words whitespace-pre-wrap">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                 {selectedItem?.content || ''}
                             </ReactMarkdown>

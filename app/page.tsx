@@ -14,7 +14,6 @@ export default function Home() {
   const router = useRouter();
 
   const handleSearch = (topic: string) => {
-    // Redirect to Tutor tool with the topic
     router.push(`/tools/tutor?topic=${encodeURIComponent(topic)}`);
   };
 
@@ -33,21 +32,24 @@ export default function Home() {
     show: { opacity: 1, y: 0 }
   };
 
+  // Group Tools
+  const PREMIUM_TOOLS = ['knowledge-galaxy', 'zen-station', 'podcast', 'jarvis'];
+  const STUDY_TOOLS = ['tutor', 'flashcards', 'exam-simulator', 'exam-generator', 'reverse-exam', 'roadmap', 'syllabus', 'teacher-chat'];
+
+  const premium = TOOLS.filter(t => PREMIUM_TOOLS.includes(t.value));
+  const study = TOOLS.filter(t => STUDY_TOOLS.includes(t.value));
+  const utilities = TOOLS.filter(t => !PREMIUM_TOOLS.includes(t.value) && !STUDY_TOOLS.includes(t.value));
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-24 pb-24">
 
       {/* --- HERO SECTION --- */}
       <div className="relative h-[calc(100vh-5rem)] flex flex-col items-center justify-center py-8">
-
-        {/* Background 3D - Always Visible */}
         <div className="absolute inset-0 -z-10 opacity-50 pointer-events-none overflow-hidden">
           <Hero3D />
         </div>
 
-        {/* Central Content Group: Title + Input */}
         <div className="w-full max-w-4xl px-4 z-20 flex flex-col items-center gap-12">
-
-          {/* Title */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -70,7 +72,6 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Interaction Area (Input) */}
           <motion.div
             key="command-center"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -84,7 +85,7 @@ export default function Home() {
               animate={{ opacity: 1, y: [0, 10, 0] }}
               transition={{ delay: 2, duration: 2, repeat: Infinity }}
               onClick={() => {
-                const toolsSection = document.getElementById('tools-section');
+                const toolsSection = document.getElementById('featured-section');
                 if (toolsSection) {
                   toolsSection.scrollIntoView({ behavior: 'smooth' });
                 }
@@ -99,40 +100,132 @@ export default function Home() {
         </div>
       </div>
 
-      {/* --- TOOLS SECTION (Below Fold) --- */}
-      <motion.div
-        id="tools-section"
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-100px" }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-24 px-4 container mx-auto max-w-7xl"
-      >
-        {TOOLS.map((tool) => (
-          <motion.div key={tool.href} variants={item} className="h-full">
-            <Link href={tool.href} className="block h-full">
-              <GlassCard className="group h-full flex flex-col justify-between p-6 cursor-pointer hover:border-primary/50 transition-colors" enableTilt={false}>
-                <div className="flex-1 flex flex-col gap-4">
-                  <div className={`p-3 w-fit rounded-xl bg-opacity-20 ${tool.color} text-primary group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/10`}>
-                    <tool.icon className="w-6 h-6" />
+      {/* --- PREMIUM SECTION --- */}
+      <div id="featured-section" className="container mx-auto px-4 max-w-7xl">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="mb-8 flex items-center gap-3"
+        >
+          <div className="h-8 w-1 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full" />
+          <h2 className="text-3xl font-bold tracking-tight">Premium Experiences</h2>
+        </motion.div>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {premium.map((tool) => (
+            <motion.div key={tool.href} variants={item} className="h-full">
+              <Link href={tool.href} className="block h-full">
+                <GlassCard className="group h-full flex flex-col justify-between p-8 cursor-pointer hover:border-primary/50 transition-colors bg-white/5 data-[premium=true]:bg-gradient-to-br from-white/5 to-white/0" enableTilt={true}>
+                  <div className="flex flex-row items-start justify-between gap-4">
+                    <div className="space-y-4">
+                      <div className={`p-4 w-fit rounded-2xl bg-opacity-20 ${tool.color} text-primary group-hover:scale-110 transition-transform duration-300 shadow-md border border-white/10`}>
+                        <tool.icon className="w-8 h-8" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-2xl leading-tight tracking-tight mb-2">{tool.title}</h3>
+                        <p className="text-muted-foreground leading-relaxed text-base max-w-md">
+                          {tool.description}
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-6 h-6 text-muted-foreground group-hover:text-primary -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg leading-tight line-clamp-1 tracking-tight">{tool.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 min-h-[4.5rem]">
-                      {tool.description}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
-                  <span>Usage available</span>
-                  <ArrowRight className="w-4 h-4 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300" />
-                </div>
-              </GlassCard>
-            </Link>
-          </motion.div>
-        ))}
-      </motion.div>
+                </GlassCard>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* --- STUDY TOOLS --- */}
+      <div className="container mx-auto px-4 max-w-7xl">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="mb-8 flex items-center gap-3"
+        >
+          <div className="h-8 w-1 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full" />
+          <h2 className="text-2xl font-bold tracking-tight">Core Study Tools</h2>
+        </motion.div>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+          {study.map((tool) => (
+            <ToolCard key={tool.href} tool={tool} variants={item} />
+          ))}
+        </motion.div>
+      </div>
+
+      {/* --- UTILITIES --- */}
+      <div className="container mx-auto px-4 max-w-7xl">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="mb-8 flex items-center gap-3"
+        >
+          <div className="h-8 w-1 bg-gradient-to-b from-slate-500 to-gray-500 rounded-full" />
+          <h2 className="text-2xl font-bold tracking-tight text-muted-foreground">Utilities & Creative</h2>
+        </motion.div>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+          {utilities.map((tool) => (
+            <ToolCard key={tool.href} tool={tool} variants={item} compact />
+          ))}
+        </motion.div>
+      </div>
 
     </div>
+  );
+}
+
+// Sub-component for standard tool cards
+function ToolCard({ tool, variants, compact = false }: { tool: any, variants: any, compact?: boolean }) {
+  return (
+    <motion.div variants={variants} className="h-full">
+      <Link href={tool.href} className="block h-full">
+        <GlassCard className={cn(
+          "group h-full flex flex-col justify-between cursor-pointer hover:border-primary/50 transition-colors",
+          compact ? "p-4" : "p-6"
+        )} enableTilt={false}>
+          <div className={cn("flex gap-4", compact ? "flex-row items-center" : "flex-col")}>
+            <div className={cn(
+              "rounded-xl bg-opacity-20 border border-white/10 text-primary group-hover:scale-110 transition-transform duration-300 flex items-center justify-center shrink-0",
+              tool.color,
+              compact ? "w-10 h-10 p-2" : "w-12 h-12 p-3"
+            )}>
+              <tool.icon className={cn(compact ? "w-5 h-5" : "w-6 h-6")} />
+            </div>
+            <div className="space-y-1">
+              <h3 className={cn("font-semibold leading-tight tracking-tight", compact ? "text-base" : "text-lg")}>{tool.title}</h3>
+              {!compact && (
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                  {tool.description}
+                </p>
+              )}
+            </div>
+          </div>
+        </GlassCard>
+      </Link>
+    </motion.div>
   );
 }

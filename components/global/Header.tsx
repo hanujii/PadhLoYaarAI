@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History } from 'lucide-react';
+import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings } from 'lucide-react';
 import { Logo } from '@/components/global/Logo';
 import { cn } from '@/lib/utils';
 import { TOOLS } from '@/lib/tools-data';
@@ -31,6 +31,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { Menu } from 'lucide-react';
+import { XPWidget } from '@/components/gamification/XPWidget';
 import { Separator } from '@/components/ui/separator';
 
 
@@ -254,6 +255,29 @@ export function Header() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-64 p-2">
                                 {/* ... existing menu content ... */}
+                                <DropdownMenuLabel className="font-normal">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">Account</p>
+                                        <p className="text-xs leading-none text-muted-foreground">Manage your profile</p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/login" className="flex items-center gap-2">
+                                        <User className="h-4 w-4 text-primary" />
+                                        <span>Sign In / Profile</span>
+                                    </Link>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/settings" className="flex items-center gap-2">
+                                        <Settings className="h-4 w-4 text-primary" />
+                                        <span>Settings</span>
+                                    </Link>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuSeparator />
                                 <DropdownMenuLabel className="font-normal">
                                     <div className="flex flex-col space-y-1">
                                         <p className="text-sm font-medium leading-none">My Stuff</p>
