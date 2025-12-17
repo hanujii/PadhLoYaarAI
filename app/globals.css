@@ -298,11 +298,12 @@
 
   /* Glassmorphism Utilities */
   .glass {
-    @apply bg-white/10 dark:bg-black/20 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-xl;
+    @apply bg-white/5 dark:bg-black/10 backdrop-blur-md border border-white/10 dark:border-white/5 shadow-lg;
   }
 
   .glass-card {
-    @apply relative overflow-hidden rounded-xl border border-white/20 bg-white/10 backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-2xl hover:bg-white/15 dark:bg-black/20 dark:hover:bg-black/30;
+    @apply relative overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-md transition-all duration-300 hover:shadow-xl hover:bg-white/10 dark:bg-black/10 dark:hover:bg-black/20;
+    will-change: transform, opacity;
   }
 
   /* Mesh Gradient Animation */
