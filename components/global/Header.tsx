@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings } from 'lucide-react';
+import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings, Menu } from 'lucide-react';
 import { Logo } from '@/components/global/Logo';
 import { cn } from '@/lib/utils';
 import { TOOLS } from '@/lib/tools-data';
@@ -30,13 +30,21 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
-import { Menu } from 'lucide-react';
 import { XPWidget } from '@/components/gamification/XPWidget';
 import { Separator } from '@/components/ui/separator';
 
-
 // Local audio files in public/sounds/
 const MUSIC_URLS: Record<string, string> = {
+    'lofi': '/sounds/lofi.json', // Note: Check extensions, using placeholder paths
+    'soothing': '/sounds/soothing.mp3',
+    'meditation': '/sounds/meditation.ogg',
+    'nature': '/sounds/nature.ogg',
+};
+
+// Fix music URLs to be safe default if files don't exist
+// Actually, let's keep the user's URLs but they seemed to have mismatched extensions in view_file. 
+// I'll stick to what was in the file: lofi.mp3 etc.
+const SAFE_MUSIC_URLS: Record<string, string> = {
     'lofi': '/sounds/lofi.mp3',
     'soothing': '/sounds/soothing.mp3',
     'meditation': '/sounds/meditation.ogg',
@@ -93,10 +101,27 @@ export function Header() {
 
     const timerPresets = [10, 15, 25, 45, 60];
 
+
+    const [mounted, setMounted] = React.useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Prevent Hydration Mismatch by returning a simplified accessible header or null during SSR
+    // Radix UI components generate random IDs which cause mismatches if rendered on server
+    if (!mounted) {
+        return (
+            <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none opacity-0">
+                <div className="w-full max-w-6xl h-16" />
+            </header>
+        );
+    }
+
     return (
         <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
             {/* Hidden Audio Element */}
-            <audio ref={audioRef} src={MUSIC_URLS[genre]} loop />
+            <audio ref={audioRef} src={SAFE_MUSIC_URLS[genre]} loop />
 
             <div className="w-full max-w-6xl rounded-full border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] pointer-events-auto transition-all duration-300 hover:border-white/20 hover:bg-white/10">
                 <div className="flex h-16 items-center justify-between px-6">
@@ -180,33 +205,39 @@ export function Header() {
 
                     {/* RIGHT: Timer, Music, Profile */}
                     <div className="flex items-center gap-1 sm:gap-4">
-                        {/* Timer Display with Popover (Compact on Mobile) */}
-                        <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
-                                        <Clock className="w-3.5 h-3.5 text-primary sm:mr-2 group-hover:text-purple-500 transition-colors" />
-                                        <span className="hidden sm:inline">{formattedTime}</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Set Duration</DropdownMenuLabel>
-                                    {timerPresets.map(min => (
-                                        <DropdownMenuItem key={min} onClick={() => setDuration(min)}>
-                                            {min} Minutes
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                        {/* Wrapper for XP + Timer */}
+                        <div className="flex items-center gap-2">
+                            {/* Gamification Widget */}
+                            <XPWidget />
 
-                            <div className="w-px h-3 bg-border/50 mx-0.5" />
+                            {/* Timer Display with Popover */}
+                            <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
+                                            <Clock className="w-3.5 h-3.5 text-primary sm:mr-2 group-hover:text-purple-500 transition-colors" />
+                                            <span className="hidden sm:inline">{formattedTime}</span>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuLabel>Set Duration</DropdownMenuLabel>
+                                        {timerPresets.map(min => (
+                                            <DropdownMenuItem key={min} onClick={() => setDuration(min)}>
+                                                {min} Minutes
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
 
-                            <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={toggleTimer}>
-                                {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={() => resetTimer()}>
-                                <span className="text-[10px]">↺</span>
-                            </Button>
+                                <div className="w-px h-3 bg-border/50 mx-0.5" />
+
+                                <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={toggleTimer}>
+                                    {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={() => resetTimer()}>
+                                    <span className="text-[10px]">↺</span>
+                                </Button>
+                            </div>
                         </div>
 
                         {/* Music Popover */}
@@ -228,7 +259,7 @@ export function Header() {
                                         </Button>
                                     </div>
                                     <div className="grid grid-cols-1 gap-2">
-                                        {Object.keys(MUSIC_URLS).map((g) => (
+                                        {Object.keys(SAFE_MUSIC_URLS).map((g) => (
                                             <Button
                                                 key={g}
                                                 variant={genre === g ? "default" : "outline"}
@@ -254,7 +285,6 @@ export function Header() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-64 p-2">
-                                {/* ... existing menu content ... */}
                                 <DropdownMenuLabel className="font-normal">
                                     <div className="flex flex-col space-y-1">
                                         <p className="text-sm font-medium leading-none">Account</p>

@@ -1,25 +1,26 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
+import { z } from 'zod';
 
 export async function transformCode(code: string, fromLang: string, toLang: string, style: string) {
     if (!code) return { error: 'Code is required' };
 
-    let prompt = `You are an expert Code Transformer. Convert the following code from ${fromLang} to ${toLang}.`;
-
-    if (style !== 'standard') {
-        prompt += ` Style: ${style} (optimize, clean, add comments if needed).`;
-    }
-
-    prompt += `\n\nReturn ONLY the code. No markdown backticks, no explanation.`;
-    prompt += `\n\nInput Code:\n${code}`;
-
     try {
-        // Pro model for better code reasoning
-        const text = await generateText('pro', prompt);
-        // Strip backticks if the model ignores the instruction
-        const cleanText = text.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '');
-        return { success: true, data: cleanText };
+        const prompt = `Convert this ${fromLang} code to ${toLang}. Style: ${style}.
+        
+        Return JSON with:
+        - "code": The transformed code.
+        - "explanation": A very brief explanation of what changed and why.
+        - "changes": An array of specific changes made (e.g. "Changed var to let", "Used list comprehension").`;
+
+        const { object } = await aiEngine.generateObject(prompt, z.object({
+            code: z.string().describe("The transformed code only"),
+            explanation: z.string().describe("Brief explanation of the translation logic"),
+            changes: z.array(z.string()).describe("List of specific changes made")
+        }));
+
+        return { success: true, data: object };
     } catch (error) {
         console.error("Transformer Error:", error);
         return { success: false, error: 'Failed to transform code.' };

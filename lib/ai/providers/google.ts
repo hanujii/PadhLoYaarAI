@@ -11,7 +11,7 @@ export class GoogleProvider implements AIProvider {
     private sdkGoogle: ReturnType<typeof createGoogleGenerativeAI> | null = null;
 
     constructor() {
-        const apiKey = process.env.GEMINI_API_KEY;
+        const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
         if (apiKey) {
             this.client = new GoogleGenerativeAI(apiKey);
             this.sdkGoogle = createGoogleGenerativeAI({ apiKey });
@@ -66,5 +66,10 @@ export class GoogleProvider implements AIProvider {
             { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', provider: 'google', isPro: true, contextWindow: 2000000 },
             { id: 'gemini-2.0-flash-exp', name: 'Gemini 2.0 Flash (Exp)', provider: 'google', isPro: false, contextWindow: 1000000 },
         ];
+    }
+
+    getModelInstance(modelId: string): any {
+        if (!this.sdkGoogle) throw new Error('Google Provider not configured');
+        return this.sdkGoogle(modelId);
     }
 }

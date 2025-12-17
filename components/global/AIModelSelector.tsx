@@ -1,39 +1,79 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Cpu } from 'lucide-react';
+import { Cpu, Loader2 } from 'lucide-react';
+import { ModelDTO } from '@/lib/ai/types';
+import { getAvailableModels } from '@/app/actions/ai-config';
 
-export type AIProviderId = 'auto' | 'google' | 'openrouter' | 'github' | 'groq';
+// We now pass the specific model ID, or 'auto'
+export type AISelection = 'auto' | string;
 
 interface AIModelSelectorProps {
-    value?: AIProviderId;
-    onValueChange: (value: AIProviderId) => void;
+    value?: AISelection;
+    onValueChange: (value: AISelection) => void;
     className?: string;
 }
 
 export function AIModelSelector({ value = 'auto', onValueChange, className }: AIModelSelectorProps) {
+    const [models, setModels] = useState<ModelDTO[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getAvailableModels()
+            .then(setModels)
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
+    // Group models by provider
+    const groupedModels = models.reduce((acc, model) => {
+        if (!acc[model.provider]) acc[model.provider] = [];
+        acc[model.provider].push(model);
+        return acc;
+    }, {} as Record<string, ModelDTO[]>);
+
     return (
         <div className={className}>
-            <Select value={value} onValueChange={(v) => onValueChange(v as AIProviderId)}>
-                <SelectTrigger className="w-[180px] bg-background/50 border-white/10 h-9 text-xs">
+            <Select value={value} onValueChange={onValueChange}>
+                <SelectTrigger className="w-[200px] bg-background/50 border-white/10 h-9 text-xs">
                     <div className="flex items-center gap-2">
                         <Cpu className="w-3.5 h-3.5 text-muted-foreground" />
-                        <SelectValue placeholder="AI Model" />
+                        <SelectValue placeholder="Select Model" />
                     </div>
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="auto">Auto (Best Available)</SelectItem>
-                    <SelectItem value="google">Google Gemini</SelectItem>
-                    <SelectItem value="openrouter">OpenRouter (GPT-4o/Llama)</SelectItem>
-                    <SelectItem value="github">Github Models</SelectItem>
-                    <SelectItem value="groq">Groq (Fastest)</SelectItem>
+                    <SelectItem value="auto">
+                        <span className="font-bold">Auto (Best Available)</span>
+                    </SelectItem>
+
+                    {loading ? (
+                        <div className="p-2 text-center text-xs text-muted-foreground flex items-center justify-center gap-2">
+                            <Loader2 className="w-3 h-3 animate-spin" /> Loading models...
+                        </div>
+                    ) : (
+                        Object.entries(groupedModels).map(([provider, providerModels]) => (
+                            <SelectGroup key={provider}>
+                                <SelectLabel className="capitalize text-xs text-muted-foreground">{provider}</SelectLabel>
+                                {providerModels.map(model => (
+                                    <SelectItem key={model.id} value={model.id}>
+                                        <div className="flex items-center justify-between w-full gap-2">
+                                            <span>{model.name}</span>
+                                            {model.isPro && <span className="text-[10px] bg-amber-500/10 text-amber-500 px-1 rounded">PRO</span>}
+                                        </div>
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        ))
+                    )}
                 </SelectContent>
             </Select>
         </div>

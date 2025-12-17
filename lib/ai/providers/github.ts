@@ -70,4 +70,9 @@ export class GithubProvider implements AIProvider {
             { id: 'Meta-Llama-3.1-70B-Instruct', name: 'Llama 3.1 70B (Github)', provider: 'github', isPro: true, contextWindow: 128000 },
         ];
     }
+
+    getModelInstance(modelId: string): any {
+        if (!this.sdkOpenAI) throw new Error('Github Provider not configured');
+        return this.sdkOpenAI(modelId);
+    }
 }

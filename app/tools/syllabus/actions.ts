@@ -54,10 +54,17 @@ export async function parseSyllabus(formData: FormData) {
         const prompt = `
         You are a Syllabus Analyzer. I will provide the text of an exam syllabus.
         
-        Extract the main topics and sub-topics into a flat list of items that a student needs to study.
+        Extract the structured syllabus. Group topics into logical "Units" or "Modules".
+        For each Unit, estimate the study hours required.
         
-        Return STRICTLY a JSON array of strings.
-        Example: ["Unit 1: Electrostatics", "Coulomb's Law", "Electric Field", "Unit 2: Current Electricity", "Ohm's Law"]
+        Return STRICTLY a JSON array of objects with this schema:
+        [
+            {
+                "unit": "Unit Name",
+                "hours": "Estimated Hours (e.g., '10h')",
+                "topics": ["Topic 1", "Topic 2"]
+            }
+        ]
         
         SYLLABUS TEXT:
         ${text}

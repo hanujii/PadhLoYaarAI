@@ -70,4 +70,9 @@ export class GroqProvider implements AIProvider {
             { id: 'gemma-7b-it', name: 'Gemma 7B (Groq)', provider: 'groq', isPro: false, contextWindow: 8192 },
         ];
     }
+
+    getModelInstance(modelId: string): any {
+        if (!this.sdkOpenAI) throw new Error('Groq Provider not configured');
+        return this.sdkOpenAI(modelId);
+    }
 }

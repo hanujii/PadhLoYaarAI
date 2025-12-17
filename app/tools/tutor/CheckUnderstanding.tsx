@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
@@ -8,10 +8,9 @@ import { useTextToSpeech } from '@/hooks/use-text-to-speech';
 import { AudioVisualizer } from '@/components/global/AudioVisualizer';
 import { Mic, MicOff, CheckCircle, XCircle, BrainCircuit } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { generateObject } from 'ai';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { z } from 'zod';
 import { checkUnderstanding } from './actions';
+import { useGamificationStore } from '@/lib/gamification-store';
+import { toast } from 'sonner';
 
 interface CheckUnderstandingProps {
     originalTopic: string;
@@ -22,6 +21,7 @@ export function CheckUnderstandingSection({ originalTopic }: CheckUnderstandingP
     const { isListening, transcript, startListening, stopListening, resetTranscript } = useSpeechRecognition();
     const { speak } = useTextToSpeech();
     const [assessment, setAssessment] = useState<{ isCorrect: boolean; feedback: string } | null>(null);
+    const { addXp } = useGamificationStore();
 
     const handleStart = () => {
         setStep('listening');
@@ -32,13 +32,9 @@ export function CheckUnderstandingSection({ originalTopic }: CheckUnderstandingP
     const handleStop = async () => {
         stopListening();
 
-        // Wait a tick for final transcript update (optional, but good practice if state lags)
-        // For now, checks current transcript.
         if (!transcript.trim()) {
-            // If empty, don't submit. Maybe show toast?
-            // Since we don't have toast easy access here, let's just set error state or visual check.
             setStep('idle');
-            alert("I didn't hear anything. Please try again.");
+            toast.error("I didn't hear anything. Please try again.");
             return;
         }
 
@@ -49,6 +45,11 @@ export function CheckUnderstandingSection({ originalTopic }: CheckUnderstandingP
         setAssessment(result);
         setStep('result');
         speak(result.feedback);
+
+        if (result.isCorrect) {
+            addXp(20);
+            toast.success("Great explanation! +20 XP");
+        }
     };
 
     return (

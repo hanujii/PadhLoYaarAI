@@ -122,6 +122,32 @@ class AIEngine {
 
         throw new Error(`All AI providers failed to generate object. Details:\n${errors.join('\n')}`);
     }
+
+    /**
+     * Gets the Vercel AI SDK Model instance for a specific model ID.
+     * Searches all providers to find who owns this model.
+     */
+    getModelInstance(modelId: string): any {
+        for (const provider of this.providers.values()) {
+            const models = provider.getModels();
+            if (models.some(m => m.id === modelId)) {
+                return provider.getModelInstance(modelId);
+            }
+        }
+
+        // Fallback: If model ID specifically looks like a provider's format, try that provider directly
+        // Or default to preferred order (likely OpenRouter for broad support)
+        if (modelId.startsWith('google/')) return this.providers.get('google')?.getModelInstance(modelId.replace('google/', ''));
+
+        // If "auto" or unknown, verify providers
+        const defaultProvider = this.providers.get('google');
+        if (defaultProvider && defaultProvider.isConfigured()) {
+            // Try to return a default model instance?
+            return defaultProvider.getModelInstance('gemini-1.5-flash');
+        }
+
+        throw new Error(`Model '${modelId}' not found in any configured provider.`);
+    }
 }
 
 // Singleton Instance

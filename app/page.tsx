@@ -44,40 +44,42 @@ export default function Home() {
     <div className="space-y-24 pb-24">
 
       {/* --- HERO SECTION --- */}
-      <div className="relative h-[calc(100vh-5rem)] flex flex-col items-center justify-center py-8">
+      <div className="relative h-[calc(100vh-5rem)] flex flex-col items-center justify-center py-8 min-h-[600px]">
         <div className="absolute inset-0 -z-10 opacity-50 pointer-events-none overflow-hidden">
           <Hero3D />
         </div>
 
-        <div className="w-full max-w-4xl px-4 z-20 flex flex-col items-center gap-12">
+        <div className="w-full max-w-5xl px-4 z-20 flex flex-col items-center gap-12">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center space-y-4"
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center space-y-6"
           >
-            <h1 className={cn(
-              "font-extrabold tracking-incredibly-tight text-center transition-all duration-500 drop-shadow-2xl flex flex-col items-center gap-1"
-            )}>
-              <span className="text-5xl sm:text-7xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 filter drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
+            <h1 className="font-extrabold tracking-tighter text-center flex flex-col items-center gap-2">
+              <span className="text-5xl sm:text-7xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 drop-shadow-2xl">
                 Padh Lo Yaar
               </span>
-              <span className="text-6xl sm:text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-blue-500 animate-pulse-glow relative pb-2">
+              <span className="text-6xl sm:text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-blue-500 pb-4 relative">
                 AI
-                <div className="absolute inset-0 bg-primary/20 blur-3xl -z-10 rounded-full opacity-50"></div>
+                <div className="absolute inset-x-0 -bottom-4 h-[20px] bg-primary/40 blur-2xl rounded-[100%] -z-10" />
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground/90 max-w-2xl mx-auto font-light tracking-wide">
-              Your seamless AI study companion.
+            <p className="text-xl md:text-2xl text-muted-foreground/80 max-w-2xl mx-auto font-light leading-relaxed">
+              Your seamless <span className="text-white font-medium">AI study companion</span> for the modern era.
             </p>
           </motion.div>
 
           <motion.div
             key="command-center"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full flex flex-col items-center gap-8"
+            transition={{ delay: 0.2 }}
+            className="w-full flex flex-col items-center gap-8 relative"
           >
+            {/* Glow behind command center */}
+            <div className="absolute inset-0 bg-primary/20 blur-[100px] -z-10 rounded-full scale-150 animate-pulse-slow" />
+
             <CommandCenter onChatStart={handleSearch} />
 
             <motion.button
@@ -90,26 +92,24 @@ export default function Home() {
                   toolsSection.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
-              className="text-muted-foreground hover:text-primary transition-colors p-2 cursor-pointer pointer-events-auto mt-8"
-              aria-label="Scroll to tools"
+              className="group flex flex-col items-center gap-2 text-muted-foreground hover:text-white transition-colors cursor-pointer mt-12"
             >
-              <span className="text-sm font-medium mb-2 block">Explore Tools</span>
-              <ArrowRight className="h-6 w-6 rotate-90 mx-auto" />
+              <span className="text-xs font-semibold tracking-widest uppercase opacity-70 group-hover:opacity-100">Explore Tools</span>
+              <ArrowRight className="h-5 w-5 rotate-90 opacity-70 group-hover:opacity-100 transition-transform group-hover:translate-y-1" />
             </motion.button>
           </motion.div>
         </div>
       </div>
 
       {/* --- PREMIUM SECTION --- */}
-      <div id="featured-section" className="container mx-auto px-4 max-w-7xl">
+      <div id="featured-section" className="container mx-auto px-4 max-w-8xl">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="mb-8 flex items-center gap-3"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mb-12"
         >
-          <div className="h-8 w-1 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full" />
-          <h2 className="text-3xl font-bold tracking-tight">Premium Experiences</h2>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Premium Experience</h2>
+          <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent rounded-full" />
         </motion.div>
 
         <motion.div
@@ -117,25 +117,27 @@ export default function Home() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
         >
           {premium.map((tool) => (
             <motion.div key={tool.href} variants={item} className="h-full">
-              <Link href={tool.href} className="block h-full">
-                <GlassCard className="group h-full flex flex-col justify-between p-8 cursor-pointer hover:border-primary/50 transition-colors bg-white/5 data-[premium=true]:bg-gradient-to-br from-white/5 to-white/0" enableTilt={true}>
-                  <div className="flex flex-row items-start justify-between gap-4">
+              <Link href={tool.href} className="block h-full group">
+                <GlassCard className="h-full flex flex-col justify-between p-8 bg-gradient-to-br from-white/5 to-transparent hover:from-primary/10 transition-all duration-500" enableTilt={true}>
+                  <div className="flex justify-between items-start">
                     <div className="space-y-4">
-                      <div className={`p-4 w-fit rounded-2xl bg-opacity-20 ${tool.color} text-primary group-hover:scale-110 transition-transform duration-300 shadow-md border border-white/10`}>
+                      <div className={`p-4 rounded-2xl bg-white/5 border border-white/10 ${tool.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-500`}>
                         <tool.icon className="w-8 h-8" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-2xl leading-tight tracking-tight mb-2">{tool.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed text-base max-w-md">
+                        <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{tool.title}</h3>
+                        <p className="text-muted-foreground leading-relaxed">
                           {tool.description}
                         </p>
                       </div>
                     </div>
-                    <ArrowRight className="w-6 h-6 text-muted-foreground group-hover:text-primary -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                    <div className="p-2 rounded-full border border-white/10 bg-black/20 group-hover:bg-primary group-hover:border-primary group-hover:text-black transition-all duration-300">
+                      <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                    </div>
                   </div>
                 </GlassCard>
               </Link>

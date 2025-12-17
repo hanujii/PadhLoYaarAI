@@ -7,14 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { generateExam } from './actions';
-import ReactMarkdown from 'react-markdown';
-import { Loader2, Download } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { ToolBackButton } from '@/components/global/ToolBackButton';
+import { QuizRenderer } from '@/components/global/QuizRenderer';
 
 export default function ExamGeneratorPage() {
     const [loading, setLoading] = useState(false);
-    const [examContent, setExamContent] = useState<string | null>(null);
+    const [examContent, setExamContent] = useState<any>(null);
     const examRef = useRef<HTMLDivElement>(null);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -128,17 +128,34 @@ export default function ExamGeneratorPage() {
                         {examContent && (
                             <div className="flex gap-2">
                                 <DownloadPDFButton targetRef={examRef} filename="generated-exam.pdf" />
-                                <Button variant="ghost" size="sm" onClick={downloadExam}>
-                                    <Download className="w-4 h-4 mr-2" />
-                                    Download MD
-                                </Button>
                             </div>
                         )}
                     </CardHeader>
-                    <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px] mt-4">
+                    <CardContent className="overflow-y-auto max-h-[600px] mt-4">
                         <div ref={examRef}>
                             {examContent ? (
-                                <ReactMarkdown>{examContent}</ReactMarkdown>
+                                <div className="space-y-6">
+                                    {/* We need to determine if it is MCQ or Written from the data */}
+                                    {Array.isArray(examContent) && examContent.length > 0 && examContent[0].type === 'mcq' ? (
+                                        <QuizRenderer questions={examContent} />
+                                    ) : (
+                                        <div className="space-y-4">
+                                            {Array.isArray(examContent) ? examContent.map((q: any, i: number) => (
+                                                <Card key={i} className="border">
+                                                    <CardHeader>
+                                                        <CardTitle className="text-base">Q{i + 1}: {q.question}</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="bg-muted p-4 rounded-md">
+                                                            <span className="font-semibold text-sm">Model Answer:</span>
+                                                            <p className="text-sm mt-1">{q.answer}</p>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            )) : <p>Invalid Data Format</p>}
+                                        </div>
+                                    )}
+                                </div>
                             ) : (
                                 <div className="text-center text-muted-foreground py-12">
                                     Exam will appear here...

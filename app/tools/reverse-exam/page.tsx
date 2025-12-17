@@ -32,7 +32,7 @@ export default function ReverseExamPage() {
                 type: 'generation',
                 tool: 'Reverse Exam',
                 query: formData.get('topic') as string,
-                result: `Generated mistake for: ${result.data.question}`
+                result: `Generated mistake for: ${(result.data as any).question}`
             });
         } else {
             alert(result.error);

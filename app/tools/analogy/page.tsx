@@ -20,7 +20,7 @@ const PRESET_INTERESTS = [
 
 export default function AnalogyPage() {
     const [loading, setLoading] = useState(false);
-    const [analogy, setAnalogy] = useState<string | null>(null);
+    const [analogy, setAnalogy] = useState<any>(null);
     const [interest, setInterest] = useState('');
     const outputRef = useRef<HTMLDivElement>(null);
     const { addToHistory } = useHistoryStore();
@@ -102,17 +102,51 @@ export default function AnalogyPage() {
             </Card>
 
             {analogy && (
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Your Personalized Explanation</CardTitle>
-                        <DownloadPDFButton targetRef={outputRef} filename="analogy.pdf" />
-                    </CardHeader>
-                    <CardContent className="prose dark:prose-invert max-w-none">
-                        <div ref={outputRef}>
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{analogy}</ReactMarkdown>
-                        </div>
-                    </CardContent>
-                </Card>
+                <div ref={outputRef} className="space-y-6">
+                    <Card className="border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-950/10">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="flex justify-between items-center">
+                                <span>The Analogy</span>
+                                <DownloadPDFButton targetRef={outputRef} filename="analogy.pdf" />
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="prose dark:prose-invert max-w-none text-lg leading-relaxed">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>{(analogy as any).analogy_content}</ReactMarkdown>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <Card className="border-orange-500/20 bg-orange-50/50 dark:bg-orange-950/10">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-base font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400">Key Mapping</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ul className="space-y-3">
+                                    {(analogy as any).key_mapping.map((map: any, i: number) => (
+                                        <li key={i} className="flex items-center justify-between p-2 rounded bg-white/50 dark:bg-white/5 shadow-sm">
+                                            <span className="font-medium">{map.concept_term}</span>
+                                            <ArrowRight className="w-4 h-4 text-muted-foreground mx-2" />
+                                            <span className="font-bold text-primary">{map.analogy_term}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="border-green-500/20 bg-green-50/50 dark:bg-green-950/10">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-base font-semibold uppercase tracking-wider text-green-600 dark:text-green-400">Simplified Definition</CardTitle>
+                            </CardHeader>
+                            <CardContent className="h-full flex items-center">
+                                <p className="text-lg font-medium italic">
+                                    "{(analogy as any).simplified_definition}"
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
             )}
         </div>
     );

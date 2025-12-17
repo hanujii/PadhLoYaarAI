@@ -19,9 +19,11 @@ export async function generateRoadmap(formData: FormData) {
         Study time: ${hours || '2'} hours per day.
         
         Return STRICTLY a JSON array of objects. Each object must have:
-        - "day": number (1, 2, 3...)
+        - "day": number
         - "title": string (Topic of the day)
         - "tasks": string[] (List of 3-4 specific actionable sub-tasks)
+        - "resources": string[] (List of 2-3 specific topics to search on YouTube/Google, e.g. "YouTube: React Hooks Introduction")
+        - "tip": string (A short motivational or efficiency tip for this specific day)
         
         Do not include any markdown formatting (like \`\`\`json) or extra text. Just the raw JSON array.
         `;

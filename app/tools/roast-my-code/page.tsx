@@ -18,7 +18,7 @@ import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 function RoastMyCodeContent() {
     const [code, setCode] = useState('');
-    const [roast, setRoast] = useState('');
+    const [roastData, setRoastData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const resultRef = useRef<HTMLDivElement>(null);
     const { addToHistory } = useHistoryStore();
@@ -34,18 +34,19 @@ function RoastMyCodeContent() {
     const handleRoast = async () => {
         if (!code.trim()) return;
         setLoading(true);
-        setRoast('');
+        setRoastData(null);
 
         const result = await roastCode(code);
         if (result.success && result.data) {
-            setRoast(result.data);
+            setRoastData(result.data);
             addToHistory({
                 tool: 'roast-my-code',
-                query: code,
-                result: result.data
+                query: code.substring(0, 50) + '...',
+                result: `Burn Score: ${result.data.burn_score}/10`
             });
         } else {
-            setRoast("Even the AI refused to read this garbage. (Error occurred)");
+            // Handle error
+            alert("Error roasting code");
         }
         setLoading(false);
     };
@@ -99,13 +100,38 @@ function RoastMyCodeContent() {
                 </motion.div>
 
                 <div className="space-y-4 h-full">
-                    {roast && (
+                    {roastData && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
                             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            className="h-full"
+                            className="h-full flex flex-col gap-4"
                         >
-                            <GlassCard className="h-full border-red-500/30 shadow-[0_0_50px_rgba(239,68,68,0.1)] bg-gradient-to-br from-red-950/10 to-transparent" enableTilt={false}>
+                            {/* Burn Score Card */}
+                            <GlassCard className="border-orange-500/30 bg-orange-950/20" enableTilt={false}>
+                                <div className="p-4 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Flame className={`w-8 h-8 ${roastData.burn_score > 7 ? 'text-red-600 animate-pulse' : 'text-orange-500'}`} />
+                                        <div>
+                                            <h3 className="text-lg font-bold text-orange-100">Burn Score</h3>
+                                            <p className="text-xs text-orange-300/70">Emotional Damage Level</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-4xl font-black text-white drop-shadow-[0_0_10px_rgba(234,88,12,0.5)]">
+                                        {roastData.burn_score}<span className="text-lg text-muted-foreground">/10</span>
+                                    </div>
+                                </div>
+                                <div className="h-2 bg-black/50 w-full mt-2">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${roastData.burn_score * 10}%` }}
+                                        className={`h-full ${roastData.burn_score > 8 ? 'bg-red-600' : 'bg-orange-500'}`}
+                                        transition={{ duration: 1, delay: 0.5 }}
+                                    />
+                                </div>
+                            </GlassCard>
+
+                            {/* The Roast */}
+                            <GlassCard className="flex-1 border-red-500/30 shadow-[0_0_50px_rgba(239,68,68,0.1)] bg-gradient-to-br from-red-950/10 to-transparent" enableTilt={false}>
                                 <div ref={resultRef}>
                                     <CardHeader className="border-b border-red-500/10 pb-4 flex flex-row items-center justify-between">
                                         <CardTitle className="text-red-500 flex items-center gap-2">
@@ -113,17 +139,27 @@ function RoastMyCodeContent() {
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent className="prose dark:prose-invert max-w-none p-6 pt-4 text-red-100/90 prose-p:leading-relaxed prose-strong:text-red-400">
-                                        <ReactMarkdown>{roast}</ReactMarkdown>
+                                        <ReactMarkdown>{roastData.roast}</ReactMarkdown>
                                     </CardContent>
+
+                                    {/* The Fix */}
+                                    {roastData.fix_suggestion && (
+                                        <div className="mx-6 mb-6 p-4 rounded bg-green-950/20 border border-green-500/20">
+                                            <h4 className="text-sm font-bold text-green-400 mb-1 flex items-center gap-2">
+                                                <RefreshCcw className="w-4 h-4" /> Redemption Arc (The Fix)
+                                            </h4>
+                                            <p className="text-sm text-green-100/80">{roastData.fix_suggestion}</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="p-4 pt-0 flex justify-end">
-                                    <ShareResult targetRef={resultRef as React.RefObject<HTMLElement>} fileName="my-code-roast.png" title="My Code Roast" text="I just got roasted by PadhLoYaarAI! Check it out." />
+                                    <ShareResult targetRef={resultRef as React.RefObject<HTMLElement>} fileName="my-code-roast.png" title="My Code Roast" text={`I scored ${roastData.burn_score}/10 on PadhLoYaarAI Roast!`} />
                                 </div>
                             </GlassCard>
                         </motion.div>
                     )}
 
-                    {!roast && (
+                    {!roastData && (
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}

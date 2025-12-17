@@ -26,15 +26,24 @@ export default function CodeTransformerPage() {
 
     const languages = ['javascript', 'typescript', 'python', 'java', 'csharp', 'cpp', 'go', 'rust', 'php'];
 
+    const [explanation, setExplanation] = useState<string | null>(null);
+    const [changes, setChanges] = useState<string[]>([]);
+
     async function handleTransform() {
         setLoading(true);
+        setExplanation(null);
+        setChanges([]);
+
         const result = await transformCode(inputCode, fromLang, toLang, style);
         if (result.success && result.data) {
-            setOutputCode(result.data);
+            setOutputCode(result.data.code);
+            setExplanation(result.data.explanation);
+            setChanges(result.data.changes);
+
             addToHistory({
                 tool: 'code-transformer',
-                query: `Convert ${fromLang} to ${toLang}: \n${inputCode.substring(0, 100)}...`,
-                result: result.data
+                query: `Convert ${fromLang} to ${toLang}`,
+                result: result.data.explanation
             });
         } else {
             setOutputCode('// Error: ' + result.error);
@@ -127,10 +136,10 @@ export default function CodeTransformerPage() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="flex flex-col h-[500px] md:h-full"
+                    className="flex flex-col h-[500px] md:h-full gap-4"
                     ref={outputRef}
                 >
-                    <GlassCard className="flex flex-col gap-2 p-1 h-full border-blue-500/10 bg-blue-950/5" enableTilt={false}>
+                    <GlassCard className="flex flex-col gap-2 p-1 flex-1 border-blue-500/10 bg-blue-950/5" enableTilt={false}>
                         <div className="flex items-center justify-between px-2 py-1 bg-white/5 rounded-t-lg border-b border-white/5">
                             <span className="text-sm font-medium text-muted-foreground">Output</span>
                             <div className="flex items-center gap-2">
@@ -165,6 +174,18 @@ export default function CodeTransformerPage() {
                             </div>
                         </div>
                     </GlassCard>
+
+                    {explanation && (
+                        <GlassCard className="p-4 border-yellow-500/20 bg-yellow-950/5 text-sm" enableTilt={false}>
+                            <h3 className="font-semibold text-yellow-500 mb-2">AI Explanation</h3>
+                            <p className="text-muted-foreground mb-3">{explanation}</p>
+                            {changes.length > 0 && (
+                                <ul className="list-disc list-inside space-y-1 text-xs opacity-80">
+                                    {changes.map((c, i) => <li key={i}>{c}</li>)}
+                                </ul>
+                            )}
+                        </GlassCard>
+                    )}
                 </motion.div>
             </div>
         </div>

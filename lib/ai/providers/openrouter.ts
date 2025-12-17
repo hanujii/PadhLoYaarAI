@@ -69,8 +69,13 @@ export class OpenRouterProvider implements AIProvider {
             { id: 'openai/gpt-4o', name: 'GPT-4o', provider: 'openrouter', isPro: true, contextWindow: 128000 },
             { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1 8B (Free)', provider: 'openrouter', isPro: false, contextWindow: 128000 },
             { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash (Free)', provider: 'openrouter', isPro: false, contextWindow: 1000000 },
-            // Add user specific models requested
-            { id: 'openai/gpt-oss-120b', name: 'GPT OSS 120b', provider: 'openrouter', isPro: true, contextWindow: 32000 }, // Assuming this exists or is alias
+            { id: 'openai/gpt-oss-120b', name: 'GPT OSS 120b', provider: 'openrouter', isPro: true, contextWindow: 32000 },
         ];
+    }
+
+    getModelInstance(modelId: string): any {
+        if (!this.sdkOpenAI) throw new Error('OpenRouter Provider not configured');
+        // OpenRouter acts as OpenAI compatible
+        return this.sdkOpenAI(modelId);
     }
 }

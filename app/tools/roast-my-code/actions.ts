@@ -1,21 +1,25 @@
 'use server';
 
-import { google } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import { aiEngine } from '@/lib/ai/engine';
+import { z } from 'zod';
 
 export async function roastCode(code: string) {
-    try {
-        const { text } = await generateText({
-            model: google(`gemini-1.5-flash`),
-            system: `You are a sarcastic, cynical senior software engineer who has seen it all. 
-            Your job is to "roast" the code provided by the user. 
-            Be funny, harsh, but technically accurate. Point out inefficiencies, bad practices, and weird formatting.
-            Keep it under 200 words. Make them laugh but also learn.`,
-            prompt: `Roast this code:\n\n${code}`,
-        });
+    if (!code) return { success: false, error: 'Code is required' };
 
-        return { success: true, data: text };
+    try {
+        const prompt = `Roast this code. Be sarcastic, funny, but technically accurate.
+        Identify the worst practice and provide a burn score (0-10, where 10 is emotional damage).
+        Also provide a serious "fix" suggestion at the end.`;
+
+        const { object } = await aiEngine.generateObject(prompt, z.object({
+            roast: z.string().describe("The brutal roast found in markdown"),
+            burn_score: z.number().min(0).max(10),
+            fix_suggestion: z.string().describe("A helpful, serious technical suggestion to fix the spaghetti")
+        }));
+
+        return { success: true, data: object };
     } catch (error) {
+        console.error("Roast Error:", error);
         return { success: false, error: 'Failed to roast code.' };
     }
 }

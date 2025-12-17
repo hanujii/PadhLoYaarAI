@@ -3,6 +3,7 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { YoutubeTranscript } = require('youtube-transcript');
 import { generateText } from '@/lib/gemini';
+import { parseAIJSON } from '@/lib/utils';
 
 export async function getYouTubeNotes(formData: FormData) {
     const url = formData.get('url') as string;
@@ -45,26 +46,29 @@ export async function getYouTubeNotes(formData: FormData) {
 
         const prompt = `
         You are an expert note-taker. I will provide a transcript of a video. 
-        Your task is to create structured, readable notes.
+        Your task is to create structured, readable notes AND a short quiz.
         
-        Format the output in Markdown:
-        # Video Summary
-        [Brief Overview]
-
-        ## Key Points
-        - [Point 1]
-        - [Point 2]
-        ...
-
-        ## Detailed Notes
-        [Structured content with headings]
-
-        ## Quiz
-        [3-5 short questions to test understanding]
-
+        Return STRICTLY a JSON object with this schema:
+        {
+            "summary": "Full markdown study notes (Headings, Bullet points, etc.)",
+            "quiz": [
+                {
+                    "question": "Question text?",
+                    "options": ["A", "B", "C", "D"],
+                    "answer": "Correct Option Text",
+                    "clarification": "Why this is correct"
+                }
+            ]
+        }
+        
         TRANSCRIPT:
         ${truncatedText}
         `;
+
+        const resultText = await generateText('flash', prompt);
+        const data = parseAIJSON(resultText);
+
+        return { success: true, data: data };
 
         const summary = await generateText('flash', prompt);
 

@@ -41,4 +41,9 @@ export interface AIProvider {
      * Get list of supported models
      */
     getModels(): ModelDTO[];
+
+    /**
+     * Get the Vercel AI SDK Model instance for streaming
+     */
+    getModelInstance(modelId: string): any;
 }

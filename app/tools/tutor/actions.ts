@@ -84,6 +84,10 @@ export async function getTutorResponse(formData: FormData) {
  * Handles multi-turn chat with history and suggestions.
  * Uses lib/gemini.ts for robust provider fallback.
  */
+/**
+ * Handles multi-turn chat with history and suggestions.
+ * Uses aiEngine.generateObject for robust JSON parsing.
+ */
 export async function getChatResponse(messages: ChatMessage[]) {
     try {
         const historyText = messages.slice(0, -1).map(m => `${m.role}: ${m.content}`).join('\n');
@@ -100,44 +104,15 @@ export async function getChatResponse(messages: ChatMessage[]) {
         Your Goal:
         1. Answer the user's question clearly and concisely. Use Markdown formatting.
         2. Suggest 3 short, relevant follow-up questions the user might want to ask next.
-
-        Return valid JSON in this format ONLY. Do not use markdown code blocks.
-        Ensure all strings are properly escaped. Do not use unescaped newlines inside strings.
-        {
-            "answer": "markdown string of the answer",
-            "suggestions": ["suggestion 1", "suggestion 2", "suggestion 3"]
-        }
         `;
 
-        // Use the robust aiEngine utility
-        const result = await aiEngine.generateText(prompt, {
-            preferredProvider: 'google', // Chat uses simple JSON, Google is good. Or auto.
-            maxTokens: 1024
-        });
-        let responseText = result.text;
+        const { object } = await aiEngine.generateObject(prompt, z.object({
+            answer: z.string().describe("Markdown answer string"),
+            suggestions: z.array(z.string()).length(3).describe("3 Short follow-up questions")
+        }));
 
-        // 1. Strip Markdown Code Blocks (if any remain)
-        responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+        return { success: true, data: object };
 
-        // 2. Escape newlines inside the JSON string to prevent parsing errors
-        // This is a naive fix but handles the common case where AI puts actual newlines in value strings
-        // We assume valid JSON structure otherwise.
-        // A better approach if this fails is to ask for distinct separators, but let's try strict prompt first.
-
-        try {
-            const data = JSON.parse(responseText);
-            return { success: true, data: data };
-        } catch (jsonError) {
-            console.error("JSON Parse Failed:", responseText);
-            // Fallback: If JSON fails, just return the text as a simple answer
-            return {
-                success: true,
-                data: {
-                    answer: responseText,
-                    suggestions: ["Tell me more", "Explain simply", "Quiz me"]
-                }
-            };
-        }
     } catch (error: any) {
         console.error("Chat Error:", error);
         return { success: false, error: error.message || 'Failed to get chat response.' };

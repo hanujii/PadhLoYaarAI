@@ -17,6 +17,8 @@ interface DayPlan {
     day: number;
     title: string;
     tasks: string[];
+    resources?: string[];
+    tip?: string;
 }
 
 export default function RoadmapPage() {
@@ -92,7 +94,7 @@ export default function RoadmapPage() {
                         <DownloadPDFButton targetRef={outputRef} filename="study-roadmap.pdf" buttonText="Download Plan" />
                     </div>
 
-                    <div ref={outputRef} className="space-y-6 relative border-l-2 border-muted ml-4 md:ml-8 pl-8 py-2">
+                    <div ref={outputRef} className="space-y-8 relative border-l-2 border-primary/20 ml-6 pl-8 py-4">
                         {roadmap.map((day, index) => (
                             <motion.div
                                 key={day.day}
@@ -101,33 +103,65 @@ export default function RoadmapPage() {
                                 transition={{ delay: index * 0.1 }}
                                 className="relative"
                             >
-                                <div className="absolute -left-[41px] top-0 bg-background border-2 border-primary rounded-full w-6 h-6 flex items-center justify-center">
+                                <div className="absolute -left-[41px] top-0 bg-background border-2 border-primary rounded-full w-6 h-6 flex items-center justify-center z-10">
                                     <div className="w-2 h-2 bg-primary rounded-full" />
                                 </div>
 
-                                <Card>
-                                    <CardHeader className="pb-2">
+                                <Card className="overflow-hidden">
+                                    <CardHeader className="pb-3 bg-muted/30">
                                         <div className="flex items-center justify-between">
-                                            <CardTitle className="text-lg text-primary">Day {day.day}: {day.title}</CardTitle>
+                                            <CardTitle className="text-lg text-primary flex items-center gap-2">
+                                                <span className="font-mono text-sm bg-primary/10 text-primary px-2 py-1 rounded">DAY {day.day}</span>
+                                                {day.title}
+                                            </CardTitle>
                                             <Clock className="w-4 h-4 text-muted-foreground" />
                                         </div>
                                     </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            {day.tasks.map((task, i) => (
-                                                <li key={i} className="flex items-start justify-between gap-2 text-sm text-foreground/80 group">
-                                                    <div className="flex items-start gap-2">
-                                                        <CheckCircle2 className="w-4 h-4 mt-0.5 text-green-500/50 shrink-0" />
+                                    <CardContent className="pt-4 space-y-4">
+                                        <div className="space-y-2">
+                                            <h4 className="text-sm font-semibold flex items-center gap-2 text-muted-foreground">
+                                                <CheckCircle2 className="w-4 h-4" /> TASKS
+                                            </h4>
+                                            <ul className="grid gap-2">
+                                                {day.tasks.map((task, i) => (
+                                                    <li key={i} className="flex items-start justify-between gap-2 text-sm bg-card border p-2 rounded-md hover:border-primary/50 transition-colors group">
                                                         <span>{task}</span>
-                                                    </div>
-                                                    <Button asChild variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" title="Study with Tutor">
-                                                        <Link href={`/tools/tutor?topic=${encodeURIComponent(task)}`}>
-                                                            <BookOpen className="w-3 h-3 text-primary" />
-                                                        </Link>
-                                                    </Button>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                                        <Button asChild variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100" title="Get Help">
+                                                            <Link href={`/tools/tutor?topic=${encodeURIComponent(task)}`}>
+                                                                <BookOpen className="w-3 h-3" />
+                                                            </Link>
+                                                        </Button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        {day.resources && day.resources.length > 0 && (
+                                            <div className="space-y-2">
+                                                <h4 className="text-sm font-semibold flex items-center gap-2 text-muted-foreground">
+                                                    <BookOpen className="w-4 h-4" /> RESOURCES
+                                                </h4>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {day.resources.map((res, i) => (
+                                                        <a
+                                                            key={i}
+                                                            href={`https://www.google.com/search?q=${encodeURIComponent(res)}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full hover:underline border border-blue-100 dark:border-blue-900"
+                                                        >
+                                                            {res}
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {day.tip && (
+                                            <div className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900 p-3 rounded-lg text-sm text-yellow-800 dark:text-yellow-200 italic flex gap-2">
+                                                <span className="font-bold not-italic">💡 Tip:</span> {day.tip}
+                                            </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </motion.div>

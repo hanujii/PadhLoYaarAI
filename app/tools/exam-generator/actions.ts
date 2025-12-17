@@ -1,6 +1,7 @@
 'use server';
 
 import { generateText } from '@/lib/gemini';
+import { parseAIJSON } from '@/lib/utils';
 
 export async function generateExam(formData: FormData) {
     const topic = formData.get('topic') as string;
@@ -10,22 +11,29 @@ export async function generateExam(formData: FormData) {
 
     if (!topic) return { error: 'Topic is required' };
 
-    let prompt = `You are an expert Exam Generator. Create an exam on the topic: "${topic}".
+    const prompt = `You are an expert Exam Generator. Create an exam on the topic: "${topic}".
   
-  Configuration:
-  - Difficulty: ${difficulty}
-  - Number of Questions: ${questionCount}
-  - Format: ${type === 'mcq' ? 'Multiple Choice Questions (with A,B,C,D options)' : 'Written / Short Answer'}
-  
-  Output Format:
-  1. The Exam (Questions).
-  2. The Solutions (Key) at the very end, separated by a horizontal rule or clear header.
-  
-  Use Markdown.`;
+    Configuration:
+    - Difficulty: ${difficulty}
+    - Number of Questions: ${questionCount}
+    - Type: ${type}
+    
+    Return STRICTLY a JSON array of objects with this schema:
+    [
+      {
+          "question": "The question text",
+          "options": ["Option A", "Option B", "Option C", "Option D"], // Only if MCQ, else empty array
+          "answer": "The correct answer (text) or model answer",
+          "type": "${type}",
+          "clarification": "Brief explanation of the answer"
+      }
+    ]
+    `;
 
     try {
         const text = await generateText('flash', prompt);
-        return { success: true, data: text };
+        const data = parseAIJSON(text);
+        return { success: true, data: data };
     } catch (error) {
         console.error("Exam Gen Error:", error);
         return { success: false, error: 'Failed to generate exam.' };

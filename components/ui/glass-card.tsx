@@ -25,6 +25,9 @@ export const GlassCard = ({ children, enableTilt = false, className, ...props }:
             )}
             {...props as any}
         >
+            {/* Sheen Effect */}
+            <div className="absolute inset-0 -translate-x-[100%] group-hover:animate-[sheen_1s_ease-in-out] bg-gradient-to-r from-transparent via-white/10 to-transparent z-20 pointer-events-none" />
+
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="relative z-10 h-full">
                 {children}
