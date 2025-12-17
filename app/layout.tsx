@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Outfit } from "next/font/google";
 import 'tldraw/tldraw.css';
 import "./globals.css";
 import { Header } from "@/components/global/Header";
@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/components/auth/AuthContext";
 import { OnboardingTour } from "@/components/global/OnboardingTour";
 
-const poppins = Poppins({
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-sans"
 });
 
@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("min-h-screen bg-background font-sans antialiased flex flex-col", poppins.variable)}>
+      <body className={cn("min-h-screen bg-background font-sans antialiased flex flex-col", outfit.variable)}>
         <AuthProvider>
           <ThemeProvider
             attribute="class"
@@ -41,7 +41,7 @@ export default function RootLayout({
             themes={['light', 'dark', 'pitch-black', 'theme-red', 'theme-cyan', 'theme-stranger-things', 'theme-money-heist', 'theme-dark-series']}
           >
             <Header />
-            <main className="flex-1 container py-6">
+            <main className="flex-1 container py-6 mt-20">
               {children}
             </main>
             <Footer />

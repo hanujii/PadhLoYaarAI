@@ -55,17 +55,17 @@ export default function Home() {
             className="text-center space-y-4"
           >
             <h1 className={cn(
-              "font-extrabold tracking-tight text-center transition-all duration-500 drop-shadow-2xl flex flex-col items-center gap-2"
+              "font-extrabold tracking-incredibly-tight text-center transition-all duration-500 drop-shadow-2xl flex flex-col items-center gap-1"
             )}>
-              <span className="text-4xl sm:text-6xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-b from-foreground to-foreground/60 filter drop-shadow-lg">
+              <span className="text-5xl sm:text-7xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 filter drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
                 Padh Lo Yaar
               </span>
-              <span className="text-5xl sm:text-7xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-primary animate-pulse relative">
+              <span className="text-6xl sm:text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-blue-500 animate-pulse-glow relative pb-2">
                 AI
-                <div className="absolute inset-0 bg-primary/20 blur-xl -z-10 rounded-full"></div>
+                <div className="absolute inset-0 bg-primary/20 blur-3xl -z-10 rounded-full opacity-50"></div>
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground/80 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-muted-foreground/90 max-w-2xl mx-auto font-light tracking-wide">
               Your seamless AI study companion.
             </p>
           </motion.div>

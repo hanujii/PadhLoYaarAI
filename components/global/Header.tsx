@@ -93,230 +93,232 @@ export function Header() {
     const timerPresets = [10, 15, 25, 45, 60];
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+        <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
             {/* Hidden Audio Element */}
             <audio ref={audioRef} src={MUSIC_URLS[genre]} loop />
 
-            <div className="container flex h-16 items-center justify-between px-4">
+            <div className="w-full max-w-6xl rounded-full border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] pointer-events-auto transition-all duration-300 hover:border-white/20 hover:bg-white/10">
+                <div className="flex h-16 items-center justify-between px-6">
 
-                {/* LEFT: Mobile Menu + Logo */}
-                <div className="flex items-center gap-2 md:gap-6">
-                    {/* Mobile Menu */}
-                    <div className="md:hidden">
-                        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                            <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="mr-0 hover:bg-transparent">
-                                    <Menu className="h-5 w-5" />
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent side="left" className="w-[80vw] sm:w-[350px]">
-                                <SheetHeader>
-                                    <SheetTitle>Menu</SheetTitle>
-                                </SheetHeader>
-                                <div className="flex flex-col gap-4 py-4">
-                                    <Link href="/" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
-                                        Dashboard
-                                    </Link>
-                                    <div className="space-y-3">
-                                        <h4 className="text-sm font-medium text-muted-foreground">Tools</h4>
+                    {/* LEFT: Mobile Menu + Logo */}
+                    <div className="flex items-center gap-2 md:gap-6">
+                        {/* Mobile Menu */}
+                        <div className="md:hidden">
+                            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                                <SheetTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="mr-0 hover:bg-transparent">
+                                        <Menu className="h-5 w-5" />
+                                    </Button>
+                                </SheetTrigger>
+                                <SheetContent side="left" className="w-[80vw] sm:w-[350px]">
+                                    <SheetHeader>
+                                        <SheetTitle>Menu</SheetTitle>
+                                    </SheetHeader>
+                                    <div className="flex flex-col gap-4 py-4">
+                                        <Link href="/" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
+                                            Dashboard
+                                        </Link>
+                                        <div className="space-y-3">
+                                            <h4 className="text-sm font-medium text-muted-foreground">Tools</h4>
+                                            {tools.map((tool) => (
+                                                <Link
+                                                    key={tool.href}
+                                                    href={tool.href}
+                                                    className="block text-base hover:text-primary transition-colors"
+                                                    onClick={() => setIsOpen(false)}
+                                                >
+                                                    {tool.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                        <Separator className="my-2" />
+                                        <Link href="/history" className="flex items-center gap-2 text-base font-medium">
+                                            <History className="h-4 w-4" />
+                                            History
+                                        </Link>
+                                        <Link href="/history" className="flex items-center gap-2 text-base font-medium">
+                                            <Bookmark className="h-4 w-4" />
+                                            Saved Items
+                                        </Link>
+                                    </div>
+                                </SheetContent>
+                            </Sheet>
+                        </div>
+
+                        {/* BRAND LOGO */}
+                        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                            <Logo className="w-8 h-8 text-foreground shrink-0" />
+                            <span className="text-lg sm:text-xl font-bold tracking-tight text-foreground truncate">
+                                plyAI
+                            </span>
+                        </Link>
+
+                        {/* Desktop Nav */}
+                        <nav className="hidden md:flex items-center gap-6 text-sm font-medium ml-4">
+                            <Link href="/" className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? "text-foreground" : "text-foreground/60")}>
+                                Dashboard
+                            </Link>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-8 w-auto px-2 font-normal text-foreground/60 hover:text-foreground">
+                                        Tools
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-48 max-h-[250px] overflow-y-auto custom-scrollbar">
+                                    <div className="flex flex-col p-1">
                                         {tools.map((tool) => (
-                                            <Link
-                                                key={tool.href}
-                                                href={tool.href}
-                                                className="block text-base hover:text-primary transition-colors"
-                                                onClick={() => setIsOpen(false)}
-                                            >
-                                                {tool.name}
-                                            </Link>
+                                            <DropdownMenuItem key={tool.href} asChild className="text-xs px-2 py-1.5 cursor-pointer">
+                                                <Link href={tool.href}>{tool.name}</Link>
+                                            </DropdownMenuItem>
                                         ))}
                                     </div>
-                                    <Separator className="my-2" />
-                                    <Link href="/history" className="flex items-center gap-2 text-base font-medium">
-                                        <History className="h-4 w-4" />
-                                        History
-                                    </Link>
-                                    <Link href="/history" className="flex items-center gap-2 text-base font-medium">
-                                        <Bookmark className="h-4 w-4" />
-                                        Saved Items
-                                    </Link>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </nav>
                     </div>
 
-                    {/* BRAND LOGO */}
-                    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                        <Logo className="w-8 h-8 text-foreground shrink-0" />
-                        <span className="text-lg sm:text-xl font-bold tracking-tight text-foreground truncate">
-                            plyAI
-                        </span>
-                    </Link>
-
-                    {/* Desktop Nav */}
-                    <nav className="hidden md:flex items-center gap-6 text-sm font-medium ml-4">
-                        <Link href="/" className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? "text-foreground" : "text-foreground/60")}>
-                            Dashboard
-                        </Link>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-auto px-2 font-normal text-foreground/60 hover:text-foreground">
-                                    Tools
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start" className="w-48 max-h-[250px] overflow-y-auto custom-scrollbar">
-                                <div className="flex flex-col p-1">
-                                    {tools.map((tool) => (
-                                        <DropdownMenuItem key={tool.href} asChild className="text-xs px-2 py-1.5 cursor-pointer">
-                                            <Link href={tool.href}>{tool.name}</Link>
+                    {/* RIGHT: Timer, Music, Profile */}
+                    <div className="flex items-center gap-1 sm:gap-4">
+                        {/* Timer Display with Popover (Compact on Mobile) */}
+                        <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
+                                        <Clock className="w-3.5 h-3.5 text-primary sm:mr-2 group-hover:text-purple-500 transition-colors" />
+                                        <span className="hidden sm:inline">{formattedTime}</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Set Duration</DropdownMenuLabel>
+                                    {timerPresets.map(min => (
+                                        <DropdownMenuItem key={min} onClick={() => setDuration(min)}>
+                                            {min} Minutes
                                         </DropdownMenuItem>
                                     ))}
-                                </div>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </nav>
-                </div>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
-                {/* RIGHT: Timer, Music, Profile */}
-                <div className="flex items-center gap-1 sm:gap-4">
-                    {/* Timer Display with Popover (Compact on Mobile) */}
-                    <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
+                            <div className="w-px h-3 bg-border/50 mx-0.5" />
+
+                            <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={toggleTimer}>
+                                {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={() => resetTimer()}>
+                                <span className="text-[10px]">↺</span>
+                            </Button>
+                        </div>
+
+                        {/* Music Popover */}
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant="ghost" size="icon" className={cn("relative transition-transform hover:scale-105 h-8 w-8 sm:h-9 sm:w-9", isPlaying && "text-primary")}>
+                                    <Music className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    {isPlaying && <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(var(--primary))] " />}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-56" align="end">
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-medium leading-none flex items-center gap-2">
+                                            <Volume2 className="w-4 h-4" /> Soundscapes
+                                        </h4>
+                                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => togglePlay()}>
+                                            {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                                        </Button>
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {Object.keys(MUSIC_URLS).map((g) => (
+                                            <Button
+                                                key={g}
+                                                variant={genre === g ? "default" : "outline"}
+                                                size="sm"
+                                                className="justify-start capitalize"
+                                                onClick={() => setGenre(g)}
+                                            >
+                                                {g}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+
+                        {/* Profile & Unified Menu */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
-                                    <Clock className="w-3.5 h-3.5 text-primary sm:mr-2 group-hover:text-purple-500 transition-colors" />
-                                    <span className="hidden sm:inline">{formattedTime}</span>
+                                <Button variant="ghost" size="icon" className="rounded-full overflow-hidden border border-border/50 hover:bg-transparent hover:border-primary/50 transition-all duration-300 hover:ring-2 hover:ring-primary/20 hover:ring-offset-1 hover:ring-offset-background group w-8 h-8 sm:w-9 sm:h-9">
+                                    <div className="h-full w-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center group-hover:from-primary/20">
+                                        <User className="h-4 w-4 text-foreground/80 group-hover:text-primary transition-colors" />
+                                    </div>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Set Duration</DropdownMenuLabel>
-                                {timerPresets.map(min => (
-                                    <DropdownMenuItem key={min} onClick={() => setDuration(min)}>
-                                        {min} Minutes
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                            <DropdownMenuContent align="end" className="w-64 p-2">
+                                {/* ... existing menu content ... */}
+                                <DropdownMenuLabel className="font-normal">
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium leading-none">My Stuff</p>
+                                        <p className="text-xs leading-none text-muted-foreground">Manage your learning journey</p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
 
-                        <div className="w-px h-3 bg-border/50 mx-0.5" />
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/history" className="flex items-center gap-2">
+                                        <History className="h-4 w-4 text-blue-500" />
+                                        <div className="flex flex-col">
+                                            <span>History</span>
+                                            <span className="text-[10px] text-muted-foreground">View past generations</span>
+                                        </div>
+                                    </Link>
+                                </DropdownMenuItem>
 
-                        <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={toggleTimer}>
-                            {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={() => resetTimer()}>
-                            <span className="text-[10px]">↺</span>
-                        </Button>
-                    </div>
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/history" className="flex items-center gap-2">
+                                        <Bookmark className="h-4 w-4 text-purple-500" />
+                                        <div className="flex flex-col">
+                                            <span>Saved Items</span>
+                                            <span className="text-[10px] text-muted-foreground">Your bookmarked content</span>
+                                        </div>
+                                    </Link>
+                                </DropdownMenuItem>
 
-                    {/* Music Popover */}
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant="ghost" size="icon" className={cn("relative transition-transform hover:scale-105 h-8 w-8 sm:h-9 sm:w-9", isPlaying && "text-primary")}>
-                                <Music className="w-4 h-4 sm:w-5 sm:h-5" />
-                                {isPlaying && <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(var(--primary))] " />}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-56" align="end">
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <h4 className="font-medium leading-none flex items-center gap-2">
-                                        <Volume2 className="w-4 h-4" /> Soundscapes
-                                    </h4>
-                                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => togglePlay()}>
-                                        {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-                                    </Button>
-                                </div>
-                                <div className="grid grid-cols-1 gap-2">
-                                    {Object.keys(MUSIC_URLS).map((g) => (
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Socials</DropdownMenuLabel>
+
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                        <Linkedin className="h-4 w-4 text-[#0077b5]" />
+                                        <span>LinkedIn</span>
+                                    </a>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                        <Instagram className="h-4 w-4 text-[#E1306C]" />
+                                        <span>Instagram</span>
+                                    </a>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Appearance</DropdownMenuLabel>
+
+                                <div className="grid grid-cols-4 gap-1 p-1">
+                                    {THEME_PRESETS.map((t) => (
                                         <Button
-                                            key={g}
-                                            variant={genre === g ? "default" : "outline"}
-                                            size="sm"
-                                            className="justify-start capitalize"
-                                            onClick={() => setGenre(g)}
-                                        >
-                                            {g}
-                                        </Button>
+                                            key={t.id}
+                                            size="icon"
+                                            variant="outline"
+                                            className={cn(
+                                                "h-8 w-8 rounded-full border-2 border-transparent hover:border-white/50 transition-all",
+                                                t.className
+                                            )}
+                                            onClick={() => setTheme(t.id)}
+                                            title={t.label}
+                                        />
                                     ))}
                                 </div>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-
-                    {/* Profile & Unified Menu */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="rounded-full overflow-hidden border border-border/50 hover:bg-transparent hover:border-primary/50 transition-all duration-300 hover:ring-2 hover:ring-primary/20 hover:ring-offset-1 hover:ring-offset-background group w-8 h-8 sm:w-9 sm:h-9">
-                                <div className="h-full w-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center group-hover:from-primary/20">
-                                    <User className="h-4 w-4 text-foreground/80 group-hover:text-primary transition-colors" />
-                                </div>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-64 p-2">
-                            {/* ... existing menu content ... */}
-                            <DropdownMenuLabel className="font-normal">
-                                <div className="flex flex-col space-y-1">
-                                    <p className="text-sm font-medium leading-none">My Stuff</p>
-                                    <p className="text-xs leading-none text-muted-foreground">Manage your learning journey</p>
-                                </div>
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-
-                            <DropdownMenuItem asChild className="cursor-pointer">
-                                <Link href="/history" className="flex items-center gap-2">
-                                    <History className="h-4 w-4 text-blue-500" />
-                                    <div className="flex flex-col">
-                                        <span>History</span>
-                                        <span className="text-[10px] text-muted-foreground">View past generations</span>
-                                    </div>
-                                </Link>
-                            </DropdownMenuItem>
-
-                            <DropdownMenuItem asChild className="cursor-pointer">
-                                <Link href="/history" className="flex items-center gap-2">
-                                    <Bookmark className="h-4 w-4 text-purple-500" />
-                                    <div className="flex flex-col">
-                                        <span>Saved Items</span>
-                                        <span className="text-[10px] text-muted-foreground">Your bookmarked content</span>
-                                    </div>
-                                </Link>
-                            </DropdownMenuItem>
-
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Socials</DropdownMenuLabel>
-
-                            <DropdownMenuItem asChild className="cursor-pointer">
-                                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                                    <Linkedin className="h-4 w-4 text-[#0077b5]" />
-                                    <span>LinkedIn</span>
-                                </a>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild className="cursor-pointer">
-                                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                                    <Instagram className="h-4 w-4 text-[#E1306C]" />
-                                    <span>Instagram</span>
-                                </a>
-                            </DropdownMenuItem>
-
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Appearance</DropdownMenuLabel>
-
-                            <div className="grid grid-cols-4 gap-1 p-1">
-                                {THEME_PRESETS.map((t) => (
-                                    <Button
-                                        key={t.id}
-                                        size="icon"
-                                        variant="outline"
-                                        className={cn(
-                                            "h-8 w-8 rounded-full border-2 border-transparent hover:border-white/50 transition-all",
-                                            t.className
-                                        )}
-                                        onClick={() => setTheme(t.id)}
-                                        title={t.label}
-                                    />
-                                ))}
-                            </div>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </div>
         </header>

@@ -16,25 +16,26 @@ export const Hero3D = () => {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="absolute inset-0 bg-gradient-to-tr from-primary/60 to-purple-500/60 rounded-full blur-3xl opacity-40 mix-blend-screen"
+                    className="absolute inset-0 bg-gradient-to-tr from-primary/40 via-purple-500/30 to-blue-500/40 rounded-full blur-[60px] opacity-60 mix-blend-screen animate-pulse-glow"
                 />
 
                 {/* Main Orbital Rings - Visible on all devices */}
-                <div className="absolute inset-0 border-2 border-primary/20 rounded-full will-change-transform" style={{ transform: 'rotateX(60deg) rotateY(15deg)' }} />
-                <div className="absolute inset-0 border-2 border-purple-500/20 rounded-full will-change-transform" style={{ transform: 'rotateX(-60deg) rotateY(15deg)' }} />
+                <div className="absolute inset-0 border-2 border-primary/30 rounded-full will-change-transform shadow-[0_0_15px_rgba(139,92,246,0.3)]" style={{ transform: 'rotateX(60deg) rotateY(15deg)' }} />
+                <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full will-change-transform shadow-[0_0_15px_rgba(168,85,247,0.3)]" style={{ transform: 'rotateX(-60deg) rotateY(15deg)' }} />
 
                 {/* Secondary Rings - Hidden on very small screens for performance, simpler on mobile */}
-                <div className="absolute inset-0 border border-primary/10 rounded-full will-change-transform hidden sm:block" style={{ transform: 'rotateY(60deg) rotateX(15deg)' }} />
+                <div className="absolute inset-0 border border-primary/20 rounded-full will-change-transform hidden sm:block" style={{ transform: 'rotateY(60deg) rotateX(15deg)' }} />
 
                 {/* Complexity Rings - Desktop Only */}
                 <div className="absolute inset-0 border border-purple-500/10 rounded-full scale-125 hidden md:block will-change-transform" style={{ transform: 'rotateX(45deg) rotateY(-45deg)' }} />
 
                 {/* Floating Particles - Reduced count and complexity */}
-                <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-primary/80 rounded-full shadow-[0_0_5px_currentColor] animate-pulse will-change-transform" style={{ transform: 'translateZ(60px)' }} />
-                <div className="absolute bottom-0 right-1/2 w-2 h-2 bg-purple-400/80 rounded-full shadow-[0_0_8px_currentColor] animate-bounce will-change-transform" style={{ transform: 'translateZ(-40px)' }} />
+                <div className="absolute top-0 left-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_currentColor] animate-float" style={{ transform: 'translateZ(60px)', animationDelay: '0s' }} />
+                <div className="absolute bottom-0 right-1/2 w-2.5 h-2.5 bg-purple-400 rounded-full shadow-[0_0_15px_currentColor] animate-float" style={{ transform: 'translateZ(-40px)', animationDelay: '1s' }} />
+                <div className="absolute top-1/4 left-1/4 w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_currentColor] animate-float hidden sm:block" style={{ transform: 'translateZ(20px)', animationDelay: '2s' }} />
 
                 {/* Core */}
-                <div className="absolute top-[25%] left-[25%] w-1/2 h-1/2 bg-gradient-to-br from-primary/80 to-purple-600/80 rounded-full shadow-[0_0_30px_rgba(var(--primary),0.4)] animate-pulse will-change-opacity" />
+                <div className="absolute top-[30%] left-[30%] w-[40%] h-[40%] bg-gradient-to-br from-primary via-purple-600 to-blue-600 rounded-full shadow-[0_0_50px_rgba(var(--primary),0.6)] animate-pulse will-change-opacity blur-md" />
             </div>
         </div>
     );
