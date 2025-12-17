@@ -18,6 +18,7 @@ import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Typewriter } from '@/components/global/Typewriter';
 import { CheckUnderstandingSection } from './CheckUnderstanding';
+import { AIModelSelector, AIProviderId } from '@/components/global/AIModelSelector';
 
 import { Suspense } from 'react';
 
@@ -29,6 +30,7 @@ function TutorContent() {
     const [topicInput, setTopicInput] = useState('');
     const [initialTopic, setInitialTopic] = useState('');
     const [isSaved, setIsSaved] = useState(false);
+    const [provider, setProvider] = useState<AIProviderId>('auto');
     const outputRef = useRef<HTMLDivElement>(null);
 
     const searchParams = useSearchParams();
@@ -99,8 +101,9 @@ function TutorContent() {
                     transition={{ delay: 0.1 }}
                 >
                     <GlassCard className="h-full" enableTilt={true}>
-                        <CardHeader>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle>Configuration</CardTitle>
+                            <AIModelSelector value={provider} onValueChange={(v) => setProvider(v as AIProviderId)} />
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-4">
@@ -115,6 +118,7 @@ function TutorContent() {
                                         required
                                         className="bg-background/50 border-white/10"
                                     />
+                                    <input type="hidden" name="provider" value={provider} />
                                 </div>
 
                                 <div className="space-y-2">

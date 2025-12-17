@@ -183,8 +183,8 @@ export function Header() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
-                                    <Clock className="w-3.5 h-3.5 text-primary mr-1 sm:mr-2 group-hover:text-purple-500 transition-colors" />
-                                    <span>{formattedTime}</span>
+                                    <Clock className="w-3.5 h-3.5 text-primary sm:mr-2 group-hover:text-purple-500 transition-colors" />
+                                    <span className="hidden sm:inline">{formattedTime}</span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -284,18 +284,18 @@ export function Header() {
                             <DropdownMenuSeparator />
                             <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Socials</DropdownMenuLabel>
 
-                            <div className="flex items-center justify-around p-2">
-                                <a href="https://www.instagram.com/hanu3040/" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary rounded-full transition-colors" title="Instagram">
-                                    <Instagram className="h-5 w-5 text-[#E1306C]" />
+                            <DropdownMenuItem asChild className="cursor-pointer">
+                                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                    <Linkedin className="h-4 w-4 text-[#0077b5]" />
+                                    <span>LinkedIn</span>
                                 </a>
-                                <a href="https://www.linkedin.com/in/ayush-gupta-creative?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary rounded-full transition-colors" title="LinkedIn">
-                                    <Linkedin className="h-5 w-5 text-[#0077b5]" />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild className="cursor-pointer">
+                                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                    <Instagram className="h-4 w-4 text-[#E1306C]" />
+                                    <span>Instagram</span>
                                 </a>
-                                <a href="https://x.com/hanu3040" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary rounded-full transition-colors" title="Twitter/X">
-                                    {/* X Logo Svg or generic globe/twitter icon */}
-                                    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                                </a>
-                            </div>
+                            </DropdownMenuItem>
 
                             <DropdownMenuSeparator />
                             <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Appearance</DropdownMenuLabel>

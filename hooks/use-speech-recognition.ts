@@ -25,6 +25,8 @@ interface IWindow extends Window {
     SpeechRecognition: any;
 }
 
+
+
 export function useSpeechRecognition() {
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');

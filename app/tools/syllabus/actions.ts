@@ -69,6 +69,6 @@ export async function parseSyllabus(formData: FormData) {
         return { success: true, data: topics };
     } catch (error) {
         console.error('Syllabus Parse Error:', error);
-        return { success: false, error: 'Failed to process syllabus PDF. Please ensure it is a text-based PDF, not scanned images.' };
+        return { success: false, error: 'Failed to process syllabus PDF.' };
     }
 }

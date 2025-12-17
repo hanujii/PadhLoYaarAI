@@ -17,7 +17,7 @@ export function Footer() {
                         </Link>
                         . Source code available on{" "}
                         <Link
-                            href="https://github.com/hanujii"
+                            href="https://github.com/hanujii/PadhLoYaarAI.git"
                             target="_blank"
                             rel="noreferrer"
                             className="font-medium underline underline-offset-4"

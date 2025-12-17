@@ -1,13 +1,12 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
+import { ProviderId } from '@/lib/ai/types';
 import { generateObject } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 
-const google = createGoogleGenerativeAI({
-    apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "",
-});
+
 
 export type ChatMessage = {
     role: 'user' | 'assistant';
@@ -27,6 +26,7 @@ export async function getTutorResponse(formData: FormData) {
     const topic = formData.get('topic') as string;
     const mode = formData.get('mode') as string;
     const instructions = formData.get('instructions') as string;
+    const provider = formData.get('provider') as string; // 'google', 'openrouter', etc.
 
     if (!topic) return { error: 'Topic is required' };
 
@@ -48,11 +48,14 @@ export async function getTutorResponse(formData: FormData) {
     prompt += `\n\nFormat your response in clean Markdown.`;
 
     try {
-        const text = await generateText('flash', prompt);
-        return { success: true, data: text };
-    } catch (error) {
+        const result = await aiEngine.generateText(prompt, {
+            preferredProvider: provider as ProviderId,
+            maxTokens: 4096, // Give enough space for detailed explanations
+        });
+        return { success: true, data: result.text };
+    } catch (error: any) {
         console.error("Tutor Error:", error);
-        return { success: false, error: 'Failed to generate response. Check Server Logs.' };
+        return { success: false, error: error.message || 'Failed to generate response.' };
     }
 }
 
@@ -85,8 +88,12 @@ export async function getChatResponse(messages: ChatMessage[]) {
         }
         `;
 
-        // Use the robust generateText utility
-        let responseText = await generateText('flash', prompt);
+        // Use the robust aiEngine utility
+        const result = await aiEngine.generateText(prompt, {
+            preferredProvider: 'google', // Chat uses simple JSON, Google is good. Or auto.
+            maxTokens: 1024
+        });
+        let responseText = result.text;
 
         // 1. Strip Markdown Code Blocks (if any remain)
         responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -129,15 +136,16 @@ export async function checkUnderstanding(originalTopic: string, userExplanation:
         Return JSON: { "isCorrect": boolean, "feedback": string }
         `;
 
-        const { object } = await generateObject({
-            model: google('gemini-1.5-flash'),
-            schema: z.object({
-                isCorrect: z.boolean(),
-                feedback: z.string(),
-            }),
-            prompt: prompt,
+        const { object, providerUsed } = await aiEngine.generateObject(prompt, z.object({
+            isCorrect: z.boolean(),
+            feedback: z.string(),
+        }), {
+            // "Pro" logic can be handled by engine if needed, but for simple JSON, Flash/Mini is fine.
+            // aiEngine handles defaults.
+            maxTokens: 1024,
         });
 
+        console.log(`[CheckUnderstanding] Used provider: ${providerUsed}`);
         return object;
     } catch (error) {
         console.error("Check Understanding Error:", error);
