@@ -72,6 +72,16 @@ export async function getYouTubeNotes(formData: FormData) {
 
     } catch (error) {
         console.error('YouTube Notes error:', error);
-        return { success: false, error: error instanceof Error ? error.message : 'Failed to generate notes.' };
+
+        let errorMessage = 'Failed to generate notes.';
+        if (error instanceof Error) {
+            if (error.message.includes('Could not fetch subtitles')) {
+                errorMessage = "Could not find captions for this video. Please try a video with closed captions enabled.";
+            } else {
+                errorMessage = error.message;
+            }
+        }
+
+        return { success: false, error: errorMessage };
     }
 }

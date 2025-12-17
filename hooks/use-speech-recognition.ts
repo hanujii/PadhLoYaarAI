@@ -28,19 +28,19 @@ interface IWindow extends Window {
 export function useSpeechRecognition() {
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');
+    const [interimTranscript, setInterimTranscript] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [recognition, setRecognition] = useState<any>(null);
 
     useEffect(() => {
-        // Safe access to window object for Next.js SSR compatibility
         if (typeof window !== 'undefined') {
             const { webkitSpeechRecognition, SpeechRecognition } = window as unknown as IWindow;
             const SpeechRecognitionConstructor = SpeechRecognition || webkitSpeechRecognition;
 
             if (SpeechRecognitionConstructor) {
                 const recognitionInstance = new SpeechRecognitionConstructor();
-                recognitionInstance.continuous = false; // We want short command-like inputs
-                recognitionInstance.interimResults = true; // Show text as user speaks
+                recognitionInstance.continuous = true; // Changed to true for longer dictation
+                recognitionInstance.interimResults = true;
                 recognitionInstance.lang = 'en-US';
 
                 recognitionInstance.onstart = () => {
@@ -53,20 +53,33 @@ export function useSpeechRecognition() {
                 };
 
                 recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
-                    let finalTranscript = '';
+                    let finalArgs = '';
+                    let interimArgs = '';
+
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         if (event.results[i].isFinal) {
-                            finalTranscript += event.results[i][0].transcript;
+                            finalArgs += event.results[i][0].transcript;
+                        } else {
+                            interimArgs += event.results[i][0].transcript;
                         }
                     }
-                    if (finalTranscript) {
-                        setTranscript(finalTranscript);
+
+                    if (finalArgs) {
+                        setTranscript(prev => prev + ' ' + finalArgs);
                     }
+                    setInterimTranscript(interimArgs);
                 };
 
                 recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
-                    setError(event.error);
-                    setIsListening(false);
+                    console.error("Speech Error:", event.error);
+                    if (event.error === 'not-allowed') {
+                        setError('Microphone access denied.');
+                    } else if (event.error === 'no-speech') {
+                        // Ignore no-speech errors usually, just means silence
+                    } else {
+                        setError(event.error);
+                    }
+                    // Don't auto-stop on some errors to allow retry, but strictly `listening` state usually updates on `onend`
                 };
 
                 setRecognition(recognitionInstance);
@@ -77,24 +90,26 @@ export function useSpeechRecognition() {
     }, []);
 
     const startListening = useCallback(() => {
-        if (recognition) {
+        if (recognition && !isListening) {
             try {
                 recognition.start();
             } catch (e) {
-                // Usually means already started
+                console.error("Start error:", e);
             }
         }
-    }, [recognition]);
+    }, [recognition, isListening]);
 
     const stopListening = useCallback(() => {
-        if (recognition) {
+        if (recognition && isListening) {
             recognition.stop();
         }
-    }, [recognition]);
+    }, [recognition, isListening]);
 
     const resetTranscript = useCallback(() => {
         setTranscript('');
+        setInterimTranscript('');
+        setError(null);
     }, []);
 
-    return { isListening, transcript, startListening, stopListening, resetTranscript, error };
+    return { isListening, transcript: transcript + (interimTranscript ? ' ' + interimTranscript : ''), startListening, stopListening, resetTranscript, error };
 }

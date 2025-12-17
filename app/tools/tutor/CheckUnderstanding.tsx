@@ -31,6 +31,17 @@ export function CheckUnderstandingSection({ originalTopic }: CheckUnderstandingP
 
     const handleStop = async () => {
         stopListening();
+
+        // Wait a tick for final transcript update (optional, but good practice if state lags)
+        // For now, checks current transcript.
+        if (!transcript.trim()) {
+            // If empty, don't submit. Maybe show toast?
+            // Since we don't have toast easy access here, let's just set error state or visual check.
+            setStep('idle');
+            alert("I didn't hear anything. Please try again.");
+            return;
+        }
+
         setStep('assessing');
 
         // Call server action to verify understanding

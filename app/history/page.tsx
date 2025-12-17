@@ -21,6 +21,8 @@ import remarkGfm from 'remark-gfm';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { ToolBackButton } from '@/components/global/ToolBackButton';
+
 export default function HistoryPage() {
     const { history, savedItems, removeFromHistory, removeFromSaved, saveItem } = useHistoryStore();
     const [copiedId, setCopiedId] = React.useState<string | null>(null);
@@ -43,8 +45,9 @@ export default function HistoryPage() {
     };
 
     return (
-        <div className="container mx-auto max-w-4xl py-8">
-            <h1 className="text-3xl font-bold mb-8">My Library</h1>
+        <div className="container mx-auto max-w-4xl py-8 px-4 md:px-0">
+            <ToolBackButton />
+            <h1 className="text-3xl font-bold mb-8 mt-4">My Library</h1>
 
             <Tabs defaultValue="saved" className="w-full">
                 <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">

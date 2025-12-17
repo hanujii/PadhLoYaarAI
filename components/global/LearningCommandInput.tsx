@@ -72,7 +72,7 @@ export function LearningCommandInput({
     return (
         <motion.form
             layoutId="hero-search-bar"
-            className="w-full relative max-w-2xl mx-auto bg-background/20 dark:bg-black/20 backdrop-blur-md h-14 sm:h-16 rounded-full overflow-hidden shadow-2xl border border-white/20 hover:border-primary/30 dark:border-white/10 transition-all duration-300 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary/50 flex items-center pr-2"
+            className="w-full relative max-w-2xl mx-auto bg-background/20 dark:bg-black/20 backdrop-blur-md h-16 rounded-full overflow-hidden shadow-2xl border border-white/20 hover:border-primary/30 dark:border-white/10 transition-all duration-300 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary/50 flex items-center pr-2"
             onSubmit={onSubmit}
             onClick={handleContainerClick}
         >
@@ -82,23 +82,23 @@ export function LearningCommandInput({
                     type="button"
                     size="icon"
                     variant="ghost"
-                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    className="h-10 w-10 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
                     onClick={(e) => { e.stopPropagation(); onAtClick?.(); }}
                 >
-                    <AtSign className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <AtSign className="h-5 w-5" />
                 </Button>
                 <Button
                     type="button"
                     size="icon"
                     variant="ghost"
-                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    className="h-10 w-10 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
                     onClick={(e) => {
                         e.stopPropagation();
                         const fileInput = document.getElementById('chat-file-input');
                         fileInput?.click();
                     }}
                 >
-                    <Paperclip className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <Paperclip className="h-5 w-5" />
                 </Button>
                 <input
                     type="file"
@@ -141,7 +141,7 @@ export function LearningCommandInput({
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     value={inputValue}
-                    className="w-full relative z-10 bg-transparent text-foreground h-full rounded-none focus:outline-none focus:ring-0 text-base sm:text-lg font-medium placeholder:text-transparent"
+                    className="w-full relative z-10 bg-transparent text-foreground h-full rounded-none focus:outline-none focus:ring-0 text-lg font-medium placeholder:text-transparent"
                     spellCheck={false}
                     autoComplete="off"
                 />
