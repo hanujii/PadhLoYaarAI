@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         const result = streamText({
             model: createGoogleGenerativeAI({
                 apiKey: apiKey
-            })('gemini-1.5-flash'),
+            })('gemini-2.0-flash-exp'),
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: userContent as any }

@@ -65,7 +65,7 @@ export async function getTutorResponse(formData: FormData) {
         const { text } = await generateText({
             model: createGoogleGenerativeAI({
                 apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY
-            })('gemini-1.5-flash'),
+            })('gemini-2.0-flash-exp'),
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: userContent as any }

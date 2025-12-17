@@ -75,16 +75,22 @@ function TutorContent() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    inputs: {
-                        topic: currentTopic,
-                        mode,
-                        instructions,
-                        image: imageBase64
-                    }
+                    prompt: currentTopic, // Mapping for useCompletion compat if strictly used
+                    topic: currentTopic,
+                    mode,
+                    instructions,
+                    image: imageBase64
                 })
             });
 
-            if (!res.ok) throw new Error(res.statusText);
+            if (!res.ok) {
+                if (res.status === 429 || res.status === 503) {
+                    setResponse("**⚠️ API Limit Reached**\n\nYour Gemini API quota is exhausted. Please try again later or upgrade your plan.");
+                    return;
+                }
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || res.statusText);
+            }
             if (!res.body) throw new Error('No body');
 
             const reader = res.body.getReader();
@@ -95,9 +101,30 @@ function TutorContent() {
                 const { done, value } = await reader.read();
                 if (done) break;
                 const text = decoder.decode(value, { stream: true });
+
+                // Panic check for Quota/429
+                if (text.includes('429') || text.toLowerCase().includes('quota exceeded')) {
+                    const errorMsg = "**⚠️ API Limit Reached**\n\nThe AI quota is exhausted. Please try again later. (Error 429)";
+                    setResponse(errorMsg);
+                    return;
+                }
+
+                // Check for error JSON
+                if (text.includes('"error":')) {
+                    try {
+                        const json = JSON.parse(text);
+                        if (json.error) throw new Error(json.error);
+                    } catch (e) { }
+                }
+
                 fullText += text;
                 setResponse(prev => (prev || '') + text);
             }
+
+            if (!fullText) {
+                setResponse("**⚠️ Connection Error**\n\nThe AI sent no text. This usually means the API is overloaded or the Quota is exhausted.");
+            }
+
 
             // Save to history upon completion
             addToHistory({
@@ -239,7 +266,7 @@ function TutorContent() {
                                 </div>
                             </CardHeader>
                             <CardContent className="flex-1 overflow-y-auto max-h-[600px] p-4 custom-scrollbar">
-                                <div ref={outputRef} className="prose dark:prose-invert max-w-none prose-headings:text-primary prose-a:text-blue-400 prose-p:text-foreground prose-strong:text-foreground prose-code:text-foreground/90">
+                                <div ref={outputRef} className="prose dark:prose-invert max-w-none prose-headings:text-primary prose-p:text-white prose-li:text-white prose-strong:text-white">
                                     {/* Use simple markdown for stream */}
                                     <ReactMarkdown remarkPlugins={[]}>{response}</ReactMarkdown>
                                 </div>
@@ -248,8 +275,24 @@ function TutorContent() {
                     </motion.div>
                 )}
 
+                {/* Loading State */}
+                {loading && !response && (
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="h-full"
+                    >
+                        <GlassCard className="h-full min-h-[400px] flex items-center justify-center border-primary/20 bg-primary/5">
+                            <div className="flex flex-col items-center space-y-4 text-primary">
+                                <Loader2 className="w-12 h-12 animate-spin" />
+                                <p className="text-lg font-medium animate-pulse">Consulting the AI...</p>
+                            </div>
+                        </GlassCard>
+                    </motion.div>
+                )}
+
                 {/* Empty State / Placeholder */}
-                {!response && (
+                {!response && !loading && (
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
