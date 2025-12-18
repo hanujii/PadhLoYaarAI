@@ -103,23 +103,23 @@ export default function PDFExplainerPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto h-[calc(100vh-8rem)] flex flex-col gap-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-[calc(100vh-8rem)] flex flex-col gap-4 sm:gap-6 pb-8">
             <div className="w-full">
                 <ToolBackButton />
             </div>
-            <div className="flex-1 flex gap-6 min-h-0">
+            <div className="flex-1 flex flex-col lg:flex-row gap-4 sm:gap-6 min-h-0">
                 {/* Sidebar: Upload & Summary */}
-                <div className="w-1/3 flex flex-col gap-4 h-full">
+                <div className="lg:w-1/3 flex flex-col gap-4 h-auto lg:h-full">
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Document</CardTitle>
+                        <CardHeader className="pb-3 sm:pb-4">
+                            <CardTitle className="text-lg sm:text-xl">Document</CardTitle>
                             <CardDescription>Upload a PDF to analyze</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center justify-center w-full">
-                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50">
+                                <label className="flex flex-col items-center justify-center w-full h-28 sm:h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50">
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
+                                        <Upload className="w-7 h-7 sm:w-8 sm:h-8 mb-2 text-muted-foreground" />
                                         <p className="text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> PDF</p>
                                     </div>
                                     <input type="file" className="hidden" accept=".pdf" onChange={handleFileUpload} />
@@ -136,8 +136,8 @@ export default function PDFExplainerPage() {
 
                     {summary && (
                         <Card className="flex-1 overflow-hidden flex flex-col">
-                            <CardHeader>
-                                <CardTitle>Summary</CardTitle>
+                            <CardHeader className="pb-3 sm:pb-4">
+                                <CardTitle className="text-lg sm:text-xl">Summary</CardTitle>
                             </CardHeader>
                             <CardContent className="flex-1 overflow-y-auto prose dark:prose-invert text-sm">
                                 <ReactMarkdown>{summary}</ReactMarkdown>
@@ -147,9 +147,9 @@ export default function PDFExplainerPage() {
                 </div>
 
                 {/* Main Chat Area */}
-                <Card className="flex-1 flex flex-col shadow-lg border-2">
-                    <CardHeader className="border-b flex flex-row items-center justify-between">
-                        <CardTitle>Chat with Document</CardTitle>
+                <Card className="flex-1 flex flex-col shadow-lg border-2 min-h-[400px] lg:min-h-0">
+                    <CardHeader className="border-b flex flex-col sm:flex-row sm:items-center pb-3 sm:pb-4 gap-3 sm:gap-0 justify-between">
+                        <CardTitle className="text-lg sm:text-xl">Chat with Document</CardTitle>
                         {messages.length > 0 && <DownloadPDFButton targetRef={chatRef} filename="pdf-chat-session.pdf" />}
                     </CardHeader>
                     <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -178,15 +178,16 @@ export default function PDFExplainerPage() {
                         )}
                         <div ref={bottomRef} />
                     </CardContent>
-                    <div className="p-4 border-t flex gap-2">
+                    <div className="p-3 sm:p-4 border-t flex gap-2">
                         <Input
                             value={input}
                             onChange={e => setInput(e.target.value)}
                             placeholder="Ask a question..."
                             onKeyDown={e => e.key === 'Enter' && handleSend()}
                             disabled={!pdfText || loading}
+                            className="h-10 sm:h-11"
                         />
-                        <Button onClick={handleSend} disabled={!pdfText || loading} size="icon">
+                        <Button onClick={handleSend} disabled={!pdfText || loading} size="icon" className="h-10 w-10 sm:h-11 sm:w-11 touch-target">
                             <Send className="w-4 h-4" />
                         </Button>
                     </div>

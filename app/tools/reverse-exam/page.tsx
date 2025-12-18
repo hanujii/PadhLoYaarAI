@@ -62,10 +62,10 @@ export default function ReverseExamPage() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2 text-center">
-                <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
+                <h1 className="text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-bold flex items-center justify-center gap-2">
                     <GraduationCap className="w-8 h-8 text-indigo-600" />
                     The Reverse Exam
                 </h1>
@@ -75,14 +75,14 @@ export default function ReverseExamPage() {
             {/* Step 1: Input Topic */}
             {step === 'input' && (
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Pick a Topic</CardTitle>
+                    <CardHeader className="pb-3 sm:pb-4">
+                        <CardTitle className="text-lg sm:text-xl">Pick a Topic</CardTitle>
                         <CardDescription>What subject do you want to teach?</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleStart} className="flex gap-4">
-                            <Input name="topic" placeholder="e.g. Newton's Third Law, The Water Cycle, Python Lists" required />
-                            <Button type="submit" disabled={loading}>
+                        <form onSubmit={handleStart} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                            <Input name="topic" placeholder="e.g. Newton's Third Law, The Water Cycle, Python Lists" required className="h-10 sm:h-11" />
+                            <Button type="submit" disabled={loading} className="w-full sm:w-auto h-10 sm:h-11 touch-target">
                                 {loading ? <Loader2 className="animate-spin" /> : 'Start Class'}
                             </Button>
                         </form>
@@ -123,11 +123,11 @@ export default function ReverseExamPage() {
                                                 value={correction}
                                                 onChange={(e) => setCorrection(e.target.value)}
                                                 placeholder="No, that's wrong because..."
-                                                className="w-full"
+                                                className="w-full h-10 sm:h-11"
                                                 onKeyDown={(e) => e.key === 'Enter' && handleGrade()}
                                             />
                                         </div>
-                                        <Button onClick={handleGrade} disabled={loading || !correction}>
+                                        <Button onClick={handleGrade} disabled={loading || !correction} className="h-10 sm:h-11 touch-target">
                                             {loading ? <Loader2 className="animate-spin" /> : 'Grade'}
                                         </Button>
                                     </div>
@@ -152,8 +152,8 @@ export default function ReverseExamPage() {
                     animate={{ opacity: 1, y: 0 }}
                 >
                     <Card className={`border-2 ${grade.score > 7 ? 'border-green-500' : 'border-yellow-500'}`}>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                        <CardHeader className="pb-3 sm:pb-4">
+                            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                                 Score: {grade.score}/10
                                 {grade.score > 7 ? <Check className="w-6 h-6 text-green-500" /> : <AlertTriangle className="w-6 h-6 text-yellow-500" />}
                             </CardTitle>
@@ -166,7 +166,7 @@ export default function ReverseExamPage() {
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button onClick={reset} variant="outline" className="w-full">Teach Another Topic</Button>
+                            <Button onClick={reset} variant="outline" className="w-full h-10 sm:h-11 touch-target">Teach Another Topic</Button>
                         </CardFooter>
                     </Card>
                 </motion.div>

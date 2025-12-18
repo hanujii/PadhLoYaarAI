@@ -163,34 +163,34 @@ function TutorContent() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6 pb-20">
-            <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 pb-16 sm:pb-20">
+            <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4">
                 <ToolBackButton />
                 <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground mr-2 hidden sm:inline">Powered by</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground mr-1 sm:mr-2 hidden sm:inline">Powered by</span>
                     <AIModelSelector value={selectedModel} onValueChange={setSelectedModel} />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full min-h-[500px]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 min-h-[400px] sm:min-h-[500px]">
 
                 {/* LEFT COLUMN: Input Configuration */}
                 <motion.div
-                    className={cn("lg:col-span-4 space-y-4", !showConfig && "hidden lg:block")}
+                    className={cn("col-span-full lg:col-span-4 space-y-3 sm:space-y-4", !showConfig && "hidden lg:block")}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                 >
                     <GlassCard className="h-full border-primary/10">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="flex items-center gap-2">
-                                <Settings2 className="w-5 h-5 text-primary" />
+                        <CardHeader className="pb-2 sm:pb-3">
+                            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                                <Settings2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                 Setup Tutor
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-5">
+                            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                                 <div className="space-y-2">
-                                    <Label htmlFor="topic">What do you want to learn?</Label>
+                                    <Label htmlFor="topic" className="text-sm">What do you want to learn?</Label>
                                     <div className="relative">
                                         <Brain className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                                         <Input
@@ -200,16 +200,16 @@ function TutorContent() {
                                             onChange={(e) => setTopicInput(e.target.value)}
                                             placeholder="e.g. Black Holes, Calculus..."
                                             required
-                                            className="pl-9 bg-background/50 border-white/10"
+                                            className="pl-9 bg-background/50 border-white/10 h-10 sm:h-11"
                                             autoComplete="off"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>Learning Style</Label>
+                                    <Label className="text-sm">Learning Style</Label>
                                     <Select name="mode" defaultValue="concise">
-                                        <SelectTrigger className="bg-background/50 border-white/10">
+                                        <SelectTrigger className="bg-background/50 border-white/10 h-10 sm:h-11">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -222,16 +222,16 @@ function TutorContent() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>Additional Instructions</Label>
+                                    <Label className="text-sm">Additional Instructions</Label>
                                     <Textarea
                                         name="instructions"
                                         placeholder="Specific focus areas, tone, etc."
-                                        className="bg-background/50 border-white/10 h-24 resize-none"
+                                        className="bg-background/50 border-white/10 h-20 sm:h-24 resize-none text-sm"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors w-fit">
+                                    <Label className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors w-fit text-sm">
                                         <ImageIcon className="w-4 h-4" />
                                         Attach Image (Optional)
                                     </Label>
@@ -239,13 +239,13 @@ function TutorContent() {
                                         type="file"
                                         name="image"
                                         accept="image/*"
-                                        className="bg-background/50 border-white/10 text-xs file:bg-primary/10 file:text-primary file:border-0 file:rounded-md file:mr-4 file:px-2 file:py-1"
+                                        className="bg-background/50 border-white/10 text-xs file:bg-primary/10 file:text-primary file:border-0 file:rounded-md file:mr-4 file:px-2 file:py-1 h-10 sm:h-11"
                                     />
                                 </div>
 
                                 <Button
                                     type="submit"
-                                    className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 shadow-lg shadow-primary/20 transition-all duration-300"
+                                    className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 shadow-lg shadow-primary/20 transition-all duration-300 h-10 sm:h-11 touch-target"
                                     disabled={loading || !topicInput.trim()}
                                 >
                                     {loading ? (
@@ -266,18 +266,18 @@ function TutorContent() {
 
                 {/* RIGHT COLUMN: Output Area */}
                 <motion.div
-                    className="lg:col-span-8 flex flex-col gap-6"
+                    className="col-span-full lg:col-span-8 flex flex-col gap-4 sm:gap-6"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                 >
                     {/* Placeholder when empty */}
                     {!response && !loading && (
-                        <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 border border-dashed border-white/10 rounded-3xl bg-white/5 animate-in fade-in zoom-in duration-500">
-                            <div className="bg-primary/10 p-4 rounded-full mb-4">
-                                <MessageSquare className="w-8 h-8 text-primary" />
+                        <div className="h-full min-h-[300px] sm:min-h-[400px] flex flex-col items-center justify-center text-center p-6 sm:p-8 border border-dashed border-white/10 rounded-2xl sm:rounded-3xl bg-white/5 animate-in fade-in zoom-in duration-500">
+                            <div className="bg-primary/10 p-3 sm:p-4 rounded-full mb-3 sm:mb-4">
+                                <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2">Ready to Teach</h3>
-                            <p className="text-muted-foreground max-w-md">
+                            <h3 className="text-lg sm:text-xl font-semibold mb-2">Ready to Teach</h3>
+                            <p className="text-sm sm:text-base text-muted-foreground max-w-md px-4">
                                 Select a topic and configure your preferences to get a personalized AI lesson.
                             </p>
                         </div>
@@ -293,9 +293,9 @@ function TutorContent() {
                                 exit={{ opacity: 0 }}
                                 className="h-full"
                             >
-                                <GlassCard className="min-h-[600px] flex flex-col border-primary/20 relative overflow-hidden" enableTilt={false}>
+                                <GlassCard className="min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex flex-col border-primary/20 relative overflow-hidden" enableTilt={false}>
                                     {/* Action Bar */}
-                                    <div className="absolute top-4 right-4 flex gap-2 z-10">
+                                    <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex gap-2 z-10">
                                         {!loading && response && (
                                             <>
                                                 <DownloadPDFButton targetRef={outputRef} filename={`tutor-${initialTopic}.pdf`} />
@@ -306,13 +306,13 @@ function TutorContent() {
                                         )}
                                     </div>
 
-                                    <CardContent className="flex-1 p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                                    <CardContent className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar">
                                         {/* Original Query Display */}
-                                        <div className="mb-6 pb-4 border-b border-white/5">
-                                            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+                                        <div className="mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/5">
+                                            <h2 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
                                                 {initialTopic}
                                             </h2>
-                                            <p className="text-sm text-primary/80 font-medium mt-1 uppercase tracking-wider">AI Tutor Response</p>
+                                            <p className="text-xs sm:text-sm text-primary/80 font-medium mt-1 uppercase tracking-wider">AI Tutor Response</p>
                                         </div>
 
                                         {/* Main Markdown Output */}

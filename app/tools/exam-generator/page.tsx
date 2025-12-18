@@ -46,30 +46,30 @@ export default function ExamGeneratorPage() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2">
-                <h1 className="text-3xl font-bold">Exam Generator</h1>
-                <p className="text-muted-foreground">Create practice exams with solutions instantly.</p>
+                <h1 className="text-2xl xs:text-3xl sm:text-3xl font-bold">Exam Generator</h1>
+                <p className="text-sm sm:text-base text-muted-foreground">Create practice exams with solutions instantly.</p>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-2">
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Exam Settings</CardTitle>
+                    <CardHeader className="pb-3 sm:pb-4">
+                        <CardTitle className="text-lg sm:text-xl">Exam Settings</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="topic">Topic / Subject</Label>
-                                <Input id="topic" name="topic" placeholder="e.g. Organic Chemistry, WWII History" required />
+                                <Label htmlFor="topic" className="text-sm">Topic / Subject</Label>
+                                <Input id="topic" name="topic" placeholder="e.g. Organic Chemistry, WWII History" required className="h-10 sm:h-11" />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="difficulty">Difficulty</Label>
+                                    <Label htmlFor="difficulty" className="text-sm">Difficulty</Label>
                                     <Select name="difficulty" defaultValue="medium">
-                                        <SelectTrigger>
+                                        <SelectTrigger className="h-10 sm:h-11">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -81,9 +81,9 @@ export default function ExamGeneratorPage() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="questionCount">Questions</Label>
+                                    <Label htmlFor="questionCount" className="text-sm">Questions</Label>
                                     <Select name="questionCount" defaultValue="5">
-                                        <SelectTrigger>
+                                        <SelectTrigger className="h-10 sm:h-11">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -96,9 +96,9 @@ export default function ExamGeneratorPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="type">Format</Label>
+                                <Label htmlFor="type" className="text-sm">Format</Label>
                                 <Select name="type" defaultValue="mcq">
-                                    <SelectTrigger>
+                                    <SelectTrigger className="h-10 sm:h-11">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -108,7 +108,7 @@ export default function ExamGeneratorPage() {
                                 </Select>
                             </div>
 
-                            <Button type="submit" className="w-full" disabled={loading}>
+                            <Button type="submit" className="w-full h-10 sm:h-11 touch-target" disabled={loading}>
                                 {loading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -122,28 +122,28 @@ export default function ExamGeneratorPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="h-full min-h-[400px]">
+                <Card className="h-full min-h-[350px] sm:min-h-[400px]">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle>Exam Preview</CardTitle>
+                        <CardTitle className="text-lg sm:text-xl">Exam Preview</CardTitle>
                         {examContent && (
                             <div className="flex gap-2">
                                 <DownloadPDFButton targetRef={examRef} filename="generated-exam.pdf" />
                             </div>
                         )}
                     </CardHeader>
-                    <CardContent className="overflow-y-auto max-h-[600px] mt-4">
+                    <CardContent className="overflow-y-auto max-h-[500px] sm:max-h-[600px] mt-3 sm:mt-4">
                         <div ref={examRef}>
                             {examContent ? (
-                                <div className="space-y-6">
+                                <div className="space-y-4 sm:space-y-6">
                                     {/* We need to determine if it is MCQ or Written from the data */}
                                     {Array.isArray(examContent) && examContent.length > 0 && examContent[0].type === 'mcq' ? (
                                         <QuizRenderer questions={examContent} />
                                     ) : (
-                                        <div className="space-y-4">
+                                        <div className="space-y-3 sm:space-y-4">
                                             {Array.isArray(examContent) ? examContent.map((q: any, i: number) => (
                                                 <Card key={i} className="border">
-                                                    <CardHeader>
-                                                        <CardTitle className="text-base">Q{i + 1}: {q.question}</CardTitle>
+                                                    <CardHeader className="pb-2 sm:pb-3">
+                                                        <CardTitle className="text-sm sm:text-base">Q{i + 1}: {q.question}</CardTitle>
                                                     </CardHeader>
                                                     <CardContent>
                                                         <div className="bg-muted p-4 rounded-md">

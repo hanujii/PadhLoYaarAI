@@ -50,36 +50,36 @@ export default function RoadmapPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2 text-center">
-                <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
-                    <MapIcon className="w-8 h-8 text-blue-600" />
+                <h1 className="text-2xl xs:text-3xl sm:text-3xl font-bold flex items-center justify-center gap-2 flex-wrap">
+                    <MapIcon className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
                     Roadmap Architect
                 </h1>
-                <p className="text-muted-foreground">Turn a syllabus or goal into a day-by-day action plan.</p>
+                <p className="text-sm sm:text-base text-muted-foreground">Turn a syllabus or goal into a day-by-day action plan.</p>
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Define Your Goal</CardTitle>
+                <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl">Define Your Goal</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="goal">What do you want to learn?</Label>
-                            <Input name="goal" id="goal" placeholder="e.g. Master React Hooks, Complete Class 10 History, Learn Python Basics" required />
+                    <form onSubmit={handleSubmit} className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+                        <div className="space-y-2 lg:col-span-2">
+                            <Label htmlFor="goal" className="text-sm">What do you want to learn?</Label>
+                            <Input name="goal" id="goal" placeholder="e.g. Master React Hooks, Complete Class 10 History, Learn Python Basics" required className="h-10 sm:h-11" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="days">Duration (Days)</Label>
-                            <Input name="days" id="days" type="number" min="1" max="60" placeholder="7" required />
+                            <Label htmlFor="days" className="text-sm">Duration (Days)</Label>
+                            <Input name="days" id="days" type="number" min="1" max="60" placeholder="7" required className="h-10 sm:h-11" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="hours">Hours per Day</Label>
-                            <Input name="hours" id="hours" type="number" min="1" max="12" placeholder="2" />
+                            <Label htmlFor="hours" className="text-sm">Hours per Day</Label>
+                            <Input name="hours" id="hours" type="number" min="1" max="12" placeholder="2" className="h-10 sm:h-11" />
                         </div>
-                        <div className="md:col-span-2">
-                            <Button type="submit" className="w-full" disabled={loading}>
+                        <div className="lg:col-span-2">
+                            <Button type="submit" className="w-full h-10 sm:h-11 touch-target" disabled={loading}>
                                 {loading ? <Loader2 className="animate-spin mr-2" /> : <Calendar className="w-4 h-4 mr-2" />}
                                 {loading ? 'Planning your success...' : 'Generate Roadmap'}
                             </Button>

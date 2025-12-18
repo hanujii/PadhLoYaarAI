@@ -52,23 +52,23 @@ export default function CodeTransformerPage() {
     }
 
     return (
-        <div className="min-h-[calc(100vh-8rem)] md:h-[calc(100vh-8rem)] flex flex-col space-y-4 pb-8 md:pb-0">
-            <div className="px-2">
+        <div className="min-h-[calc(100vh-8rem)] md:h-[calc(100vh-8rem)] flex flex-col space-y-4 sm:space-y-6 pb-8 md:pb-0 px-4 sm:px-6 lg:px-8">
+            <div>
                 <ToolBackButton />
             </div>
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center justify-between px-2"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
             >
-                <h1 className="text-2xl font-bold flex items-center gap-2">
+                <h1 className="text-xl xs:text-2xl sm:text-2xl md:text-3xl font-bold flex items-center gap-2">
                     <span className="text-green-500">{'{'}</span>
                     Code Transformer
                     <span className="text-green-500">{'}'}</span>
                 </h1>
                 <div className="flex items-center gap-2">
                     <Select value={style} onValueChange={setStyle}>
-                        <SelectTrigger className="w-[150px] bg-background/50 border-white/10 backdrop-blur-sm">
+                        <SelectTrigger className="w-full sm:w-[150px] h-10 sm:h-11 bg-background/50 border-white/10 backdrop-blur-sm">
                             <SelectValue placeholder="Style" />
                         </SelectTrigger>
                         <SelectContent>
@@ -81,7 +81,7 @@ export default function CodeTransformerPage() {
                     <Button
                         onClick={handleTransform}
                         disabled={loading}
-                        className="bg-green-600 hover:bg-green-700 shadow-lg shadow-green-500/20"
+                        className="bg-green-600 hover:bg-green-700 shadow-lg shadow-green-500/20 touch-target h-10 sm:h-11"
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}
                         Convert
@@ -89,19 +89,19 @@ export default function CodeTransformerPage() {
                 </div>
             </motion.div>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 min-h-0">
                 {/* Input Editor */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="flex flex-col h-[500px] md:h-full"
+                    className="flex flex-col h-[400px] sm:h-[500px] lg:h-full"
                 >
                     <GlassCard className="flex flex-col gap-2 p-1 h-full border-green-500/10 bg-green-950/5" enableTilt={false}>
                         <div className="flex items-center justify-between px-2 py-1 bg-white/5 rounded-t-lg border-b border-white/5">
                             <span className="text-sm font-medium text-muted-foreground">Input</span>
                             <Select value={fromLang} onValueChange={setFromLang}>
-                                <SelectTrigger className="w-[120px] h-8 bg-transparent border-none focus:ring-0">
+                                <SelectTrigger className="w-[110px] sm:w-[120px] h-8 bg-transparent border-none focus:ring-0">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -136,7 +136,7 @@ export default function CodeTransformerPage() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="flex flex-col h-[500px] md:h-full gap-4"
+                    className="flex flex-col h-[400px] sm:h-[500px] lg:h-full gap-4"
                     ref={outputRef}
                 >
                     <GlassCard className="flex flex-col gap-2 p-1 flex-1 border-blue-500/10 bg-blue-950/5" enableTilt={false}>
@@ -146,7 +146,7 @@ export default function CodeTransformerPage() {
                                 <ShareResult targetRef={outputRef as React.RefObject<HTMLElement>} fileName="code-transform.png" title="Code Translation" text="Check out this code translation I made with PadhLoYaarAI!" />
                                 <DownloadPDFButton targetRef={outputRef} filename="code-transformation.pdf" size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10" />
                                 <Select value={toLang} onValueChange={setToLang}>
-                                    <SelectTrigger className="w-[120px] h-8 bg-transparent border-none focus:ring-0">
+                                    <SelectTrigger className="w-[110px] sm:w-[120px] h-8 bg-transparent border-none focus:ring-0">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>

@@ -50,10 +50,10 @@ export default function AnalogyPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2 text-center">
-                <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
+                <h1 className="text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-bold flex items-center justify-center gap-2">
                     <Lightbulb className="w-8 h-8 text-yellow-500" />
                     The Analogy Engine
                 </h1>
@@ -61,21 +61,21 @@ export default function AnalogyPage() {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Connect the Dots</CardTitle>
+                <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl">Connect the Dots</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="grid md:grid-cols-2 gap-4">
+                        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Concept to Learn</label>
-                                <Input name="concept" placeholder="e.g. Recursion, Photosynthesis, Inflation" required />
+                                <Input name="concept" placeholder="e.g. Recursion, Photosynthesis, Inflation" required className="h-10 sm:h-11" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Explain using...</label>
                                 <div className="flex gap-2">
                                     <Select onValueChange={setInterest} value={interest}>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-full sm:w-[180px] h-10 sm:h-11">
                                             <SelectValue placeholder="Pick Theme" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -88,12 +88,12 @@ export default function AnalogyPage() {
                                         placeholder="or type custom topic"
                                         value={interest}
                                         onChange={(e) => setInterest(e.target.value)}
-                                        className="flex-1"
+                                        className="flex-1 h-10 sm:h-11"
                                     />
                                 </div>
                             </div>
                         </div>
-                        <Button type="submit" className="w-full" disabled={loading || !interest}>
+                        <Button type="submit" className="w-full h-10 sm:h-11 touch-target" disabled={loading || !interest}>
                             {loading ? <Loader2 className="animate-spin mr-2" /> : <Zap className="w-4 h-4 mr-2" />}
                             Make it Click
                         </Button>
@@ -104,8 +104,8 @@ export default function AnalogyPage() {
             {analogy && (
                 <div ref={outputRef} className="space-y-6">
                     <Card className="border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-950/10">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="flex justify-between items-center">
+                        <CardHeader className="pb-3 sm:pb-4">
+                            <CardTitle className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 text-lg sm:text-xl">
                                 <span>The Analogy</span>
                                 <DownloadPDFButton targetRef={outputRef} filename="analogy.pdf" />
                             </CardTitle>
@@ -117,10 +117,10 @@ export default function AnalogyPage() {
                         </CardContent>
                     </Card>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                         <Card className="border-orange-500/20 bg-orange-50/50 dark:bg-orange-950/10">
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-base font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400">Key Mapping</CardTitle>
+                            <CardHeader className="pb-3 sm:pb-4">
+                                <CardTitle className="text-sm sm:text-base font-semibold uppercase tracking-wider text-orange-600 dark:text-orange-400">Key Mapping</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-3">
@@ -136,8 +136,8 @@ export default function AnalogyPage() {
                         </Card>
 
                         <Card className="border-green-500/20 bg-green-50/50 dark:bg-green-950/10">
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-base font-semibold uppercase tracking-wider text-green-600 dark:text-green-400">Simplified Definition</CardTitle>
+                            <CardHeader className="pb-3 sm:pb-4">
+                                <CardTitle className="text-sm sm:text-base font-semibold uppercase tracking-wider text-green-600 dark:text-green-400">Simplified Definition</CardTitle>
                             </CardHeader>
                             <CardContent className="h-full flex items-center">
                                 <p className="text-lg font-medium italic">

@@ -83,26 +83,26 @@ export default function SyllabusPage() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2 text-center">
-                <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
-                    <ShieldCheck className="w-8 h-8 text-green-600" />
+                <h1 className="text-2xl xs:text-3xl sm:text-3xl font-bold flex items-center justify-center gap-2 flex-wrap">
+                    <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
                     Syllabus Sentinel
                 </h1>
-                <p className="text-muted-foreground">Upload your exam syllabus and track your mastery.</p>
+                <p className="text-sm sm:text-base text-muted-foreground">Upload your exam syllabus and track your mastery.</p>
             </div>
 
             {units.length === 0 ? (
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Upload Official Syllabus (PDF)</CardTitle>
-                        <CardDescription>We will extract the topics so you can track them.</CardDescription>
+                    <CardHeader className="pb-3 sm:pb-4">
+                        <CardTitle className="text-lg sm:text-xl">Upload Official Syllabus (PDF)</CardTitle>
+                        <CardDescription className="text-sm">We will extract the topics so you can track them.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="flex gap-4 items-center">
-                            <Input name="file" type="file" accept=".pdf" required className="cursor-pointer" />
-                            <Button type="submit" disabled={loading}>
+                        <form onSubmit={handleSubmit} className="flex flex-col  sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
+                            <Input name="file" type="file" accept=".pdf" required className="cursor-pointer h-10 sm:h-11" />
+                            <Button type="submit" disabled={loading} className="h-10 sm:h-11 touch-target shrink-0">
                                 {loading ? <Loader2 className="animate-spin" /> : <><Upload className="w-4 h-4 mr-2" /> Analyze</>}
                             </Button>
                         </form>

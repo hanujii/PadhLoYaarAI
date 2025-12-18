@@ -46,10 +46,10 @@ export default function YouTubeNotesPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2">
-                <h1 className="text-3xl font-bold flex items-center gap-2">
+                <h1 className="text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-bold flex items-center gap-2">
                     <YoutubeIcon className="w-8 h-8 text-red-600" />
                     YouTube Note-Taker
                 </h1>
@@ -57,20 +57,21 @@ export default function YouTubeNotesPage() {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Video URL</CardTitle>
+                <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl">Video URL</CardTitle>
                     <CardDescription>Paste the link to any YouTube video (must have captions).</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="flex gap-4">
+                    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <Input
                             name="url"
                             placeholder="https://www.youtube.com/watch?v=..."
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             required
+                            className="h-10 sm:h-11"
                         />
-                        <Button type="submit" disabled={loading || !url}>
+                        <Button type="submit" disabled={loading || !url} className="w-full sm:w-auto h-10 sm:h-11 touch-target">
                             {loading ? <Loader2 className="animate-spin" /> : 'Get Notes'}
                         </Button>
                     </form>
@@ -84,9 +85,9 @@ export default function YouTubeNotesPage() {
                     </div>
 
                     <div ref={outputRef}>
-                        <Card className="min-h-[400px]">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
+                        <Card className="min-h-[400px] sm:min-h-[450px] lg:min-h-[500px]">
+                            <CardHeader className="pb-3 sm:pb-4">
+                                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                                     <FileText className="w-5 h-5" /> Study Material
                                 </CardTitle>
                             </CardHeader>
@@ -97,7 +98,7 @@ export default function YouTubeNotesPage() {
 
                                 {result.quiz && result.quiz.length > 0 && (
                                     <div className="mt-8 pt-8 border-t">
-                                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                                        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2">
                                             <ShieldCheck className="w-6 h-6 text-primary" />
                                             Video Quiz
                                         </h2>

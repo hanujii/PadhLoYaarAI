@@ -119,38 +119,39 @@ export function Header() {
     }
 
     return (
-        <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+        <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-3 xs:px-4 pointer-events-none">
             {/* Hidden Audio Element */}
             <audio ref={audioRef} src={SAFE_MUSIC_URLS[genre]} loop />
 
             <div className="w-full max-w-6xl rounded-full border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] pointer-events-auto transition-all duration-300 hover:border-white/20 hover:bg-white/10">
-                <div className="flex h-16 items-center justify-between px-6">
+                <div className="flex h-14 xs:h-16 items-center justify-between px-3 xs:px-4 sm:px-5 md:px-6">
 
                     {/* LEFT: Mobile Menu + Logo */}
-                    <div className="flex items-center gap-2 md:gap-6">
+                    <div className="flex items-center gap-2 xs:gap-3 sm:gap-4 md:gap-6">
                         {/* Mobile Menu */}
                         <div className="md:hidden">
                             <Sheet open={isOpen} onOpenChange={setIsOpen}>
                                 <SheetTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="mr-0 hover:bg-transparent">
+                                    <Button variant="ghost" size="icon" className="mr-0 hover:bg-transparent h-10 w-10 touch-target">
                                         <Menu className="h-5 w-5" />
                                     </Button>
                                 </SheetTrigger>
-                                <SheetContent side="left" className="w-[80vw] sm:w-[350px]">
+                                <SheetContent side="left" className="w-[85vw] sm:w-[350px] max-h-screen overflow-y-auto">
                                     <SheetHeader>
                                         <SheetTitle>Menu</SheetTitle>
                                     </SheetHeader>
-                                    <div className="flex flex-col gap-4 py-4">
-                                        <Link href="/" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
+                                    <div className="flex flex-col gap-3 py-4">
+                                        <Link href="/" className="text-lg font-medium py-2 hover:text-primary transition-colors" onClick={() => setIsOpen(false)}>
                                             Dashboard
                                         </Link>
-                                        <div className="space-y-3">
-                                            <h4 className="text-sm font-medium text-muted-foreground">Tools</h4>
+                                        <Separator className="my-1" />
+                                        <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-2">
+                                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tools</h4>
                                             {tools.map((tool) => (
                                                 <Link
                                                     key={tool.href}
                                                     href={tool.href}
-                                                    className="block text-base hover:text-primary transition-colors"
+                                                    className="block text-sm py-2 hover:text-primary transition-colors touch-target"
                                                     onClick={() => setIsOpen(false)}
                                                 >
                                                     {tool.name}
@@ -158,12 +159,12 @@ export function Header() {
                                             ))}
                                         </div>
                                         <Separator className="my-2" />
-                                        <Link href="/history" className="flex items-center gap-2 text-base font-medium">
-                                            <History className="h-4 w-4" />
+                                        <Link href="/history" className="flex items-center gap-3 text-base font-medium py-2 touch-target hover:text-primary transition-colors" onClick={() => setIsOpen(false)}>
+                                            <History className="h-5 w-5" />
                                             History
                                         </Link>
-                                        <Link href="/history" className="flex items-center gap-2 text-base font-medium">
-                                            <Bookmark className="h-4 w-4" />
+                                        <Link href="/history" className="flex items-center gap-3 text-base font-medium py-2 touch-target hover:text-primary transition-colors" onClick={() => setIsOpen(false)}>
+                                            <Bookmark className="h-5 w-5" />
                                             Saved Items
                                         </Link>
                                     </div>
@@ -172,28 +173,28 @@ export function Header() {
                         </div>
 
                         {/* BRAND LOGO */}
-                        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                            <Logo className="w-8 h-8 text-foreground shrink-0" />
-                            <span className="text-lg sm:text-xl font-bold tracking-tight text-foreground truncate">
+                        <Link href="/" className="flex items-center gap-1.5 xs:gap-2 hover:opacity-80 transition-opacity">
+                            <Logo className="w-7 h-7 xs:w-8 xs:h-8 text-foreground shrink-0" />
+                            <span className="text-base xs:text-lg sm:text-xl font-bold tracking-tight text-foreground">
                                 plyAI
                             </span>
                         </Link>
 
                         {/* Desktop Nav */}
-                        <nav className="hidden md:flex items-center gap-6 text-sm font-medium ml-4">
+                        <nav className="hidden md:flex items-center gap-4 lg:gap-6 text-sm font-medium ml-2 lg:ml-4">
                             <Link href="/" className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? "text-foreground" : "text-foreground/60")}>
                                 Dashboard
                             </Link>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="h-8 w-auto px-2 font-normal text-foreground/60 hover:text-foreground">
+                                    <Button variant="ghost" className="h-8 w-auto px-2 font-normal text-foreground/60 hover:text-foreground hover:bg-white/5">
                                         Tools
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start" className="w-48 max-h-[250px] overflow-y-auto custom-scrollbar">
+                                <DropdownMenuContent align="start" className="w-52 max-h-[320px] overflow-y-auto">
                                     <div className="flex flex-col p-1">
                                         {tools.map((tool) => (
-                                            <DropdownMenuItem key={tool.href} asChild className="text-xs px-2 py-1.5 cursor-pointer">
+                                            <DropdownMenuItem key={tool.href} asChild className="text-sm px-3 py-2 cursor-pointer">
                                                 <Link href={tool.href}>{tool.name}</Link>
                                             </DropdownMenuItem>
                                         ))}
@@ -204,38 +205,38 @@ export function Header() {
                     </div>
 
                     {/* RIGHT: Timer, Music, Profile */}
-                    <div className="flex items-center gap-1 sm:gap-4">
+                    <div className="flex items-center gap-1 xs:gap-2 sm:gap-3">
                         {/* Wrapper for XP + Timer */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 xs:gap-2">
                             {/* Gamification Widget */}
                             <XPWidget />
 
                             {/* Timer Display with Popover */}
-                            <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1 sm:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
+                            <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1.5 xs:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-6 w-auto px-1 sm:px-2 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm">
-                                            <Clock className="w-3.5 h-3.5 text-primary sm:mr-2 group-hover:text-purple-500 transition-colors" />
-                                            <span className="hidden sm:inline">{formattedTime}</span>
+                                        <Button variant="ghost" size="sm" className="h-7 xs:h-8 w-auto px-1.5 xs:px-2 font-mono font-medium hover:bg-secondary/50 text-xs" title={formattedTime}>
+                                            <Clock className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-primary group-hover:text-purple-500 transition-colors" />
+                                            <span className="hidden xs:inline ml-1.5 xs:ml-2">{formattedTime}</span>
                                         </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>Set Duration</DropdownMenuLabel>
+                                    <DropdownMenuContent align="end" className="w-44">
+                                        <DropdownMenuLabel className="text-sm">Set Duration</DropdownMenuLabel>
                                         {timerPresets.map(min => (
-                                            <DropdownMenuItem key={min} onClick={() => setDuration(min)}>
+                                            <DropdownMenuItem key={min} onClick={() => setDuration(min)} className="cursor-pointer">
                                                 {min} Minutes
                                             </DropdownMenuItem>
                                         ))}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
 
-                                <div className="w-px h-3 bg-border/50 mx-0.5" />
+                                <div className="w-px h-3 xs:h-4 bg-border/50 mx-0.5" />
 
-                                <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={toggleTimer}>
-                                    {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                                <Button variant="ghost" size="icon" className="h-7 w-7 xs:h-8 xs:w-8 hover:text-primary transition-colors touch-target" onClick={toggleTimer} title={isActive ? "Pause Timer" : "Start Timer"}>
+                                    {isActive ? <Pause className="w-3 h-3 xs:w-3.5 xs:h-3.5" /> : <Play className="w-3 h-3 xs:w-3.5 xs:h-3.5" />}
                                 </Button>
-                                <Button variant="ghost" size="icon" className="h-6 w-6 hover:text-primary transition-colors" onClick={() => resetTimer()}>
-                                    <span className="text-[10px]">↺</span>
+                                <Button variant="ghost" size="icon" className="h-7 w-7 xs:h-8 xs:w-8 hover:text-primary transition-colors touch-target" onClick={() => resetTimer()} title="Reset Timer">
+                                    <span className="text-xs xs:text-sm">↺</span>
                                 </Button>
                             </div>
                         </div>
@@ -243,19 +244,19 @@ export function Header() {
                         {/* Music Popover */}
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button variant="ghost" size="icon" className={cn("relative transition-transform hover:scale-105 h-8 w-8 sm:h-9 sm:w-9", isPlaying && "text-primary")}>
-                                    <Music className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    {isPlaying && <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(var(--primary))] " />}
+                                <Button variant="ghost" size="icon" className={cn("relative transition-transform hover:scale-105 h-9 w-9 xs:h-10 xs:w-10 touch-target", isPlaying && "text-primary")} title="Soundscapes">
+                                    <Music className="w-4 h-4 xs:w-5 xs:h-5" />
+                                    {isPlaying && <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(139,92,246,0.8)]" />}
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-56" align="end">
-                                <div className="space-y-4">
+                            <PopoverContent className="w-60" align="end">
+                                <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <h4 className="font-medium leading-none flex items-center gap-2">
+                                        <h4 className="text-sm font-semibold leading-none flex items-center gap-2">
                                             <Volume2 className="w-4 h-4" /> Soundscapes
                                         </h4>
-                                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => togglePlay()}>
-                                            {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => togglePlay()} title={isPlaying ? "Pause" : "Play"}>
+                                            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                                         </Button>
                                     </div>
                                     <div className="grid grid-cols-1 gap-2">
@@ -264,7 +265,7 @@ export function Header() {
                                                 key={g}
                                                 variant={genre === g ? "default" : "outline"}
                                                 size="sm"
-                                                className="justify-start capitalize"
+                                                className="justify-start capitalize h-9 touch-target"
                                                 onClick={() => setGenre(g)}
                                             >
                                                 {g}
@@ -278,9 +279,9 @@ export function Header() {
                         {/* Profile & Unified Menu */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="rounded-full overflow-hidden border border-border/50 hover:bg-transparent hover:border-primary/50 transition-all duration-300 hover:ring-2 hover:ring-primary/20 hover:ring-offset-1 hover:ring-offset-background group w-8 h-8 sm:w-9 sm:h-9">
+                                <Button variant="ghost" size="icon" className="rounded-full overflow-hidden border border-border/50 hover:bg-transparent hover:border-primary/50 transition-all duration-300 hover:ring-2 hover:ring-primary/20 hover:ring-offset-1 hover:ring-offset-background group w-9 h-9 xs:w-10 xs:h-10 touch-target" title="Account">
                                     <div className="h-full w-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center group-hover:from-primary/20">
-                                        <User className="h-4 w-4 text-foreground/80 group-hover:text-primary transition-colors" />
+                                        <User className="h-4 w-4 xs:h-5 xs:w-5 text-foreground/80 group-hover:text-primary transition-colors" />
                                     </div>
                                 </Button>
                             </DropdownMenuTrigger>
@@ -355,14 +356,14 @@ export function Header() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel className="text-xs font-normal text-muted-foreground uppercase tracking-wider">Appearance</DropdownMenuLabel>
 
-                                <div className="grid grid-cols-4 gap-1 p-1">
+                                <div className="grid grid-cols-3 xs:grid-cols-4 gap-2 p-2">
                                     {THEME_PRESETS.map((t) => (
                                         <Button
                                             key={t.id}
                                             size="icon"
                                             variant="outline"
                                             className={cn(
-                                                "h-8 w-8 rounded-full border-2 border-transparent hover:border-white/50 transition-all",
+                                                "h-9 w-9 xs:h-10 xs:w-10 rounded-full border-2 border-transparent hover:border-white/50 transition-all touch-target",
                                                 t.className
                                             )}
                                             onClick={() => setTheme(t.id)}

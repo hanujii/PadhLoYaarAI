@@ -52,14 +52,14 @@ function RoastMyCodeContent() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center space-y-2"
             >
-                <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl flex items-center justify-center gap-3">
+                <h1 className="text-3xl xs:text-4xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center justify-center gap-3">
                     <Flame className="text-orange-500 w-10 h-10 fill-orange-500 animate-pulse drop-shadow-lg" />
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-orange-500">
                         Roast My Code
@@ -68,29 +68,29 @@ function RoastMyCodeContent() {
                 <p className="text-lg text-muted-foreground">Detailed feedback? No. Brutal honesty? Yes.</p>
             </motion.div>
 
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                 >
                     <GlassCard className="h-full border-orange-500/10 bg-orange-950/5" enableTilt={true}>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                        <CardHeader className="pb-3 sm:pb-4">
+                            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                                 <RefreshCcw className="w-5 h-5 text-orange-500" /> Your Spaghetti Code
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <Textarea
                                 placeholder="Paste your spaghetti here..."
-                                className="min-h-[400px] font-mono text-xs bg-background/50 border-white/10 resize-none focus:ring-orange-500/50"
+                                className="min-h-[300px] sm:min-h-[350px] md:min-h-[400px] font-mono text-xs bg-background/50 border-white/10 resize-none focus:ring-orange-500/50"
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
                             />
                             <Button
                                 onClick={handleRoast}
                                 disabled={loading || !code.trim()}
-                                className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 shadow-lg shadow-orange-500/20 transition-all duration-300 transform hover:scale-[1.02]"
+                                className="w-full h-10 sm:h-11 touch-target bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 shadow-lg shadow-orange-500/20 transition-all duration-300 transform hover:scale-[1.02]"
                             >
                                 {loading ? <Loader2 className="animate-spin mr-2" /> : <Flame className="mr-2 fill-white" />}
                                 Roast It
@@ -133,8 +133,8 @@ function RoastMyCodeContent() {
                             {/* The Roast */}
                             <GlassCard className="flex-1 border-red-500/30 shadow-[0_0_50px_rgba(239,68,68,0.1)] bg-gradient-to-br from-red-950/10 to-transparent" enableTilt={false}>
                                 <div ref={resultRef}>
-                                    <CardHeader className="border-b border-red-500/10 pb-4 flex flex-row items-center justify-between">
-                                        <CardTitle className="text-red-500 flex items-center gap-2">
+                                    <CardHeader className="border-b border-red-500/10 pb-3 sm:pb-4 flex flex-row items-center justify-between">
+                                        <CardTitle className="text-red-500 flex items-center gap-2 text-lg sm:text-xl">
                                             <Flame className="w-5 h-5 fill-red-500" /> The Verdict
                                         </CardTitle>
                                     </CardHeader>

@@ -69,7 +69,7 @@ export default function TeacherChatPage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -77,7 +77,7 @@ export default function TeacherChatPage() {
                 transition={{ duration: 0.5 }}
                 className="text-center space-y-2"
             >
-                <h1 className="text-4xl font-extrabold tracking-tight text-primary drop-shadow-lg">Teacher Chat</h1>
+                <h1 className="text-3xl xs:text-4xl sm:text-4xl font-extrabold tracking-tight text-primary drop-shadow-lg">Teacher Chat</h1>
                 <p className="text-lg text-muted-foreground">Practice answering questions with an AI teacher.</p>
             </motion.div>
 
@@ -130,9 +130,9 @@ export default function TeacherChatPage() {
                         onChange={(e) => setInputText(e.target.value)}
                         placeholder="Or type your message..."
                         disabled={isListening}
-                        className="bg-background/50 border-white/10 backdrop-blur-sm focus:ring-primary/50"
+                        className="bg-background/50 border-white/10 backdrop-blur-sm focus:ring-primary/50 h-10 sm:h-11"
                     />
-                    <Button type="submit" disabled={!inputText.trim() || isListening} className="shadow-lg">
+                    <Button type="submit" disabled={!inputText.trim() || isListening} className="shadow-lg h-10 sm:h-11 touch-target">
                         <Send className="w-4 h-4" />
                     </Button>
                 </form>
@@ -144,8 +144,8 @@ export default function TeacherChatPage() {
                 transition={{ delay: 0.4 }}
             >
                 <GlassCard className="min-h-[400px] border-primary/10" enableTilt={false}>
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-4">
-                        <CardTitle className="flex items-center gap-2 text-xl">
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center pb-3 sm:pb-4 gap-3 sm:gap-0 justify-between border-b border-white/5">
+                        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                             <Volume2 className="w-5 h-5 text-primary" /> Conversation
                         </CardTitle>
                         {messages.length > 0 && <DownloadPDFButton targetRef={chatRef} filename="teacher-conversation.pdf" />}

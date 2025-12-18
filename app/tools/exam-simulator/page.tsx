@@ -94,18 +94,18 @@ function ExamSimulatorContent() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center space-y-2"
             >
-                <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl flex items-center justify-center gap-3">
-                    <GraduationCap className="text-blue-500 w-10 h-10 drop-shadow-md" />
+                <h1 className="text-3xl xs:text-4xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+                    <GraduationCap className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10 drop-shadow-md" />
                     <span className="text-primary">Exam Simulator</span>
                 </h1>
-                <p className="text-lg text-muted-foreground">Test your knowledge under pressure.</p>
+                <p className="text-base sm:text-lg text-muted-foreground">Test your knowledge under pressure.</p>
             </motion.div>
 
             {!exam && (
@@ -115,18 +115,18 @@ function ExamSimulatorContent() {
                     transition={{ delay: 0.1 }}
                 >
                     <GlassCard className="border-blue-500/10 bg-blue-950/5" enableTilt={true}>
-                        <CardHeader>
-                            <CardTitle>Setup Exam</CardTitle>
+                        <CardHeader className="pb-3 sm:pb-4">
+                            <CardTitle className="text-lg sm:text-xl">Setup Exam</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-3 sm:space-y-4">
                             <Input
                                 placeholder="Enter Topic (e.g. Organic Chemistry)"
                                 value={topic}
                                 onChange={(e) => setTopic(e.target.value)}
-                                className="bg-background/50 border-white/10"
+                                className="bg-background/50 border-white/10 h-10 sm:h-11"
                             />
                             <Select value={difficulty} onValueChange={setDifficulty}>
-                                <SelectTrigger className="bg-background/50 border-white/10">
+                                <SelectTrigger className="bg-background/50 border-white/10 h-10 sm:h-11">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -137,7 +137,7 @@ function ExamSimulatorContent() {
                                 </SelectContent>
                             </Select>
                             <Button
-                                className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20"
+                                className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 h-10 sm:h-11 touch-target"
                                 onClick={handleStart}
                                 disabled={loading || !topic.trim()}
                             >
@@ -149,14 +149,14 @@ function ExamSimulatorContent() {
             )}
 
             {exam && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                    <div className="flex justify-between items-center bg-muted/50 backdrop-blur-sm p-4 rounded-lg border border-white/5">
-                        <h2 className="text-xl font-bold">{exam.examTitle}</h2>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 sm:space-y-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-muted/50 backdrop-blur-sm p-4 sm:p-4 rounded-lg border border-white/5">
+                        <h2 className="text-lg sm:text-xl font-bold">{exam.examTitle}</h2>
                         {submitted && (
                             <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="text-2xl font-bold text-primary bg-primary/10 px-4 py-2 rounded-full border border-primary/20"
+                                className="text-xl sm:text-2xl font-bold text-primary bg-primary/10 px-3 sm:px-4 py-2 rounded-full border border-primary/20"
                             >
                                 Score: {score} / {exam.questions.length}
                             </motion.div>
@@ -179,22 +179,22 @@ function ExamSimulatorContent() {
                                     className={`transition-all duration-500 ${submitted ? (isCorrect ? 'border-green-500/50 bg-green-500/5' : (isWrong ? 'border-red-500/50 bg-red-500/5' : '')) : 'hover:border-blue-500/30'}`}
                                     enableTilt={false}
                                 >
-                                    <CardHeader className="py-4 border-b border-white/5">
-                                        <div className="flex justify-between items-start gap-4">
-                                            <CardTitle className="text-lg leading-snug">Q{idx + 1}: {q.question}</CardTitle>
+                                    <CardHeader className="py-3 sm:py-4 border-b border-white/5">
+                                        <div className="flex justify-between items-start gap-3 sm:gap-4">
+                                            <CardTitle className="text-base sm:text-lg leading-snug">Q{idx + 1}: {q.question}</CardTitle>
                                             {submitted && (
-                                                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
-                                                    {isCorrect ? <CheckCircle className="text-green-500 w-6 h-6" /> : (isWrong ? <XCircle className="text-red-500 w-6 h-6" /> : null)}
+                                                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="shrink-0">
+                                                    {isCorrect ? <CheckCircle className="text-green-500 w-5 h-5 sm:w-6 sm:h-6" /> : (isWrong ? <XCircle className="text-red-500 w-5 h-5 sm:w-6 sm:h-6" /> : null)}
                                                 </motion.div>
                                             )}
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4">
+                                    <CardContent className="grid grid-cols-1 gap-2 sm:gap-3 pt-3 sm:pt-4">
                                         {q.options.map((opt, i) => (
                                             <Button
                                                 key={i}
                                                 variant={userAnswer === i ? "default" : "outline"}
-                                                className={`justify-start h-auto py-3 px-4 text-left whitespace-normal transition-all duration-200 ${submitted && i === q.correctOptionIndex ? 'ring-2 ring-green-500 bg-green-500/10 hover:bg-green-500/20 text-green-500' : ''
+                                                className={`justify-start h-auto py-2.5 sm:py-3 px-3 sm:px-4 text-left whitespace-normal transition-all duration-200 text-sm sm:text-base touch-target ${submitted && i === q.correctOptionIndex ? 'ring-2 ring-green-500 bg-green-500/10 hover:bg-green-500/20 text-green-500' : ''
                                                     } ${submitted && userAnswer === i && i !== q.correctOptionIndex ? 'bg-red-500 hover:bg-red-600 text-white border-red-500' : ''
                                                     } ${!submitted && userAnswer === i ? 'bg-blue-600 hover:bg-blue-700' : 'hover:bg-accent/50'
                                                     }`}
@@ -211,15 +211,15 @@ function ExamSimulatorContent() {
                     })}
 
                     {!submitted && (
-                        <div className="sticky bottom-6 z-10">
-                            <Button size="lg" className="w-full shadow-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.01] transition-all" onClick={handleSubmit}>
+                        <div className="sticky bottom-4 sm:bottom-6 z-10">
+                            <Button size="lg" className="w-full shadow-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.01] transition-all h-11 sm:h-12 touch-target" onClick={handleSubmit}>
                                 Submit Exam
                             </Button>
                         </div>
                     )}
 
                     {submitted && (
-                        <Button size="lg" variant="outline" className="w-full border-primary/20 hover:bg-primary/10" onClick={() => setExam(null)}>
+                        <Button size="lg" variant="outline" className="w-full border-primary/20 hover:bg-primary/10 h-11 sm:h-12" onClick={() => setExam(null)}>
                             Take Another Exam
                         </Button>
                     )}

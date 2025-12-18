@@ -53,17 +53,17 @@ export default function QuestionSolverPage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2">
-                <h1 className="text-3xl font-bold">Question Solver</h1>
+                <h1 className="text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-bold">Question Solver</h1>
                 <p className="text-muted-foreground">Upload a photo of a problem or type it out.</p>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
                 <GlassCard className="h-full border-primary/20" enableTilt={false}>
-                    <CardHeader>
-                        <CardTitle>Input</CardTitle>
+                    <CardHeader className="pb-3 sm:pb-4">
+                        <CardTitle className="text-lg sm:text-xl">Input</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-6">
@@ -73,7 +73,7 @@ export default function QuestionSolverPage() {
                                 <Textarea
                                     name="question"
                                     placeholder="Type your question here or add context to the image..."
-                                    className="resize-none min-h-[100px] bg-background/50 border-white/10"
+                                    className="resize-none min-h-[100px] bg-background/50 border-white/10 h-24 sm:h-28"
                                 />
                             </div>
 
@@ -114,7 +114,7 @@ export default function QuestionSolverPage() {
                                 </div>
                             </div>
 
-                            <Button type="submit" className="w-full" disabled={loading}>
+                            <Button type="submit" className="w-full h-10 sm:h-11 touch-target" disabled={loading}>
                                 {loading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -129,8 +129,8 @@ export default function QuestionSolverPage() {
                 </GlassCard>
 
                 <GlassCard className="h-full border-primary/20" enableTilt={false}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle>Solution</CardTitle>
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center pb-3 sm:pb-4 gap-3 sm:gap-0 justify-between space-y-0">
+                        <CardTitle className="text-lg sm:text-xl">Solution</CardTitle>
                         {response && <DownloadPDFButton targetRef={outputRef} filename="solution.pdf" />}
                     </CardHeader>
                     <CardContent className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[600px] custom-scrollbar">
