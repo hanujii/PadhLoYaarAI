@@ -30,7 +30,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
-import { XPWidget } from '@/components/gamification/XPWidget';
 import { Separator } from '@/components/ui/separator';
 
 // Local audio files in public/sounds/
@@ -205,40 +204,34 @@ export function Header() {
                     </div>
 
                     {/* RIGHT: Timer, Music, Profile */}
-                    <div className="flex items-center gap-1 xs:gap-2 sm:gap-3">
-                        {/* Wrapper for XP + Timer */}
-                        <div className="flex items-center gap-1.5 xs:gap-2">
-                            {/* Gamification Widget */}
-                            <XPWidget />
+                    <div className="flex items-center gap-2 xs:gap-3">
+                        {/* Timer Display with Popover */}
+                        <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-2 xs:px-2.5 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="h-8 xs:h-9 w-auto px-2 xs:px-2.5 font-mono font-medium hover:bg-secondary/50 text-xs sm:text-sm" title={formattedTime}>
+                                        <Clock className="w-4 h-4 text-primary group-hover:text-purple-500 transition-colors" />
+                                        <span className="hidden xs:inline ml-2">{formattedTime}</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-44">
+                                    <DropdownMenuLabel className="text-sm">Set Duration</DropdownMenuLabel>
+                                    {timerPresets.map(min => (
+                                        <DropdownMenuItem key={min} onClick={() => setDuration(min)} className="cursor-pointer">
+                                            {min} Minutes
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
-                            {/* Timer Display with Popover */}
-                            <div className="flex items-center gap-0.5 bg-secondary/30 backdrop-blur-sm px-1.5 xs:px-2 py-1 rounded-full border border-border/50 group hover:border-border transition-colors">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-7 xs:h-8 w-auto px-1.5 xs:px-2 font-mono font-medium hover:bg-secondary/50 text-xs" title={formattedTime}>
-                                            <Clock className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-primary group-hover:text-purple-500 transition-colors" />
-                                            <span className="hidden xs:inline ml-1.5 xs:ml-2">{formattedTime}</span>
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="w-44">
-                                        <DropdownMenuLabel className="text-sm">Set Duration</DropdownMenuLabel>
-                                        {timerPresets.map(min => (
-                                            <DropdownMenuItem key={min} onClick={() => setDuration(min)} className="cursor-pointer">
-                                                {min} Minutes
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                            <div className="w-px h-4 bg-border/50 mx-0.5" />
 
-                                <div className="w-px h-3 xs:h-4 bg-border/50 mx-0.5" />
-
-                                <Button variant="ghost" size="icon" className="h-7 w-7 xs:h-8 xs:w-8 hover:text-primary transition-colors touch-target" onClick={toggleTimer} title={isActive ? "Pause Timer" : "Start Timer"}>
-                                    {isActive ? <Pause className="w-3 h-3 xs:w-3.5 xs:h-3.5" /> : <Play className="w-3 h-3 xs:w-3.5 xs:h-3.5" />}
-                                </Button>
-                                <Button variant="ghost" size="icon" className="h-7 w-7 xs:h-8 xs:w-8 hover:text-primary transition-colors touch-target" onClick={() => resetTimer()} title="Reset Timer">
-                                    <span className="text-xs xs:text-sm">↺</span>
-                                </Button>
-                            </div>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 xs:h-9 xs:w-9 hover:text-primary transition-colors touch-target" onClick={toggleTimer} title={isActive ? "Pause Timer" : "Start Timer"}>
+                                {isActive ? <Pause className="w-3.5 h-3.5 xs:w-4 xs:h-4" /> : <Play className="w-3.5 h-3.5 xs:w-4 xs:h-4" />}
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 xs:h-9 xs:w-9 hover:text-primary transition-colors touch-target" onClick={() => resetTimer()} title="Reset Timer">
+                                <span className="text-sm">↺</span>
+                            </Button>
                         </div>
 
                         {/* Music Popover */}

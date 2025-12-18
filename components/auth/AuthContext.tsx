@@ -36,13 +36,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
-
-            // Cloud Sync Hook
-            if (session?.user) {
-                import('@/lib/gamification-store').then(mod => {
-                    mod.useGamificationStore.getState().loadFromCloud(session.user.id);
-                });
-            }
         });
 
         return () => subscription.unsubscribe();

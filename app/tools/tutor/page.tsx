@@ -26,7 +26,6 @@ import { Typewriter } from '@/components/global/Typewriter';
 
 // Stores & Logic
 import { useHistoryStore } from '@/lib/history-store';
-import { useGamificationStore } from '@/lib/gamification-store';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -47,7 +46,6 @@ function TutorContent() {
     // Hooks
     const searchParams = useSearchParams();
     const { addToHistory } = useHistoryStore();
-    const { addXp } = useGamificationStore(); // Gamification Hook
 
     // Load URL Params
     useEffect(() => {
@@ -138,9 +136,6 @@ function TutorContent() {
                 return;
             }
 
-            // GAMIFICATION REWARD
-            addXp(50);
-            // toast.success("Knowledge Gained! +50 XP"); // Optional: Store handles toast usually
 
         } catch (e: any) {
             console.error(e);

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LearningCommandInput } from "@/components/global/LearningCommandInput";
 import { Sparkles, Command, Check } from 'lucide-react';
-import { useGamificationStore } from '@/lib/gamification-store';
 import { TOPICS } from '@/lib/topics';
 import { cn } from '@/lib/utils';
 import { TOOLS } from '@/lib/tools-data';
@@ -19,7 +18,6 @@ import {
 
 
 export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) => void }) {
-    const { addXp } = useGamificationStore();
     const router = useRouter();
     const [inputVal, setInputVal] = useState("");
     const [placeholders, setPlaceholders] = useState(TOPICS.slice(0, 30));
@@ -65,7 +63,6 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
         e.preventDefault();
         const query = inputVal.trim();
         if (query) {
-            addXp(10); // Reward for starting a study session
             processInput(query);
             setInputVal(''); // Clear input after submission
         }

@@ -9,7 +9,6 @@ import { AudioVisualizer } from '@/components/global/AudioVisualizer';
 import { Mic, MicOff, CheckCircle, XCircle, BrainCircuit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkUnderstanding } from './actions';
-import { useGamificationStore } from '@/lib/gamification-store';
 import { toast } from 'sonner';
 
 interface CheckUnderstandingProps {
@@ -21,7 +20,6 @@ export function CheckUnderstandingSection({ originalTopic }: CheckUnderstandingP
     const { isListening, transcript, startListening, stopListening, resetTranscript } = useSpeechRecognition();
     const { speak } = useTextToSpeech();
     const [assessment, setAssessment] = useState<{ isCorrect: boolean; feedback: string } | null>(null);
-    const { addXp } = useGamificationStore();
 
     const handleStart = () => {
         setStep('listening');
@@ -47,8 +45,7 @@ export function CheckUnderstandingSection({ originalTopic }: CheckUnderstandingP
         speak(result.feedback);
 
         if (result.isCorrect) {
-            addXp(20);
-            toast.success("Great explanation! +20 XP");
+            toast.success("Great explanation!");
         }
     };
 

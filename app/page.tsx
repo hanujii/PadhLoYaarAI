@@ -44,7 +44,7 @@ export default function Home() {
     <div className="space-y-16 sm:space-y-20 lg:space-y-24 pb-16 sm:pb-20 lg:pb-24">
 
       {/* --- HERO SECTION --- */}
-      <div className="relative min-h-[500px] sm:min-h-[600px] lg:min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center py-6 sm:py-8">
+      <div className="relative min-h-[450px] sm:min-h-[550px] lg:min-h-[650px] flex flex-col items-center justify-center py-8 sm:py-12 lg:py-16">
         <div className="absolute inset-0 -z-10 opacity-50 pointer-events-none overflow-hidden">
           <Hero3D />
         </div>
@@ -117,7 +117,7 @@ export default function Home() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8"
         >
           {premium.map((tool) => (
             <motion.div key={tool.href} variants={item} className="h-full">
@@ -163,7 +163,7 @@ export default function Home() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
+          className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
         >
           {study.map((tool) => (
             <ToolCard key={tool.href} tool={tool} variants={item} />
@@ -188,7 +188,7 @@ export default function Home() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
+          className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
         >
           {utilities.map((tool) => (
             <ToolCard key={tool.href} tool={tool} variants={item} compact />
@@ -213,7 +213,7 @@ function ToolCard({ tool, variants, compact = false }: { tool: any, variants: an
             <div className={cn(
               "rounded-xl bg-opacity-20 border border-white/10 text-primary group-hover:scale-110 transition-transform duration-300 flex items-center justify-center shrink-0",
               tool.color,
-              compact ? "w-9 h-9 sm:w-10 sm:h-10 p-2" : "w-11 h-11 sm:w-12 sm:h-12 p-2.5 sm:p-3"
+              compact ? "w-9 h-9 sm:w-10 sm:h-10 p-2 sm:p-2.5" : "w-10 h-10 sm:w-11 sm:h-11 p-2.5 sm:p-3"
             )}>
               <tool.icon className={cn(compact ? "w-5 h-5" : "w-6 h-6")} />
             </div>
