@@ -1,6 +1,7 @@
 'use server';
 
-import { generateVision } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
+import { ImagePart } from '@/lib/ai/types';
 
 export async function explainDiagram(formData: FormData) {
     const imageFile = formData.get('image') as File;
@@ -11,7 +12,7 @@ export async function explainDiagram(formData: FormData) {
     try {
         const bytes = await imageFile.arrayBuffer();
         const base64Data = Buffer.from(bytes).toString('base64');
-        const imagePart = {
+        const imagePart: ImagePart = {
             inlineData: {
                 data: base64Data,
                 mimeType: imageFile.type,
@@ -23,7 +24,12 @@ export async function explainDiagram(formData: FormData) {
 
         prompt += `\n\nProvide the explanation in Markdown.`;
 
-        const text = await generateVision('pro', prompt, [imagePart]);
+        const { text } = await aiEngine.generateText(prompt, {
+            images: [imagePart],
+            preferredProvider: 'google', // Best vision support
+            temperature: 0.7,
+        });
+        
         return { success: true, data: text };
 
     } catch (error) {

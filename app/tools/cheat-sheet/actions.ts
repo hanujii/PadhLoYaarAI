@@ -1,6 +1,6 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
 
 export async function generateCheatSheet(formData: FormData) {
     const topic = formData.get('topic') as string;
@@ -21,9 +21,10 @@ export async function generateCheatSheet(formData: FormData) {
   4. Common Pitfalls`;
 
     try {
-        const text = await generateText('flash', prompt);
+        const { text } = await aiEngine.generateText(prompt, { temperature: 0.7 });
         return { success: true, data: text };
     } catch (error) {
+        console.error("Cheat Sheet Error:", error);
         return { success: false, error: 'Failed to generate cheat sheet.' };
     }
 }

@@ -9,10 +9,12 @@ export async function transformCode(code: string, fromLang: string, toLang: stri
     try {
         const prompt = `Convert this ${fromLang} code to ${toLang}. Style: ${style}.
         
-        Return JSON with:
-        - "code": The transformed code.
-        - "explanation": A very brief explanation of what changed and why.
-        - "changes": An array of specific changes made (e.g. "Changed var to let", "Used list comprehension").`;
+        CODE TO CONVERT:
+        \`\`\`${fromLang}
+        ${code}
+        \`\`\`
+        
+        Transform the code and explain the changes made.`;
 
         const { object } = await aiEngine.generateObject(prompt, z.object({
             code: z.string().describe("The transformed code only"),

@@ -1,11 +1,11 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
 
 export async function chatWithPDF(message: string, pdfText: string, history: any[]) {
     if (!pdfText) return { error: 'No PDF content found.' };
 
-    // Prepare context - truncate if too large (naive approach, though Flash has 1M context)
+    // Prepare context - truncate if too large
     const context = `You are a helpful assistant analyzing a PDF document.
   
   DOCUMENT CONTENT START:
@@ -19,7 +19,7 @@ export async function chatWithPDF(message: string, pdfText: string, history: any
   Assistant:`;
 
     try {
-        const text = await generateText('pro', context); // Using Pro for better reasoning on docs
+        const { text } = await aiEngine.generateText(context, { temperature: 0.7 });
         return { success: true, data: text };
     } catch (error) {
         console.error("PDF Chat Error:", error);
@@ -33,9 +33,10 @@ export async function summarizePDF(pdfText: string) {
     ${pdfText.slice(0, 500000)}`;
 
     try {
-        const text = await generateText('flash', prompt);
+        const { text } = await aiEngine.generateText(prompt, { temperature: 0.7 });
         return { success: true, data: text };
     } catch (error) {
+        console.error("PDF Summarize Error:", error);
         return { success: false, error: 'Failed to summarize.' };
     }
 }

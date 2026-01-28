@@ -101,8 +101,14 @@ function TutorContent() {
             });
 
             if (!res.ok) {
+                let errorMessage = res.statusText || "Connection failed";
+                try {
+                    const errorJson = await res.json();
+                    if (errorJson.error) errorMessage = errorJson.error;
+                } catch (e) { /* ignore json parse error */ }
+
                 if (res.status === 429) throw new Error("API Quota Exceeded. Please try a free model.");
-                throw new Error(res.statusText || "Connection failed");
+                throw new Error(`Server Error (${res.status}): ${errorMessage}`);
             }
             if (!res.body) throw new Error('No response body');
 

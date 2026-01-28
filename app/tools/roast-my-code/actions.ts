@@ -9,7 +9,12 @@ export async function roastCode(code: string) {
     try {
         const prompt = `Roast this code. Be sarcastic, funny, but technically accurate.
         Identify the worst practice and provide a burn score (0-10, where 10 is emotional damage).
-        Also provide a serious "fix" suggestion at the end.`;
+        Also provide a serious "fix" suggestion at the end.
+        
+        CODE TO ROAST:
+        \`\`\`
+        ${code}
+        \`\`\``;
 
         const { object } = await aiEngine.generateObject(prompt, z.object({
             roast: z.string().describe("The brutal roast found in markdown"),

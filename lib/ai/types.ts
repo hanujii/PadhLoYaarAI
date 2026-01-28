@@ -1,6 +1,13 @@
 import { z } from 'zod';
 
-export type ProviderId = 'google' | 'openrouter' | 'github' | 'groq';
+export type ProviderId = 'google' | 'openrouter' | 'github' | 'groq' | 'openai';
+
+export interface ImagePart {
+    inlineData: {
+        data: string; // base64 encoded
+        mimeType: string;
+    };
+}
 
 export interface GenerationOptions {
     temperature?: number;
@@ -8,6 +15,7 @@ export interface GenerationOptions {
     topP?: number;
     systemPrompt?: string;
     jsonMode?: boolean;
+    images?: ImagePart[]; // For multimodal/vision support
 }
 
 export interface ModelDTO {

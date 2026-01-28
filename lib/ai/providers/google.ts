@@ -39,7 +39,21 @@ export class GoogleProvider implements AIProvider {
             ? `System: ${options.systemPrompt}\n\nUser: ${prompt}`
             : prompt;
 
-        const result = await model.generateContent(finalPrompt);
+        // Build content parts - supports multimodal with images
+        const contentParts: any[] = [{ text: finalPrompt }];
+        
+        if (options?.images && options.images.length > 0) {
+            for (const img of options.images) {
+                contentParts.push({
+                    inlineData: {
+                        data: img.inlineData.data,
+                        mimeType: img.inlineData.mimeType,
+                    }
+                });
+            }
+        }
+
+        const result = await model.generateContent(contentParts);
         return result.response.text();
     }
 

@@ -1,6 +1,6 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
 
 export async function chatTeacher(message: string, history: any[]) {
     const context = `You are a strict but helpful teacher conducting an oral exam or tutoring session.
@@ -14,9 +14,10 @@ export async function chatTeacher(message: string, history: any[]) {
   Teacher:`;
 
     try {
-        const text = await generateText('flash', context);
+        const { text } = await aiEngine.generateText(context, { temperature: 0.7 });
         return { success: true, data: text };
     } catch (error) {
+        console.error("Teacher Chat Error:", error);
         return { success: false, error: 'Teacher is silent.' };
     }
 }

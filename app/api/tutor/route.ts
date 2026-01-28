@@ -23,7 +23,10 @@ export async function POST(req: Request) {
     }
 
     try {
-        const effectiveModel = (model === 'auto' || !model) ? 'gemini-1.5-flash' : model;
+        let effectiveModel = model;
+        if (!effectiveModel || effectiveModel === 'auto') {
+            effectiveModel = aiEngine.getSmartDefaultModel();
+        }
         console.log(`[TutorAPI] Using model: ${effectiveModel}`);
 
         const aiModel = aiEngine.getModelInstance(effectiveModel);
@@ -42,6 +45,18 @@ export async function POST(req: Request) {
         return result.toTextStreamResponse();
     } catch (error: any) {
         console.error("Tutor API Error:", error);
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+
+        let status = 500;
+        let message = error.message || "Internal Server Error";
+
+        if (error.message?.includes("quota") || error.message?.includes("429")) {
+            status = 429;
+            message = "AI Quota Exceeded. Please check your plan or try a different provider/model.";
+        }
+
+        return new Response(JSON.stringify({ error: message }), {
+            status: status,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 }

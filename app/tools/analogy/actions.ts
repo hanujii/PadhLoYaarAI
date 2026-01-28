@@ -1,6 +1,6 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
 
 export async function generateAnalogy(formData: FormData) {
     const concept = formData.get('concept') as string;
@@ -32,7 +32,7 @@ export async function generateAnalogy(formData: FormData) {
         [A one-sentence plain English definition]
         `;
 
-        const text = await generateText('flash', prompt);
+        const { text } = await aiEngine.generateText(prompt, { temperature: 0.8 });
 
         return { success: true, data: text };
     } catch (error) {

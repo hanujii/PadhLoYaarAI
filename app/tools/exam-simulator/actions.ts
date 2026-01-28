@@ -1,7 +1,6 @@
 'use server';
 
-import { google } from '@ai-sdk/google';
-import { generateObject } from 'ai';
+import { aiEngine } from '@/lib/ai/engine';
 import { z } from 'zod';
 
 const ExamSchema = z.object({
@@ -16,16 +15,20 @@ const ExamSchema = z.object({
 
 export async function generateExam(topic: string, difficulty: string) {
     try {
-        const { object } = await generateObject({
-            model: google(`gemini-1.5-flash`),
-            schema: ExamSchema,
-            prompt: `Create a ${difficulty} difficulty exam about "${topic}". 
+        const prompt = `Create a ${difficulty} difficulty exam about "${topic}". 
             Generate exactly 5 multiple choice questions.
-            Each question must have 4 options.`,
-        });
+            Each question must have 4 options.
+            Include an examTitle and questions array with id, question, options, and correctOptionIndex.`;
+
+        const { object } = await aiEngine.generateObject(
+            prompt,
+            ExamSchema,
+            { temperature: 0.7 }
+        );
 
         return { success: true, data: object };
     } catch (error) {
+        console.error('Exam Simulator Error:', error);
         return { success: false, error: 'Failed to generate exam.' };
     }
 }

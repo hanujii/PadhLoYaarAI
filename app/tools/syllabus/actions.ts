@@ -1,8 +1,13 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
-import { parseAIJSON } from '@/lib/utils';
-// import { getDocument } from 'pdfjs-dist/legacy/build/pdf';
+import { aiEngine } from '@/lib/ai/engine';
+import { z } from 'zod';
+
+const SyllabusUnitSchema = z.object({
+    unit: z.string().describe("Unit Name"),
+    hours: z.string().describe("Estimated Hours (e.g., '10h')"),
+    topics: z.array(z.string()).describe("List of topics in this unit"),
+});
 
 export async function parseSyllabus(formData: FormData) {
     const file = formData.get('file') as File;
@@ -57,23 +62,17 @@ export async function parseSyllabus(formData: FormData) {
         Extract the structured syllabus. Group topics into logical "Units" or "Modules".
         For each Unit, estimate the study hours required.
         
-        Return STRICTLY a JSON array of objects with this schema:
-        [
-            {
-                "unit": "Unit Name",
-                "hours": "Estimated Hours (e.g., '10h')",
-                "topics": ["Topic 1", "Topic 2"]
-            }
-        ]
-        
         SYLLABUS TEXT:
         ${text}
         `;
 
-        const result = await generateText('flash', prompt);
-        const topics = parseAIJSON(result);
+        const { object } = await aiEngine.generateObject(
+            prompt,
+            z.array(SyllabusUnitSchema),
+            { temperature: 0.5 }
+        );
 
-        return { success: true, data: topics };
+        return { success: true, data: object };
     } catch (error) {
         console.error('Syllabus Parse Error:', error);
         return { success: false, error: 'Failed to process syllabus PDF.' };

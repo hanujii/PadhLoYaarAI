@@ -3,12 +3,13 @@ import { GoogleProvider } from './providers/google';
 import { OpenRouterProvider } from './providers/openrouter';
 import { GithubProvider } from './providers/github';
 import { GroqProvider } from './providers/groq';
+import { OpenAIProvider } from './providers/openai';
 import { z } from 'zod';
 
 class AIEngine {
     private providers: Map<ProviderId, AIProvider> = new Map();
     // Order of preference for auto-selection
-    private priorityOrder: ProviderId[] = ['google', 'openrouter', 'groq', 'github'];
+    private priorityOrder: ProviderId[] = ['openai', 'google', 'openrouter', 'groq', 'github'];
 
     constructor() {
         this.initializeProviders();
@@ -19,7 +20,8 @@ class AIEngine {
             new GoogleProvider(),
             new OpenRouterProvider(),
             new GroqProvider(),
-            new GithubProvider()
+            new GithubProvider(),
+            new OpenAIProvider()
         ];
 
         providers.forEach(p => {
@@ -147,6 +149,20 @@ class AIEngine {
         }
 
         throw new Error(`Model '${modelId}' not found in any configured provider.`);
+    }
+
+    /**
+     * Returns a valid model ID from the highest priority configured provider.
+     */
+    getSmartDefaultModel(): string {
+        const providers = this.selectEvaluationOrder();
+        if (providers.length === 0) throw new Error("No AI configured.");
+
+        // Try to find a "Flash/Mini" style model first (not pro)
+        const firstProvider = providers[0];
+        const models = firstProvider.getModels();
+        const efficientModel = models.find(m => !m.isPro);
+        return efficientModel?.id || models[0].id;
     }
 }
 

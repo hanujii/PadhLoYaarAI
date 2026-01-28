@@ -1,7 +1,15 @@
 'use server';
 
-import { generateText } from '@/lib/gemini';
-import { parseAIJSON } from '@/lib/utils';
+import { aiEngine } from '@/lib/ai/engine';
+import { z } from 'zod';
+
+const RoadmapDaySchema = z.object({
+    day: z.number(),
+    title: z.string().describe("Topic of the day"),
+    tasks: z.array(z.string()).describe("List of 3-4 specific actionable sub-tasks"),
+    resources: z.array(z.string()).describe("List of 2-3 specific topics to search on YouTube/Google"),
+    tip: z.string().describe("A short motivational or efficiency tip for this specific day"),
+});
 
 export async function generateRoadmap(formData: FormData) {
     const goal = formData.get('goal') as string;
@@ -18,21 +26,16 @@ export async function generateRoadmap(formData: FormData) {
         Duration: ${days} days.
         Study time: ${hours || '2'} hours per day.
         
-        Return STRICTLY a JSON array of objects. Each object must have:
-        - "day": number
-        - "title": string (Topic of the day)
-        - "tasks": string[] (List of 3-4 specific actionable sub-tasks)
-        - "resources": string[] (List of 2-3 specific topics to search on YouTube/Google, e.g. "YouTube: React Hooks Introduction")
-        - "tip": string (A short motivational or efficiency tip for this specific day)
-        
-        Do not include any markdown formatting (like \`\`\`json) or extra text. Just the raw JSON array.
+        Generate a detailed roadmap with actionable tasks, resources, and tips for each day.
         `;
 
-        const text = await generateText('flash', prompt); // Switch to 'flash' for speed/reliability
+        const { object } = await aiEngine.generateObject(
+            prompt,
+            z.array(RoadmapDaySchema),
+            { temperature: 0.7 }
+        );
 
-        const roadmap = parseAIJSON(text);
-
-        return { success: true, data: roadmap };
+        return { success: true, data: object };
     } catch (error) {
         console.error('Roadmap generation error:', error);
         return { success: false, error: 'Failed to generate roadmap. Please try again.' };

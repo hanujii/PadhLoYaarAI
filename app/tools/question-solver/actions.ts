@@ -1,6 +1,7 @@
 'use server';
 
-import { generateVision, generateText } from '@/lib/gemini';
+import { aiEngine } from '@/lib/ai/engine';
+import { ImagePart } from '@/lib/ai/types';
 
 export async function solveQuestion(formData: FormData) {
     const customQuestion = formData.get('question') as string;
@@ -14,11 +15,11 @@ export async function solveQuestion(formData: FormData) {
         let responseText = '';
 
         if (imageFile && imageFile.size > 0) {
-            // Handle Image + Text
+            // Handle Image + Text (Vision/Multimodal)
             const bytes = await imageFile.arrayBuffer();
             const base64Data = Buffer.from(bytes).toString('base64');
 
-            const imagePart = {
+            const imagePart: ImagePart = {
                 inlineData: {
                     data: base64Data,
                     mimeType: imageFile.type,
@@ -36,7 +37,12 @@ export async function solveQuestion(formData: FormData) {
                 prompt += `\n\nAdditional Question/Context: ${customQuestion}`;
             }
 
-            responseText = await generateVision('flash', prompt, [imagePart]); // Using Flash for speed/cost, Pro if complex
+            const result = await aiEngine.generateText(prompt, {
+                images: [imagePart],
+                preferredProvider: 'google', // Best vision support
+                temperature: 0.7,
+            });
+            responseText = result.text;
         } else {
             // Text only
             const prompt = `You are an expert academic solver. Solve the following question step-by-step:
@@ -45,7 +51,8 @@ export async function solveQuestion(formData: FormData) {
       
       Format with Markdown.`;
 
-            responseText = await generateText('flash', prompt);
+            const result = await aiEngine.generateText(prompt, { temperature: 0.7 });
+            responseText = result.text;
         }
 
         return { success: true, data: responseText };

@@ -74,16 +74,22 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
     };
 
     return (
-        <div className="w-full relative z-20 flex flex-col items-center gap-4">
-            <LearningCommandInput
-                placeholders={placeholders}
-                onChange={handleChange}
-                onSubmit={onSubmit}
-                onTopicSelect={handleTopicSelect}
-                onAtClick={() => setIsCommandOpen(true)}
-                selectedTool={selectedTool}
-                onClearTool={() => setSelectedTool(null)}
-            />
+        <div className="w-full relative z-20 flex flex-col items-center gap-4 group/cmd">
+
+            {/* Ambient Glow that reacts to hover */}
+            <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full opacity-50 transition-all duration-700 group-hover/cmd:opacity-80 group-hover/cmd:blur-[80px] -z-10" />
+
+            <div className="relative w-full transition-transform duration-300 group-hover/cmd:scale-[1.01]">
+                <LearningCommandInput
+                    placeholders={placeholders}
+                    onChange={handleChange}
+                    onSubmit={onSubmit}
+                    onTopicSelect={handleTopicSelect}
+                    onAtClick={() => setIsCommandOpen(true)}
+                    selectedTool={selectedTool}
+                    onClearTool={() => setSelectedTool(null)}
+                />
+            </div>
 
             <CommandDialog open={isCommandOpen} onOpenChange={setIsCommandOpen}>
                 <CommandInput placeholder="Select a tool..." />
