@@ -1,0 +1,13 @@
+import type { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.hanu.padhloyaar',
+  appName: 'PadhLoYaar',
+  webDir: 'public', // Fallback
+  server: {
+    url: 'https://padhloyaar-ai.vercel.app', // CHANGE THIS TO YOUR REAL URL
+    cleartext: true
+  }
+};
+
+export default config;

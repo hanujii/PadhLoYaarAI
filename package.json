@@ -11,6 +11,9 @@
   "dependencies": {
     "@ai-sdk/google": "^2.0.46",
     "@ai-sdk/openai": "^2.0.88",
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/cli": "^8.0.2",
+    "@capacitor/core": "^8.0.2",
     "@google/generative-ai": "^0.24.1",
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-avatar": "^1.1.11",

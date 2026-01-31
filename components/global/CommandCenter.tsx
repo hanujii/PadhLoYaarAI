@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LearningCommandInput } from "@/components/global/LearningCommandInput";
-import { Sparkles, Command, Check } from 'lucide-react';
+import { Check, Command, Sparkles, Search } from 'lucide-react';
 import { TOPICS } from '@/lib/topics';
 import { cn } from '@/lib/utils';
 import { TOOLS } from '@/lib/tools-data';
@@ -16,7 +16,6 @@ import {
     CommandList,
 } from "@/components/ui/command";
 
-
 export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) => void }) {
     const router = useRouter();
     const [inputVal, setInputVal] = useState("");
@@ -28,7 +27,18 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
         setPlaceholders([...TOPICS].sort(() => 0.5 - Math.random()).slice(0, 30));
     }, []);
 
-    // Detect @ typing
+    // Detect keypress for Command+K
+    useEffect(() => {
+        const down = (e: KeyboardEvent) => {
+            if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                setIsCommandOpen((open) => !open);
+            }
+        };
+        document.addEventListener("keydown", down);
+        return () => document.removeEventListener("keydown", down);
+    }, []);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setInputVal(val);
@@ -42,18 +52,15 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
         const encoded = encodeURIComponent(input);
 
         if (selectedTool) {
-            // Redirect to specific tool
             const tool = TOOLS.find(t => t.value === selectedTool);
             if (tool) {
                 const param = tool.queryParam || 'q';
                 router.push(`${tool.href}?${param}=${encoded}`);
             }
         } else {
-            // INLINE CHAT (Default)
             if (onChatStart) {
                 onChatStart(input);
             } else {
-                // Fallback if no handler provided (legacy behavior)
                 router.push(`/tools/tutor?topic=${encoded}`);
             }
         }
@@ -64,7 +71,7 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
         const query = inputVal.trim();
         if (query) {
             processInput(query);
-            setInputVal(''); // Clear input after submission
+            setInputVal('');
         }
     };
 
@@ -76,10 +83,10 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
     return (
         <div className="w-full relative z-20 flex flex-col items-center gap-4 group/cmd">
 
-            {/* Ambient Glow that reacts to hover */}
-            <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full opacity-50 transition-all duration-700 group-hover/cmd:opacity-80 group-hover/cmd:blur-[80px] -z-10" />
+            {/* Enhanced Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-purple-500/30 to-blue-500/30 blur-[60px] opacity-40 transition-all duration-700 group-hover/cmd:opacity-70 group-hover/cmd:blur-[80px] -z-10 rounded-full" />
 
-            <div className="relative w-full transition-transform duration-300 group-hover/cmd:scale-[1.01]">
+            <div className="relative w-full transition-all duration-300 group-hover/cmd:scale-[1.01] hover:shadow-[0_0_40px_rgba(139,92,246,0.3)] rounded-full">
                 <LearningCommandInput
                     placeholders={placeholders}
                     onChange={handleChange}
@@ -89,27 +96,37 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
                     selectedTool={selectedTool}
                     onClearTool={() => setSelectedTool(null)}
                 />
+
+                {/* Keyboard Shortcut Indicator */}
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 pointer-events-none text-muted-foreground/50 text-xs font-mono">
+                    <span className="bg-white/10 px-1.5 py-0.5 rounded border border-white/10">Ctrl</span>
+                    <span>+</span>
+                    <span className="bg-white/10 px-1.5 py-0.5 rounded border border-white/10">K</span>
+                </div>
             </div>
 
             <CommandDialog open={isCommandOpen} onOpenChange={setIsCommandOpen}>
-                <CommandInput placeholder="Select a tool..." />
-                <CommandList>
+                <CommandInput placeholder="Search tools..." />
+                <CommandList className="bg-black/90 backdrop-blur-xl border border-white/10">
                     <CommandEmpty>No tool found.</CommandEmpty>
-                    <CommandGroup heading="Tools">
+                    <CommandGroup heading="Available Tools">
                         {TOOLS.map((tool) => (
                             <CommandItem
                                 key={tool.value}
+                                className="aria-selected:bg-primary/20 aria-selected:text-primary"
                                 onSelect={() => {
                                     setSelectedTool(tool.value);
                                     setIsCommandOpen(false);
-                                    // Remove the '@' if it was typed at the end
                                     if (inputVal.endsWith('@')) {
                                         setInputVal(inputVal.slice(0, -1));
                                     }
                                 }}
                             >
-                                <Check className={cn("mr-2 h-4 w-4", selectedTool === tool.value ? "opacity-100" : "opacity-0")} />
-                                {tool.title}
+                                <div className={cn("mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary/50", selectedTool === tool.value ? "opacity-100 bg-primary text-primary-foreground" : "opacity-0")}>
+                                    <Check className="h-3 w-3" />
+                                </div>
+                                <tool.icon className="mr-2 h-4 w-4" />
+                                <span>{tool.title}</span>
                             </CommandItem>
                         ))}
                     </CommandGroup>

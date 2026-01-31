@@ -2,11 +2,11 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { GlassCard } from '@/components/ui/glass-card';
+import { GlassCard, GlassCardSimple } from '@/components/ui/glass-card';
 import { Hero3D } from '@/components/global/Hero3D';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, BookOpen, BrainCircuit, GraduationCap, Mic, Code, Trophy, LayoutGrid, Zap } from 'lucide-react';
 import { CommandCenter } from '@/components/global/CommandCenter';
 import { TOOLS } from '@/lib/tools-data';
 import { ShimmerText } from '@/components/ui/shimmer-text';
@@ -18,268 +18,182 @@ export default function Home() {
     router.push(`/tools/tutor?topic=${encodeURIComponent(topic)}`);
   };
 
-  const container = {
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+  };
+
+  const stagger = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: 0.1
       }
     }
   };
 
-  const item = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: {
-        type: "spring" as const,
-        stiffness: 100,
-        damping: 15
-      }
-    }
-  };
-
-  // Group Tools
-  const PREMIUM_TOOLS = ['knowledge-galaxy', 'zen-station', 'podcast', 'jarvis'];
-  const STUDY_TOOLS = ['tutor', 'flashcards', 'exam-simulator', 'exam-generator', 'reverse-exam', 'roadmap', 'syllabus', 'teacher-chat'];
-
-  const premium = TOOLS.filter(t => PREMIUM_TOOLS.includes(t.value));
-  const study = TOOLS.filter(t => STUDY_TOOLS.includes(t.value));
-  const utilities = TOOLS.filter(t => !PREMIUM_TOOLS.includes(t.value) && !STUDY_TOOLS.includes(t.value));
+  // Group Tools for Bento Grid
+  const FEATURED_TOOL = TOOLS.find(t => t.value === 'knowledge-galaxy');
+  const SECONDARY_TOOLS = TOOLS.filter(t => ['zen-station', 'podcast'].includes(t.value));
+  const QUICK_TOOLS = TOOLS.filter(t => !['knowledge-galaxy', 'zen-station', 'podcast'].includes(t.value)).slice(0, 6);
 
   return (
-    <div className="space-y-16 sm:space-y-20 lg:space-y-24 pb-16 sm:pb-20 lg:pb-24">
+    <div className="min-h-screen pb-20 overflow-x-hidden">
 
       {/* --- HERO SECTION --- */}
-      <div className="relative min-h-[450px] sm:min-h-[550px] lg:min-h-[650px] flex flex-col items-center justify-center py-8 sm:py-12 lg:py-16 overflow-hidden">
-        {/* Enhanced Background */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 opacity-50 pointer-events-none overflow-hidden">
-            <Hero3D />
-          </div>
-          {/* Gradient Mesh Overlay */}
-          <div className="absolute inset-0 gradient-mesh opacity-60" />
-          {/* Radial gradient for depth */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+      <section className="relative min-h-[85vh] flex flex-col items-center justify-center py-20 px-4">
+        {/* Cinematic Background Elements */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <Hero3D />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
         </div>
 
-        <div className="w-full max-w-5xl px-4 sm:px-6 lg:px-8 z-20 flex flex-col items-center gap-8 sm:gap-10 lg:gap-12">
+        <div className="w-full max-w-5xl z-10 flex flex-col items-center gap-10 mt-10">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-center space-y-4 sm:space-y-6"
+            initial="hidden"
+            animate="show"
+            variants={stagger}
+            className="text-center space-y-6"
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>AI-Powered Learning</span>
+            {/* New Badge Design */}
+            <motion.div variants={fadeInUp} className="flex justify-center">
+              <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2 text-sm font-medium text-foreground/80 shadow-lg">
+                <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span>v2.0 Now Live</span>
+              </div>
             </motion.div>
 
-            <h1 className="font-extrabold tracking-tighter text-center flex flex-col items-center gap-2">
-              <span className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60 drop-shadow-2xl animate-reveal">
+            <motion.h1 variants={fadeInUp} className="font-extrabold tracking-tight text-center flex flex-col items-center gap-2">
+              <span className="text-5xl sm:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 drop-shadow-2xl">
                 Padh Lo Yaar
               </span>
-              <ShimmerText className="text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black pb-3 sm:pb-4 relative animate-reveal [animation-delay:200ms]">
+              <ShimmerText className="text-6xl sm:text-8xl lg:text-9xl font-black bg-gradient-to-r from-primary via-purple-300 to-indigo-400 bg-clip-text text-transparent">
                 AI
-                <div className="absolute inset-x-0 -bottom-3 sm:-bottom-4 h-[15px] sm:h-[20px] bg-primary/40 blur-2xl rounded-[100%] -z-10" />
               </ShimmerText>
-            </h1>
-            <p className="text-base xs:text-lg sm:text-xl md:text-2xl text-muted-foreground/80 max-w-2xl mx-auto font-light leading-relaxed px-4 animate-reveal [animation-delay:400ms]">
-              Your seamless <span className="text-foreground font-medium bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">AI study companion</span> for the modern era.
-            </p>
+            </motion.h1>
+
+            <motion.p variants={fadeInUp} className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Your intelligent study companion. Master any subject with <span className="text-primary font-semibold">AI-powered</span> tools designed for the modern student.
+            </motion.p>
           </motion.div>
 
           <motion.div
-            key="command-center"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="w-full max-w-[95vw] xs:max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl flex flex-col items-center gap-6 sm:gap-8 relative"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="w-full max-w-2xl relative"
           >
-            {/* Enhanced Glow behind command center */}
-            <div className="absolute inset-0 -z-10">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[200%] bg-primary/20 blur-[100px] rounded-full animate-pulse-slow" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[150%] bg-purple-500/15 blur-[80px] rounded-full animate-pulse-slow [animation-delay:1s]" />
-            </div>
-
             <CommandCenter onChatStart={handleSearch} />
-
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, y: [0, 10, 0] }}
-              transition={{ delay: 2, duration: 2, repeat: Infinity }}
-              onClick={() => {
-                const toolsSection = document.getElementById('featured-section');
-                if (toolsSection) {
-                  toolsSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              className="group flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer mt-8 sm:mt-12"
-            >
-              <span className="text-xs font-semibold tracking-widest uppercase opacity-70 group-hover:opacity-100">Explore Tools</span>
-              <ArrowRight className="h-5 w-5 rotate-90 opacity-70 group-hover:opacity-100 transition-transform group-hover:translate-y-1" />
-            </motion.button>
           </motion.div>
         </div>
-      </div>
+      </section>
 
-      {/* --- PREMIUM SECTION --- */}
-      <div id="featured-section" className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      {/* --- BENTO GRID DASHBOARD --- */}
+      <section id="dashboard" className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl -mt-20 relative z-20">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-8 sm:mb-10 lg:mb-12"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-              <Sparkles className="w-5 h-5 text-primary" />
-            </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">Premium Experience</h2>
-          </div>
-          <div className="h-1 w-20 sm:w-24 bg-gradient-to-r from-primary via-purple-400 to-transparent rounded-full" />
-        </motion.div>
-
-        <motion.div
-          variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8"
+          variants={stagger}
+          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[180px]"
         >
-          {premium.map((tool) => (
-            <motion.div key={tool.href} variants={item} className="h-full">
-              <Link href={tool.href} className="block h-full group">
-                <GlassCard 
-                  className="h-full flex flex-col justify-between p-6 sm:p-8 bg-gradient-to-br from-white/5 to-transparent hover:from-primary/10 transition-all duration-500" 
-                  enableTilt={true}
+
+          {/* Header Tile */}
+          <motion.div variants={fadeInUp} className="md:col-span-2 lg:col-span-2 row-span-1 flex flex-col justify-end pb-2">
+            <h2 className="text-3xl font-bold flex items-center gap-2">
+              <LayoutGrid className="w-6 h-6 text-primary" />
+              Your Dashboard
+            </h2>
+            <p className="text-muted-foreground">Access your premium tools and recent study aids.</p>
+          </motion.div>
+
+          <motion.div variants={fadeInUp} className="hidden lg:block lg:col-span-2 row-span-1" />
+
+          {/* LARGE FEATURED CARD (Knowledge Galaxy) */}
+          {FEATURED_TOOL && (
+            <motion.div variants={fadeInUp} className="md:col-span-2 row-span-2 h-full">
+              <Link href={FEATURED_TOOL.href} className="block h-full">
+                <GlassCard
+                  className="h-full group hover:border-primary/50"
                   variant="elevated"
+                  spotlight={true}
                 >
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="space-y-3 sm:space-y-4">
-                      <div className={`p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 ${tool.color} text-white shadow-lg group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] transition-all duration-500`}>
-                        <tool.icon className="w-7 h-7 sm:w-8 sm:h-8" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl sm:text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{tool.title}</h3>
-                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                          {tool.description}
-                        </p>
-                      </div>
+                  <div className="h-full flex flex-col justify-between p-8 relative">
+                    <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                      <FEATURED_TOOL.icon className="w-32 h-32 text-primary rotate-12" />
                     </div>
-                    <div className="p-2.5 rounded-full border border-white/10 bg-black/20 group-hover:bg-primary group-hover:border-primary group-hover:text-black group-hover:scale-110 transition-all duration-300 shrink-0 shadow-lg">
-                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+
+                    <div className="bg-primary/20 w-fit p-3 rounded-xl backdrop-blur-md border border-primary/20">
+                      <FEATURED_TOOL.icon className="w-8 h-8 text-primary" />
+                    </div>
+
+                    <div>
+                      <h3 className="text-3xl font-bold mb-2 group-hover:text-primary transition-colors">{FEATURED_TOOL.title}</h3>
+                      <p className="text-muted-foreground text-lg">{FEATURED_TOOL.description}</p>
+                    </div>
+
+                    <div className="absolute bottom-8 right-8 bg-white/10 p-3 rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0">
+                      <ArrowRight className="w-6 h-6 text-white" />
                     </div>
                   </div>
                 </GlassCard>
               </Link>
             </motion.div>
+          )}
+
+          {/* SECONDARY TOOLS (Zen, Podcast) */}
+          {SECONDARY_TOOLS.map((tool) => (
+            <motion.div key={tool.value} variants={fadeInUp} className="md:col-span-1 row-span-1 h-full">
+              <Link href={tool.href} className="block h-full">
+                <GlassCard className="h-full flex flex-col justify-between p-6 group hover:border-purple-500/50">
+                  <div className="flex justify-between items-start">
+                    <div className={cn("p-2 rounded-lg bg-white/5", tool.color)}>
+                      <tool.icon className="w-6 h-6" />
+                    </div>
+                    <Zap className="w-4 h-4 text-muted-foreground opacity-50" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg leading-tight mb-1 group-hover:text-purple-400 transition-colors">{tool.title}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{tool.description}</p>
+                  </div>
+                </GlassCard>
+              </Link>
+            </motion.div>
           ))}
-        </motion.div>
-      </div>
 
-      {/* --- STUDY TOOLS --- */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="mb-6 sm:mb-8 flex items-center gap-3"
-        >
-          <div className="h-8 sm:h-10 w-1.5 bg-gradient-to-b from-blue-500 via-cyan-500 to-transparent rounded-full" />
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight">Core Study Tools</h2>
-        </motion.div>
-
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
-        >
-          {study.map((tool) => (
-            <ToolCard key={tool.href} tool={tool} variants={item} />
+          {/* QUICK ACCESS GRID (Smaller Tools) */}
+          {QUICK_TOOLS.map((tool) => (
+            <motion.div key={tool.value} variants={fadeInUp} className="md:col-span-1 row-span-1 h-full">
+              <Link href={tool.href} className="block h-full">
+                <GlassCardSimple className="h-full p-5 flex flex-col gap-3 group hover:bg-white/10">
+                  <div className="flex items-center gap-3">
+                    <tool.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="font-semibold text-sm">{tool.title}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground line-clamp-2 mt-auto">
+                    {tool.description}
+                  </p>
+                </GlassCardSimple>
+              </Link>
+            </motion.div>
           ))}
-        </motion.div>
-      </div>
 
-      {/* --- UTILITIES --- */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="mb-6 sm:mb-8 flex items-center gap-3"
-        >
-          <div className="h-8 sm:h-10 w-1.5 bg-gradient-to-b from-slate-500 via-gray-500 to-transparent rounded-full" />
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-muted-foreground">Utilities & Creative</h2>
-        </motion.div>
+          {/* Explore More CTA */}
+          <motion.div variants={fadeInUp} className="md:col-span-1 row-span-1 h-full flex items-center justify-center">
+            <Link href="/tools" className="flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
+              <div className="w-12 h-12 rounded-full border border-dashed border-muted-foreground/30 flex items-center justify-center group-hover:border-primary group-hover:scale-110 transition-all">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+              <span className="text-xs font-semibold uppercase tracking-widest">View All</span>
+            </Link>
+          </motion.div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
-        >
-          {utilities.map((tool) => (
-            <ToolCard key={tool.href} tool={tool} variants={item} compact />
-          ))}
         </motion.div>
-      </div>
+      </section>
 
+      {/* --- FOOTER DECORATION --- */}
+      <div className="fixed bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50" />
     </div>
-  );
-}
-
-// Sub-component for standard tool cards
-function ToolCard({ tool, variants, compact = false }: { tool: any, variants: any, compact?: boolean }) {
-  return (
-    <motion.div variants={variants} className="h-full">
-      <Link href={tool.href} className="block h-full">
-        <GlassCard 
-          className={cn(
-            "group h-full flex flex-col justify-between cursor-pointer",
-            compact ? "p-3 sm:p-4" : "p-4 sm:p-6"
-          )} 
-          enableTilt={false}
-          glowOnHover={true}
-        >
-          <div className={cn("flex gap-3 sm:gap-4", compact ? "flex-row items-center" : "flex-col")}>
-            <div className={cn(
-              "rounded-xl bg-opacity-20 border border-white/10 text-primary flex items-center justify-center shrink-0 transition-all duration-300",
-              "group-hover:scale-110 group-hover:border-primary/30 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.2)]",
-              tool.color,
-              compact ? "w-9 h-9 sm:w-10 sm:h-10 p-2 sm:p-2.5" : "w-10 h-10 sm:w-11 sm:h-11 p-2.5 sm:p-3"
-            )}>
-              <tool.icon className={cn(compact ? "w-5 h-5" : "w-6 h-6")} />
-            </div>
-            <div className="space-y-1 min-w-0">
-              <h3 className={cn(
-                "font-semibold leading-tight tracking-tight group-hover:text-primary transition-colors", 
-                compact ? "text-sm sm:text-base" : "text-base sm:text-lg"
-              )}>
-                {tool.title}
-              </h3>
-              {!compact && (
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                  {tool.description}
-                </p>
-              )}
-            </div>
-          </div>
-        </GlassCard>
-      </Link>
-    </motion.div>
   );
 }
