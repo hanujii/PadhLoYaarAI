@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PadhLoYaar</string>
+    <string name="title_activity_main">PadhLoYaar</string>
+    <string name="package_name">com.hanu.padhloyaar</string>
+    <string name="custom_url_scheme">com.hanu.padhloyaar</string>
+</resources>

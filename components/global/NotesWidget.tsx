@@ -1,0 +1,139 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { NotesEditor } from '@/components/global/NotesEditor';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StickyNote, Maximize2, Minimize2 } from 'lucide-react';
+import { useHistoryStore } from '@/lib/history-store';
+import dynamic from 'next/dynamic';
+import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
+
+// Dynamically import Tldraw to avoid SSR issues
+const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
+    ssr: false,
+    loading: () => <div className="w-full h-full flex items-center justify-center text-muted-foreground">Loading Canvas...</div>
+});
+
+export function NotesWidget() {
+    const { notes, notesTitle, updateNotes, updateNotesTitle } = useHistoryStore();
+    const [isOpen, setIsOpen] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [activeTab, setActiveTab] = useState('text');
+    const { theme } = useTheme();
+
+    // Local state for immediate feedback
+    const [localNotes, setLocalNotes] = useState(notes || '');
+    const [localTitle, setLocalTitle] = useState(notesTitle || '');
+
+    // Sync on mount
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        setLocalNotes(notes || '');
+        setLocalTitle(notesTitle || '');
+    }, [notes, notesTitle]);
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setLocalTitle(val);
+        updateNotesTitle(val);
+    };
+
+    const handleNotesChange = (content: string) => {
+        setLocalNotes(content);
+        updateNotes(content);
+    };
+
+    const toggleExpand = () => {
+        setIsExpanded(!isExpanded);
+    };
+
+    return (
+        <div className="fixed bottom-6 right-6 z-50">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                <SheetTrigger asChild>
+                    <Button
+                        size="icon"
+                        className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all bg-background border hover:bg-muted text-foreground"
+                        title="Scratch Pad"
+                    >
+                        <StickyNote className="h-6 w-6" />
+                    </Button>
+                </SheetTrigger>
+                <SheetContent
+                    side="right"
+                    className={cn(
+                        "flex flex-col p-0 border-l transition-all duration-300",
+                        isExpanded ? "w-[100vw] sm:w-[100vw] sm:max-w-none" : "w-[400px] sm:w-[540px] sm:max-w-md"
+                    )}
+                >
+                    <SheetTitle className="sr-only">Scratch Pad</SheetTitle>
+                    <div className="flex-1 flex flex-col bg-background h-full">
+                        {/* Header */}
+                        <div className="pt-6 px-6 pr-12 pb-2 border-b flex justify-between items-start">
+                            <div className="flex-1">
+                                <div className="text-2xl mb-2">📝</div>
+                                <input
+                                    type="text"
+                                    value={localTitle}
+                                    onChange={handleTitleChange}
+                                    placeholder="Untitled"
+                                    className="w-full text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50 text-foreground"
+                                />
+                            </div>
+                        </div>
+
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={toggleExpand}
+                            title={isExpanded ? "Collapse" : "Maximize"}
+                            className="absolute right-12 top-4 h-8 w-8 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        >
+                            {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                        </Button>
+
+                        {/* Content */}
+                        <div className="flex-1 overflow-hidden relative">
+                            <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+                                <div className="px-6 py-2 bg-muted/20 border-b">
+                                    <TabsList className="grid w-full grid-cols-2 max-w-[200px]">
+                                        <TabsTrigger value="text">Text Note</TabsTrigger>
+                                        <TabsTrigger value="canvas">Whiteboard</TabsTrigger>
+                                    </TabsList>
+                                </div>
+
+                                <TabsContent value="text" className="flex-1 p-0 m-0 h-full overflow-hidden">
+                                    <div className="h-full w-full px-0 py-0 overflow-hidden">
+                                        <NotesEditor
+                                            content={localNotes}
+                                            onChange={handleNotesChange}
+                                        />
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="canvas" className="flex-1 p-0 m-0 h-full relative isolate">
+                                    {/* Tldraw Whiteboard */}
+                                    <div className="absolute inset-0 w-full h-full bg-white">
+                                        {/* Force white background container for tldraw to ensure visibility */}
+                                        <Tldraw persistenceKey="scratchpad-whiteboard" />
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                        </div>
+
+                        {/* Footer (Text Mode Only) */}
+                        {activeTab === 'text' && (
+                            <div className="px-4 py-2 text-xs text-muted-foreground border-t bg-muted/20 flex justify-between items-center">
+                                <span>Markdown supported</span>
+                                <span>{(localNotes || '').length} chars</span>
+                            </div>
+                        )}
+                    </div>
+                </SheetContent>
+            </Sheet>
+        </div>
+    );
+}
