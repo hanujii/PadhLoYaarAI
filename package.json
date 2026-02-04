@@ -39,7 +39,6 @@
     "@tiptap/pm": "^3.13.0",
     "@tiptap/react": "^3.13.0",
     "@tiptap/starter-kit": "^3.13.0",
-    "@tremor/react": "^3.18.7",
     "@types/html2pdf.js": "^0.10.0",
     "@vercel/analytics": "^1.6.1",
     "ai": "^5.0.113",
