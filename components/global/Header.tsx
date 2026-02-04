@@ -171,7 +171,7 @@ export function Header() {
                                 <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
                             <span className="text-base xs:text-lg sm:text-xl font-bold tracking-tight">
-                                <span className="text-foreground">PadhLoYaar</span>
+                                <span className="text-foreground">ply</span>
                                 <span className="text-primary">AI</span>
                             </span>
                         </Link>
@@ -206,6 +206,30 @@ export function Header() {
                                     </div>
                                 </DropdownMenuContent>
                             </DropdownMenu>
+                            <Link
+                                href="/pricing"
+                                className={cn(
+                                    "transition-all duration-300 hover:text-foreground/80 relative py-1",
+                                    pathname === '/pricing' ? "text-foreground" : "text-foreground/60"
+                                )}
+                            >
+                                Pricing
+                                {pathname === '/pricing' && (
+                                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                                )}
+                            </Link>
+                            <Link
+                                href="/help"
+                                className={cn(
+                                    "transition-all duration-300 hover:text-foreground/80 relative py-1",
+                                    pathname === '/help' ? "text-foreground" : "text-foreground/60"
+                                )}
+                            >
+                                Help
+                                {pathname === '/help' && (
+                                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                                )}
+                            </Link>
                         </nav>
                     </div>
 
@@ -302,9 +326,9 @@ export function Header() {
                                 <DropdownMenuSeparator className="bg-white/10" />
 
                                 <DropdownMenuItem asChild className="cursor-pointer rounded-lg hover:bg-primary/10">
-                                    <Link href="/login" className="flex items-center gap-2">
+                                    <Link href="/account" className="flex items-center gap-2">
                                         <User className="h-4 w-4 text-primary" />
-                                        <span>Sign In / Profile</span>
+                                        <span>Account</span>
                                     </Link>
                                 </DropdownMenuItem>
 

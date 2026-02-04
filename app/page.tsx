@@ -15,6 +15,9 @@ import {
 } from 'lucide-react';
 import { CommandCenter } from '@/components/global/CommandCenter';
 import { TOOLS } from '@/lib/tools-data';
+import { Testimonials } from '@/components/landing/Testimonials';
+import { StatsCounter } from '@/components/landing/StatsCounter';
+import { FAQSection } from '@/components/landing/FAQSection';
 
 export default function Home() {
   const router = useRouter();
@@ -78,8 +81,7 @@ export default function Home() {
           {/* Main Title */}
           <motion.div variants={fadeIn} className="space-y-4">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight">
-              <span className="text-foreground">Study</span>
-              <span className="text-gradient">Genie</span>
+              <span className="text-foreground">PadhLoYaar</span>
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Your intelligent study companion. Master any subject with{' '}
@@ -255,6 +257,15 @@ export default function Home() {
           ))}
         </motion.div>
       </section>
+
+      {/* Social Proof - Stats */}
+      <StatsCounter />
+
+      {/* Testimonials */}
+      <Testimonials />
+
+      {/* FAQ Section */}
+      <FAQSection />
 
       {/* Bottom CTA */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl pb-20">

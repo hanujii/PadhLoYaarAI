@@ -10,6 +10,11 @@ import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/components/auth/AuthContext";
 import { OnboardingTour } from "@/components/global/OnboardingTour";
 import { Toaster } from "sonner";
+import { Analytics } from '@vercel/analytics/next';
+import { PostHogProvider } from "@/components/analytics/PostHogProvider";
+import { Suspense } from "react";
+import { PostHogPageView } from "@/components/analytics/PostHogPageView";
+import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -102,36 +107,44 @@ export default function RootLayout({
           outfit.variable
         )}>
         <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* Fixed Header */}
-            <Header />
+          <PostHogProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Suspense>
+                <PostHogPageView />
+              </Suspense>
 
-            {/* Main Content */}
-            <main className="flex-1 pt-24 relative z-10">
-              {children}
-            </main>
+              {/* Fixed Header */}
+              <Header />
 
-            {/* Footer */}
-            <Footer />
+              {/* Main Content */}
+              <main className="flex-1 pt-24 relative z-10">
+                {children}
+              </main>
 
-            {/* Floating Widgets */}
-            <NotesWidget />
-            <OnboardingTour />
+              {/* Footer */}
+              <Footer />
 
-            {/* Toast Notifications */}
-            <Toaster
-              position="bottom-right"
-              toastOptions={{
-                className: "glass border-white/10",
-                duration: 4000,
-              }}
-            />
-          </ThemeProvider>
+              {/* Floating Widgets */}
+              <NotesWidget />
+              <OnboardingTour />
+              <WelcomeModal />
+
+              {/* Toast Notifications */}
+              <Toaster
+                position="bottom-right"
+                toastOptions={{
+                  className: "glass border-white/10",
+                  duration: 4000,
+                }}
+              />
+            </ThemeProvider>
+            <Analytics />
+          </PostHogProvider>
         </AuthProvider>
       </body>
     </html>

@@ -23,15 +23,18 @@ export function Footer() {
                     </div>
 
                     {/* Links */}
-                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4 sm:gap-6 text-sm text-muted-foreground flex-wrap justify-center">
                         <Link href="/tools" className="hover:text-foreground transition-colors">
                             Tools
                         </Link>
                         <Link href="/history" className="hover:text-foreground transition-colors">
                             History
                         </Link>
-                        <Link href="/settings" className="hover:text-foreground transition-colors">
-                            Settings
+                        <Link href="/privacy" className="hover:text-foreground transition-colors">
+                            Privacy
+                        </Link>
+                        <Link href="/terms" className="hover:text-foreground transition-colors">
+                            Terms
                         </Link>
                     </div>
 
