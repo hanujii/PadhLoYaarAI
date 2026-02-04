@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export type ProviderId = 'google' | 'openrouter' | 'github' | 'groq' | 'openai';
+export type ProviderId = 'google' | 'openrouter' | 'github' | 'groq' | 'openai' | 'sambanova';
 
 export interface ImagePart {
     inlineData: {

@@ -4,12 +4,13 @@ import { OpenRouterProvider } from './providers/openrouter';
 import { GithubProvider } from './providers/github';
 import { GroqProvider } from './providers/groq';
 import { OpenAIProvider } from './providers/openai';
+import { SambaNovaProvider } from './providers/sambanova';
 import { z } from 'zod';
 
 class AIEngine {
     private providers: Map<ProviderId, AIProvider> = new Map();
-    // Order of preference for auto-selection: Groq (Fast/Free) > Google (Multimodal) > Others
-    private priorityOrder: ProviderId[] = ['groq', 'google', 'openai', 'openrouter', 'github'];
+    // Order of preference for auto-selection: Groq (Fast/Free) > SambaNova > Google > Others
+    private priorityOrder: ProviderId[] = ['groq', 'sambanova', 'google', 'openai', 'openrouter', 'github'];
 
     constructor() {
         this.initializeProviders();
@@ -19,6 +20,7 @@ class AIEngine {
         // Always create new instances to pick up fresh env vars
         const providers = [
             new GroqProvider(),
+            new SambaNovaProvider(),
             new GoogleProvider(),
             new OpenRouterProvider(),
             new GithubProvider(),

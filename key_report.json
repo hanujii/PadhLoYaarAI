@@ -1,0 +1,20 @@
+{
+  "openrouter": {
+    "status": "success",
+    "models": [
+      "qwen/qwen3-coder-next",
+      "openrouter/free",
+      "stepfun/step-3.5-flash:free",
+      "arcee-ai/trinity-large-preview:free",
+      "moonshotai/kimi-k2.5"
+    ]
+  },
+  "gemini": {
+    "status": "failed",
+    "models": []
+  },
+  "sambanova": {
+    "status": "success",
+    "models": []
+  }
+}
