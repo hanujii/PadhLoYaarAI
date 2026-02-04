@@ -6,7 +6,7 @@ import { createServerClient } from '@supabase/ssr';
  * Middleware to protect routes that require authentication.
  * Uses Supabase SSR client to check for valid session cookies.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const response = NextResponse.next({
         request: {
             headers: request.headers,
