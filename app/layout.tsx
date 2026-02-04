@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Outfit, Caveat } from "next/font/google";
 import 'tldraw/tldraw.css';
 import "./globals.css";
 import { Header } from "@/components/global/Header";
@@ -20,6 +20,13 @@ const outfit = Outfit({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-sans"
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-hand",
+  display: 'swap',
 });
 
 export const viewport: Viewport = {
@@ -104,7 +111,8 @@ export default function RootLayout({
         suppressHydrationWarning
         className={cn(
           "min-h-screen bg-background font-sans antialiased flex flex-col",
-          outfit.variable
+          outfit.variable,
+          caveat.variable
         )}>
         <AuthProvider>
           <PostHogProvider>

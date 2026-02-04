@@ -80,8 +80,8 @@ export default function Home() {
 
           {/* Main Title */}
           <motion.div variants={fadeIn} className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight">
-              <span className="text-foreground">PadhLoYaar</span>
+            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight">
+              <span className="text-foreground font-hand">PadhLoYaar</span>
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Your intelligent study companion. Master any subject with{' '}

@@ -40,7 +40,9 @@ export function Sidebar() {
                 <div className="w-8 h-8 rounded-lg bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center">
                     <Sparkles className="w-5 h-5" />
                 </div>
-                <span className="text-xl font-bold tracking-tight">PadhLoYaarAI</span>
+                <span className="text-2xl font-hand font-bold tracking-tight">
+                    PadhLoYaar<span className="font-sans text-primary">AI</span>
+                </span>
             </div>
 
             {/* Navigation */}
