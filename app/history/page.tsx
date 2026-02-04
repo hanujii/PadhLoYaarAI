@@ -38,7 +38,7 @@ export default function HistoryPage() {
 
     const [copiedId, setCopiedId] = React.useState<string | null>(null);
     const [selectedItem, setSelectedItem] = React.useState<any>(null);
-    const contentRef = React.useState<HTMLDivElement>(null);
+    const contentRef = React.useRef<HTMLDivElement>(null);
 
     // Search and filter state
     const [searchQuery, setSearchQuery] = useState('');
