@@ -64,7 +64,7 @@ export function SubscriptionCard({ subscription, tier }: SubscriptionCardProps) 
     const renewalDate = subscription?.current_period_end
         ? new Date(subscription.current_period_end).toLocaleDateString('en-US', {
             month: 'long',
-            Day: 'numeric',
+            day: 'numeric',
             year: 'numeric'
         })
         : null;

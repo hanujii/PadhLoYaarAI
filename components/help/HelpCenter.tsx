@@ -140,7 +140,7 @@ export function HelpCenter() {
                     faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
             );
             if (matchingFaqs.length > 0) {
-                acc[key] = { ...category, faqs: matchingFaqs };
+                acc[key as keyof typeof FAQ_CATEGORIES] = { ...category, faqs: matchingFaqs };
             }
             return acc;
         }, {} as typeof FAQ_CATEGORIES)
