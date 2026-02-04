@@ -13,12 +13,12 @@ export function Footer() {
                     <div className="flex flex-col items-center md:items-start gap-2">
                         <div className="flex items-center gap-2">
                             <span className="text-lg font-bold">
-                                <span className="text-foreground">Study</span>
-                                <span className="text-primary">Genie</span>
+                                <span className="text-foreground">PadhLoYaar</span>
+                                <span className="text-primary">AI</span>
                             </span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                            &copy; {currentYear} StudyGenie. All rights reserved.
+                            &copy; {currentYear} PadhLoYaarAI. All rights reserved.
                         </p>
                     </div>
 

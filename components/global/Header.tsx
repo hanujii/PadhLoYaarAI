@@ -171,8 +171,8 @@ export function Header() {
                                 <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
                             <span className="text-base xs:text-lg sm:text-xl font-bold tracking-tight">
-                                <span className="text-foreground">Study</span>
-                                <span className="text-primary">Genie</span>
+                                <span className="text-foreground">PadhLoYaar</span>
+                                <span className="text-primary">AI</span>
                             </span>
                         </Link>
 

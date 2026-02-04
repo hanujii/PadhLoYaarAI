@@ -27,12 +27,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "StudyGenie - AI-Powered Learning Platform",
-    template: "%s | StudyGenie"
+    default: "PadhLoYaarAI - AI-Powered Learning Platform",
+    template: "%s | PadhLoYaarAI"
   },
   description: "Your intelligent AI study companion. Master any subject with 21+ AI-powered tools including tutoring, exam prep, flashcards, and more. Free to use.",
-  applicationName: "StudyGenie",
-  authors: [{ name: "StudyGenie Team" }],
+  applicationName: "PadhLoYaarAI",
+  authors: [{ name: "PadhLoYaarAI Team" }],
   keywords: [
     "AI Tutor",
     "Study Tool",
@@ -43,10 +43,11 @@ export const metadata: Metadata = {
     "Student Tools",
     "AI Study Assistant",
     "Online Learning",
-    "Study Genie"
+    "Online Learning",
+    "PadhLoYaarAI"
   ],
-  creator: "StudyGenie",
-  publisher: "StudyGenie",
+  creator: "PadhLoYaarAI",
+  publisher: "PadhLoYaarAI",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
@@ -56,30 +57,30 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://studygenie.app",
-    title: "StudyGenie - Your AI Study Companion",
+    url: "https://padhloyaar-ai.vercel.app",
+    title: "PadhLoYaarAI - Your AI Study Companion",
     description: "Master any subject with AI-powered tools. Instant tutoring, exam prep, flashcards, and more. Completely free.",
-    siteName: "StudyGenie",
+    siteName: "PadhLoYaarAI",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "StudyGenie - AI Study Platform"
+        alt: "PadhLoYaarAI - AI Study Platform"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "StudyGenie - AI-Powered Learning",
+    title: "PadhLoYaarAI - AI-Powered Learning",
     description: "Your personal AI tutor for exams, concepts, and coding.",
-    creator: "@studygenie",
+    creator: "@padhloyaarai",
     images: ["/og-image.png"]
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "StudyGenie",
+    title: "PadhLoYaarAI",
   },
   robots: {
     index: true,
