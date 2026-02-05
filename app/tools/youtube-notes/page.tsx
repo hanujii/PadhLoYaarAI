@@ -31,6 +31,7 @@ export default function YouTubeNotesPage() {
         const formData = new FormData(event.currentTarget);
         const res = await getYouTubeNotes(formData);
 
+
         if (res.success && res.data) {
             setResult(res.data);
             addToHistory({

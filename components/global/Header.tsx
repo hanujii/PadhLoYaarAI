@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings, Menu, Sparkles } from 'lucide-react';
 import { Logo } from '@/components/global/Logo';
 import { cn } from '@/lib/utils';
+import { ThemeCustomizer } from '@/components/global/ThemeCustomizer';
 import { TOOLS } from '@/lib/tools-data';
 import {
     DropdownMenu,
@@ -284,6 +285,7 @@ export function Header() {
                                 </Popover>
                             </div>
 
+                            <ThemeCustomizer />
                             {/* User Menu */}
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
@@ -304,17 +306,6 @@ export function Header() {
                                     <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
                                         <Link href="/history"><History className="mr-2 h-4 w-4" /> History</Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuSeparator className="bg-white/10" />
-                                    <div className="p-2 grid grid-cols-4 gap-1">
-                                        {THEME_PRESETS.map((t) => (
-                                            <button
-                                                key={t.id}
-                                                className={cn("w-full aspect-square rounded-full border border-white/10 hover:scale-110 transition-transform", t.className)}
-                                                onClick={() => setTheme(t.id)}
-                                                title={t.label}
-                                            />
-                                        ))}
-                                    </div>
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
@@ -325,16 +316,3 @@ export function Header() {
         </header>
     );
 }
-
-// --- Constants ---
-
-const THEME_PRESETS = [
-    { id: 'light', label: 'Light Mode', className: 'bg-white hover:border-black/20' },
-    { id: 'dark', label: 'Dark Mode', className: 'bg-slate-900' },
-    { id: 'pitch-black', label: 'Pitch Black', className: 'bg-black' },
-    { id: 'theme-red', label: 'Red Theme', className: 'bg-red-600' },
-    { id: 'theme-stranger-things', label: 'Stranger Things', className: 'bg-red-900' },
-    { id: 'theme-money-heist', label: 'Money Heist', className: 'bg-emerald-900' },
-    { id: 'theme-dark-series', label: 'Dark Series', className: 'bg-slate-800' },
-    { id: 'theme-cyan', label: 'Cyan Theme', className: 'bg-cyan-600' },
-];

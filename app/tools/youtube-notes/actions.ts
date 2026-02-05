@@ -16,7 +16,19 @@ const YouTubeNotesSchema = z.object({
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { YoutubeTranscript } = require('youtube-transcript');
 
+import { checkRateLimit } from '@/lib/rate-limit';
+
+export async function getQuiz(formData: FormData) {
+    // ... (Quiz doesn't need strict limit? Or yes?)
+}
+
 export async function getYouTubeNotes(formData: FormData) {
+    try {
+        await checkRateLimit('youtube-notes');
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+
     const url = formData.get('url') as string;
 
     if (!url) {

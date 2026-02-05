@@ -1,8 +1,9 @@
 'use client';
 
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
   ArrowRight,
@@ -11,13 +12,18 @@ import {
   Brain,
   GraduationCap,
   Lightbulb,
-  Rocket
+  Rocket,
+  Code
 } from 'lucide-react';
 import { CommandCenter } from '@/components/global/CommandCenter';
 import { TOOLS } from '@/lib/tools-data';
 import { Testimonials } from '@/components/landing/Testimonials';
 import { StatsCounter } from '@/components/landing/StatsCounter';
 import { FAQSection } from '@/components/landing/FAQSection';
+import { SpotlightCard } from '@/components/ui/spotlight-card';
+import { MagneticButton } from '@/components/ui/magnetic-button';
+import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid';
+import { HeroHighlight, Highlight } from '@/components/ui/hero-highlight';
 
 export default function Home() {
   const router = useRouter();
@@ -29,278 +35,189 @@ export default function Home() {
   // Animation variants
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
 
   const staggerContainer = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08, delayChildren: 0.1 }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
   };
 
-  // Group tools for display
   const featuredTools = TOOLS.slice(0, 6);
-  const moreTools = TOOLS.slice(6, 12);
 
   return (
-    <div className="min-h-screen pb-20 overflow-x-hidden">
-      {/* Background Effects */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 mesh-gradient opacity-60" />
-        <div className="absolute inset-0 bg-grid opacity-30" />
-        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
+    <div className="min-h-screen pb-20 overflow-x-hidden bg-black selection:bg-primary/30">
+
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 -z-10 bg-black">
+        <div className="absolute inset-0 bg-grid opacity-[0.1]" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[128px] animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[128px]" />
       </div>
 
-      {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex flex-col items-center justify-center py-12 px-4">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="w-full max-w-4xl mx-auto text-center space-y-8"
-        >
-          {/* Status Badge */}
-          <motion.div variants={fadeIn} className="flex justify-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-white/10">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-              </span>
-              <span className="text-sm font-medium text-muted-foreground">
-                AI-Powered Learning Platform
-              </span>
-            </div>
-          </motion.div>
+      {/* HERO SECTION */}
+      <HeroHighlight containerClassName="h-[90vh] sm:h-screen">
+        <main className="flex flex-col items-center justify-center p-4 text-center z-10 w-full max-w-5xl mx-auto space-y-6 sm:space-y-8">
 
-          {/* Main Title */}
-          <motion.div variants={fadeIn} className="space-y-4">
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight">
-              <span className="text-foreground font-hand">PadhLoYaar</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Your intelligent study companion. Master any subject with{' '}
-              <span className="text-primary font-semibold">AI-powered</span> tools
-              designed for modern students.
-            </p>
-          </motion.div>
-
-          {/* Command Center */}
+          {/* Badge */}
           <motion.div
-            variants={fadeIn}
-            className="w-full max-w-2xl mx-auto pt-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider shadow-[0_0_15px_rgba(99,102,241,0.3)] backdrop-blur-md"
           >
-            <CommandCenter onChatStart={handleSearch} />
+            <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
+            v2.0 Now Live
           </motion.div>
 
-          {/* Quick Stats */}
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white max-w-4xl leading-[0.9] sm:leading-tight"
+          >
+            Master Any Subject with
+            <br />
+            <Highlight className="text-white">AI Superpowers</Highlight>
+          </motion.h1>
+
+          {/* Subheadline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-base xs:text-lg sm:text-xl md:text-2xl text-muted-foreground/80 max-w-2xl font-medium"
+          >
+            Your all-in-one AI study companion.
+            <br className="hidden sm:block" />
+            Tutor, Exam Prep, Flashcards, and more — <span className="text-white font-semibold">100% Free.</span>
+          </motion.p>
+
+          {/* CTA Buttons */}
           <motion.div
-            variants={fadeIn}
-            className="flex flex-wrap justify-center gap-6 pt-4 text-sm text-muted-foreground"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mt-6"
           >
-            <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4 text-primary" />
-              <span>21+ AI Tools</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-yellow-500" />
-              <span>Instant Answers</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span>Always Free</span>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
+            <MagneticButton>
+              <Link href="#tools">
+                <Button size="lg" className="h-12 sm:h-14 px-8 rounded-full text-base sm:text-lg bg-white text-black hover:bg-white/90 font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-transform hover:scale-105">
+                  Get Started <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            </MagneticButton>
 
-      {/* Tools Grid Section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl -mt-10 relative z-20">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Powerful AI Tools
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Everything you need to ace your studies, from tutoring to exam prep.
-          </p>
-        </motion.div>
-
-        {/* Featured Tools Grid */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
-        >
-          {featuredTools.map((tool, index) => (
-            <motion.div key={tool.value} variants={fadeIn}>
-              <Link href={tool.href} className="block group">
-                <div className={cn(
-                  "glass-card p-6 h-full",
-                  "hover:border-primary/30 hover:bg-white/[0.05]",
-                  "transition-all duration-300",
-                  "card-interactive"
-                )}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={cn(
-                      "p-3 rounded-xl",
-                      "bg-gradient-to-br from-primary/20 to-purple-500/10",
-                      "group-hover:from-primary/30 group-hover:to-purple-500/20",
-                      "transition-colors duration-300"
-                    )}>
-                      <tool.icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="w-8 h-8 rounded-full bg-zinc-800 border border-black flex items-center justify-center text-[10px] text-white font-bold">
+                    {['A', 'S', 'R', 'M'][i - 1]}
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                    {tool.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {tool.description}
-                  </p>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* More Tools Grid */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
-        >
-          {moreTools.map((tool) => (
-            <motion.div key={tool.value} variants={fadeIn}>
-              <Link href={tool.href} className="block group">
-                <div className={cn(
-                  "glass rounded-xl p-4 text-center",
-                  "hover:border-primary/30 hover:bg-white/[0.05]",
-                  "transition-all duration-300"
-                )}>
-                  <tool.icon className="w-5 h-5 mx-auto mb-2 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="text-xs font-medium">{tool.title}</span>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* View All Link */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="flex justify-center mt-8"
-        >
-          <Link
-            href="/tools"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors group"
-          >
-            <span>View all {TOOLS.length} tools</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </motion.div>
-      </section>
-
-      {/* Features Section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-24">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-        >
-          {[
-            {
-              icon: Lightbulb,
-              title: "Learn Smarter",
-              description: "AI explains concepts in ways you understand. Simple, detailed, or ELI5 - your choice."
-            },
-            {
-              icon: GraduationCap,
-              title: "Ace Your Exams",
-              description: "Generate practice tests, flashcards, and cheat sheets tailored to your syllabus."
-            },
-            {
-              icon: Rocket,
-              title: "Study Faster",
-              description: "Get instant answers, summaries, and explanations. No more wasting time."
-            }
-          ].map((feature, index) => (
-            <motion.div
-              key={index}
-              variants={fadeIn}
-              className="text-center p-6"
-            >
-              <div className="inline-flex p-4 rounded-2xl bg-primary/10 mb-4">
-                <feature.icon className="w-8 h-8 text-primary" />
+                ))}
               </div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+              <p>Trusted by <span className="text-white font-bold">10,000+</span> students</p>
+            </div>
+          </motion.div>
+
+          {/* Command Center Mockup */}
+          <CommandCenter onChatStart={handleSearch} />
+
+        </main>
+      </HeroHighlight>
+
+      {/* Bento Grid Features */}
+      <section className="container mx-auto px-4 py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">Why PadhLoYaar?</h2>
+          <p className="text-zinc-400">Engineered for peak academic performance.</p>
+        </div>
+
+        <BentoGrid>
+          <BentoGridItem
+            title="AI Tutor"
+            description="Personalized explanations that adapt to your learning style."
+            header={<div className="flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800" />}
+            icon={<Brain className="h-4 w-4 text-neutral-500" />}
+            className="md:col-span-2"
+          />
+          <BentoGridItem
+            title="Roadmaps"
+            description="Generate improved study plans instantly."
+            header={<div className="flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-indigo-900/20 to-purple-900/20" />}
+            icon={<Zap className="h-4 w-4 text-neutral-500" />}
+            className="md:col-span-1"
+          />
+          <BentoGridItem
+            title="Code Reviews"
+            description="Paste code and get instant optimization tips."
+            header={<div className="flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-green-900/20 to-emerald-900/20" />}
+            icon={<Code className="h-4 w-4 text-neutral-500" />}
+            className="md:col-span-1"
+          />
+          <BentoGridItem
+            title="Exam Simulator"
+            description="Real-time mock tests with instant feedback."
+            header={<div className="flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-900/20 to-red-900/20" />}
+            icon={<GraduationCap className="h-4 w-4 text-neutral-500" />}
+            className="md:col-span-2"
+          />
+        </BentoGrid>
       </section>
 
-      {/* Social Proof - Stats */}
+      {/* Spotlight Tools Grid */}
+      <section className="container mx-auto px-4 py-24 relative">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">Core Tools</h2>
+          <p className="text-zinc-400">Select a tool to begin.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          {featuredTools.map((tool) => (
+            <Link key={tool.value} href={tool.href}>
+              <SpotlightCard className="h-full p-8 group">
+                <div className="mb-4 inline-flex p-3 rounded-lg bg-white/5 group-hover:bg-primary/20 transition-colors">
+                  <tool.icon className="w-6 h-6 text-zinc-300 group-hover:text-primary transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-zinc-100">{tool.title}</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">{tool.description}</p>
+                <ArrowRight className="absolute bottom-8 right-8 w-5 h-5 text-zinc-500 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              </SpotlightCard>
+            </Link>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link href="/tools">
+            <MagneticButton className="px-6 py-3 rounded-full border border-white/10 hover:bg-white/5 text-sm transition-colors">
+              View All Tools ({TOOLS.length})
+            </MagneticButton>
+          </Link>
+        </div>
+      </section>
+
+      {/* Social Proof */}
       <StatsCounter />
-
-      {/* Testimonials */}
       <Testimonials />
-
-      {/* FAQ Section */}
       <FAQSection />
 
-      {/* Bottom CTA */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl pb-20">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="glass-card p-8 sm:p-12 text-center relative overflow-hidden"
-        >
-          <div className="absolute inset-0 aurora-bg" />
-          <div className="relative z-10">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-              Ready to transform your studies?
-            </h2>
-            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              Start learning smarter today. No signup required.
-            </p>
-            <Link
-              href="/tools/tutor"
-              className={cn(
-                "inline-flex items-center gap-2 px-6 py-3 rounded-xl",
-                "bg-primary hover:bg-primary/90",
-                "text-primary-foreground font-medium",
-                "glow-sm hover:glow-md transition-all duration-300"
-              )}
-            >
-              <Sparkles className="w-5 h-5" />
-              Start Learning
+      {/* CTA */}
+      <section className="py-24 px-4 text-center">
+        <div className="max-w-4xl mx-auto relative group">
+          <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full group-hover:bg-primary/30 transition-all duration-1000" />
+          <div className="relative z-10 space-y-8">
+            <h2 className="text-5xl font-bold tracking-tight">Ready to excel?</h2>
+            <Link href="/tools/tutor">
+              <MagneticButton className="px-10 py-5 bg-primary text-white text-xl font-bold rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+                Get Started for Free
+              </MagneticButton>
             </Link>
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* Footer Decoration */}
-      <div className="fixed bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
     </div>
   );
 }
+

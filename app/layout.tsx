@@ -15,6 +15,8 @@ import { PostHogProvider } from "@/components/analytics/PostHogProvider";
 import { Suspense } from "react";
 import { PostHogPageView } from "@/components/analytics/PostHogPageView";
 import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -141,6 +143,8 @@ export default function RootLayout({
               <NotesWidget />
               <OnboardingTour />
               <WelcomeModal />
+              <ServiceWorkerRegister />
+              <InstallPrompt />
 
               {/* Toast Notifications */}
               <Toaster

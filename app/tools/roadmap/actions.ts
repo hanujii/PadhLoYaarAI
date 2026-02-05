@@ -11,7 +11,15 @@ const RoadmapDaySchema = z.object({
     tip: z.string().describe("A short motivational or efficiency tip for this specific day"),
 });
 
+import { checkRateLimit } from '@/lib/rate-limit';
+
 export async function generateRoadmap(formData: FormData) {
+    try {
+        await checkRateLimit('roadmap');
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+
     const goal = formData.get('goal') as string;
     const days = formData.get('days') as string;
     const hours = formData.get('hours') as string;
