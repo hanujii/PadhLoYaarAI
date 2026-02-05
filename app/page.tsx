@@ -41,31 +41,18 @@ export default function Home() {
       {/* HERO SECTION */}
       <section className="relative pt-12 pb-16 sm:pt-20 sm:pb-24 px-4 max-w-7xl mx-auto flex flex-col items-center text-center space-y-6">
 
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/50 border border-border text-xs font-medium text-muted-foreground"
-        >
-          <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          v2.0 Now Live
-        </motion.div>
-
         {/* Headlines */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="space-y-3 max-w-4xl"
+          className="space-y-4 max-w-4xl pt-4"
         >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1]">
-            Master any subject with <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">AI Superpowers.</span>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight">
+            Padh Lo Yaar.
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Your all-in-one AI study companion. Tutoring, Flashcards, Roadmaps, and more.
-            <span className="block sm:inline font-semibold text-foreground"> Always Free.</span>
+          <p className="text-lg sm:text-xl text-muted-foreground font-medium">
+            Your Ultimate AI Study Companion.
           </p>
         </motion.div>
 
