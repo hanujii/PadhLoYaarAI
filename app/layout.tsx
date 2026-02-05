@@ -144,9 +144,8 @@ export default function RootLayout({
               {/* Floating Widgets */}
               <NotesWidget />
               <OnboardingTour />
-              <WelcomeModal />
+              {/* WelcomeModal and InstallPrompt removed - they were causing repeated interruptions */}
               <ServiceWorkerRegister />
-              <InstallPrompt />
               <FixedThemeToggle />
               <MusicMiniPlayer />
 

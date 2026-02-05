@@ -55,6 +55,7 @@ export function MusicMiniPlayer() {
     const { isPlaying, togglePlay, volume, setVolume, genre, setGenre } = useStore();
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [isMuted, setIsMuted] = useState(false);
@@ -105,8 +106,36 @@ export function MusicMiniPlayer() {
         return `${m}:${s.toString().padStart(2, '0')}`;
     };
 
-    // Don't render if not playing
+    // Only show when music is playing
     if (!isPlaying) return null;
+
+    // Minimized state - just a floating button
+    if (isMinimized) {
+        return (
+            <>
+                <audio
+                    ref={audioRef}
+                    src={currentTrack.url}
+                    loop
+                    onTimeUpdate={handleTimeUpdate}
+                    onLoadedMetadata={handleTimeUpdate}
+                />
+                <motion.button
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className={cn(
+                        "fixed bottom-4 left-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br shadow-lg flex items-center justify-center cursor-pointer",
+                        currentTrack.gradient
+                    )}
+                    onClick={() => setIsMinimized(false)}
+                >
+                    <Icon className="w-5 h-5 text-white" />
+                    {/* Animated ring */}
+                    <div className="absolute inset-0 rounded-full border-2 border-white/50 animate-ping" />
+                </motion.button>
+            </>
+        );
+    }
 
     return (
         <>
@@ -138,30 +167,33 @@ export function MusicMiniPlayer() {
                             <motion.div
                                 layout
                                 className={cn(
-                                    "relative flex items-center justify-center rounded-xl bg-gradient-to-br",
+                                    "relative flex items-center justify-center rounded-xl bg-gradient-to-br cursor-pointer",
                                     currentTrack.gradient,
                                     isExpanded ? "w-14 h-14" : "w-12 h-12"
                                 )}
+                                onClick={() => setIsMinimized(true)}
                             >
                                 <Icon className="w-6 h-6 text-white" />
                                 {/* Animated Equalizer Bars */}
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5">
-                                    {[1, 2, 3, 4].map((i) => (
-                                        <motion.div
-                                            key={i}
-                                            className="w-1 bg-white/80 rounded-full"
-                                            animate={{
-                                                height: isPlaying ? [4, 12, 6, 10, 4] : 4,
-                                            }}
-                                            transition={{
-                                                duration: 0.8,
-                                                repeat: Infinity,
-                                                delay: i * 0.1,
-                                                ease: "easeInOut"
-                                            }}
-                                        />
-                                    ))}
-                                </div>
+                                {isPlaying && (
+                                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5">
+                                        {[1, 2, 3, 4].map((i) => (
+                                            <motion.div
+                                                key={i}
+                                                className="w-1 bg-white/80 rounded-full"
+                                                animate={{
+                                                    height: [4, 12, 6, 10, 4],
+                                                }}
+                                                transition={{
+                                                    duration: 0.8,
+                                                    repeat: Infinity,
+                                                    delay: i * 0.1,
+                                                    ease: "easeInOut"
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </motion.div>
 
                             {/* Track Info */}
