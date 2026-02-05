@@ -13,12 +13,17 @@ import {
     DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { useStore } from '@/lib/store';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export function FixedThemeToggle() {
     const { theme, setTheme } = useTheme();
+    const { isNotesOpen } = useStore();
     const [mounted, setMounted] = React.useState(false);
     const [isOpen, setIsOpen] = React.useState(false);
+
+    // Hide when notes are open to avoid overlap
+    if (isNotesOpen) return null;
 
     React.useEffect(() => {
         setMounted(true);

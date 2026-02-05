@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { NotesEditor } from '@/components/global/NotesEditor';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StickyNote, Maximize2, Minimize2 } from 'lucide-react';
+import { StickyNote, Maximize2, Minimize2, X } from 'lucide-react';
 import { useHistoryStore } from '@/lib/history-store';
+import { useStore } from '@/lib/store';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
@@ -19,7 +20,9 @@ const Tldraw = dynamic(async () => (await import('tldraw')).Tldraw, {
 
 export function NotesWidget() {
     const { notes, notesTitle, updateNotes, updateNotesTitle } = useHistoryStore();
-    const [isOpen, setIsOpen] = useState(false);
+    // Using global store for open state to coordinate with other UI elements
+    const { isNotesOpen, setNotesOpen } = useStore();
+
     const [isExpanded, setIsExpanded] = useState(false);
     const [activeTab, setActiveTab] = useState('text');
     const { theme } = useTheme();
@@ -52,7 +55,7 @@ export function NotesWidget() {
 
     return (
         <div className="fixed bottom-6 right-6 z-50">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <Sheet open={isNotesOpen} onOpenChange={setNotesOpen}>
                 <SheetTrigger asChild>
                     <Button
                         size="icon"
@@ -68,32 +71,48 @@ export function NotesWidget() {
                         "flex flex-col p-0 border-l transition-all duration-300",
                         isExpanded ? "w-[100vw] sm:w-[100vw] sm:max-w-none" : "w-[400px] sm:w-[540px] sm:max-w-md"
                     )}
+                    // Disable default close button to use our custom consistent one
+                    hideDefaultClose={true}
                 >
                     <SheetTitle className="sr-only">Scratch Pad</SheetTitle>
                     <div className="flex-1 flex flex-col bg-background h-full">
                         {/* Header */}
-                        <div className="pt-6 px-6 pr-12 pb-2 border-b flex justify-between items-start">
-                            <div className="flex-1">
-                                <div className="text-2xl mb-2">📝</div>
+                        <div className="pt-6 px-6 pb-2 border-b flex justify-between items-center bg-muted/10">
+                            <div className="flex-1 flex items-center gap-2">
+                                <div className="text-xl">📝</div>
                                 <input
                                     type="text"
                                     value={localTitle}
                                     onChange={handleTitleChange}
-                                    placeholder="Untitled"
-                                    className="w-full text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50 text-foreground"
+                                    placeholder="Untitled Note"
+                                    className="w-full text-lg font-bold bg-transparent border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50 text-foreground truncate"
                                 />
                             </div>
-                        </div>
 
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={toggleExpand}
-                            title={isExpanded ? "Collapse" : "Maximize"}
-                            className="absolute right-12 top-4 h-8 w-8 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                        >
-                            {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-                        </Button>
+                            {/* Window Controls - Aligned Group */}
+                            <div className="flex items-center gap-1">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={toggleExpand}
+                                    title={isExpanded ? "Collapse" : "Maximize"}
+                                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                >
+                                    {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                                </Button>
+
+                                <SheetClose asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                    >
+                                        <X className="h-4 w-4" />
+                                        <span className="sr-only">Close</span>
+                                    </Button>
+                                </SheetClose>
+                            </div>
+                        </div>
 
                         {/* Content */}
                         <div className="flex-1 overflow-hidden relative">

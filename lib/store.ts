@@ -29,8 +29,13 @@ interface MusicState {
     setGenre: (genre: string) => void;
 }
 
+interface NotesState {
+    isNotesOpen: boolean;
+    setNotesOpen: (isOpen: boolean) => void;
+}
+
 // Combine all slices into one Global Store
-interface GlobalStore extends TimerState, MusicState { }
+interface GlobalStore extends TimerState, MusicState, NotesState { }
 
 export const useStore = create<GlobalStore>((set) => ({
     // --- Timer Logic ---
@@ -73,4 +78,8 @@ export const useStore = create<GlobalStore>((set) => ({
 
     // Automatically start playing when the user picks a new genre
     setGenre: (genre) => set({ genre, isPlaying: true }),
+
+    // --- Notes Logic ---
+    isNotesOpen: false,
+    setNotesOpen: (isOpen) => set({ isNotesOpen: isOpen }),
 }));
