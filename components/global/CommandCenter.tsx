@@ -100,7 +100,7 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
 
             <CommandDialog open={isCommandOpen} onOpenChange={setIsCommandOpen}>
                 <CommandInput placeholder="Search tools..." />
-                <CommandList className="bg-black/90 backdrop-blur-xl border border-white/10">
+                <CommandList className="bg-card/95 backdrop-blur-xl border border-border">
                     <CommandEmpty>No tool found.</CommandEmpty>
                     <CommandGroup heading="Available Tools">
                         {TOOLS.map((tool) => (

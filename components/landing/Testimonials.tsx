@@ -94,7 +94,7 @@ export function Testimonials() {
 
 function TestimonialCard({ testimonial }: { testimonial: typeof TESTIMONIALS[0] }) {
     return (
-        <Card className="p-8 h-full bg-black/40 border border-white/10 backdrop-blur-sm hover:border-white/20 transition-colors relative overflow-hidden group">
+        <Card className="p-8 h-full bg-card/80 border border-border backdrop-blur-sm hover:border-primary/30 transition-colors relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="flex gap-1 mb-4">

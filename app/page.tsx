@@ -81,7 +81,7 @@ export default function Home() {
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <div className="flex -space-x-2">
               {[1, 2, 3].map(i => (
-                <div key={i} className="w-6 h-6 rounded-full bg-zinc-800 border border-background flex items-center justify-center text-[10px]">
+                <div key={i} className="w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center text-[10px]">
                   <Users className="w-3 h-3 text-zinc-400" />
                 </div>
               ))}
@@ -161,7 +161,7 @@ export default function Home() {
                 <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/10 p-4 border border-white/5 relative overflow-hidden flex items-center justify-center group/header">
 
                   {/* Score Card Visual */}
-                  <div className="relative z-10 p-4 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm transform rotate-3 group-hover/header:rotate-0 transition-transform duration-300">
+                  <div className="relative z-10 p-4 rounded-xl bg-card/80 border border-border backdrop-blur-sm transform rotate-3 group-hover/header:rotate-0 transition-transform duration-300">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-gradient-gold">A+</div>
                       <div className="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest">Score</div>
@@ -183,7 +183,7 @@ export default function Home() {
 
 
                   {/* Search Bar Visual */}
-                  <div className="w-full bg-black/40 border border-white/10 rounded-full h-10 flex items-center px-4 gap-3 backdrop-blur-sm shadow-xl transform group-hover/header:scale-105 transition-transform duration-300">
+                  <div className="w-full bg-card/80 border border-border rounded-full h-10 flex items-center px-4 gap-3 backdrop-blur-sm shadow-xl transform group-hover/header:scale-105 transition-transform duration-300">
                     <Globe className="w-4 h-4 text-emerald-500" />
                     <div className="h-2 w-24 bg-white/10 rounded-full" />
                   </div>

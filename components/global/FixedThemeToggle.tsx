@@ -41,7 +41,7 @@ export function FixedThemeToggle() {
                 size="icon"
                 className={cn(
                     "h-10 w-10 rounded-full shadow-lg transition-all duration-300 hover:scale-105",
-                    "bg-black/60 hover:bg-white/10 text-muted-foreground backdrop-blur-md border border-white/10"
+                    "bg-card/80 hover:bg-secondary text-muted-foreground backdrop-blur-md border border-border"
                 )}
                 onClick={toggleTheme}
             >

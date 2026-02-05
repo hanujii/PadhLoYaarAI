@@ -81,7 +81,7 @@ export default function LoginPage() {
                             <Input
                                 placeholder="Email"
                                 type="email"
-                                className="pl-9 bg-black/20 border-white/10"
+                                className="pl-9 bg-secondary border-border"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -96,7 +96,7 @@ export default function LoginPage() {
                                 <Input
                                     placeholder="Password"
                                     type="password"
-                                    className="pl-9 bg-black/20 border-white/10"
+                                    className="pl-9 bg-secondary border-border"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -129,14 +129,14 @@ export default function LoginPage() {
                     {isForgot ? (
                         <button
                             onClick={() => setIsForgot(false)}
-                            className="text-muted-foreground hover:text-white transition-colors"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
                         >
                             Back to Log In
                         </button>
                     ) : (
                         <button
                             onClick={() => setIsSignUp(!isSignUp)}
-                            className="text-muted-foreground hover:text-white transition-colors"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
                         >
                             {isSignUp ? 'Already have an account? Log In' : "Don't have an account? Sign Up"}
                         </button>

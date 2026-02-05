@@ -114,7 +114,7 @@ export function Header() {
                 {/* Spotlight Border Effect */}
                 <div className="absolute -inset-[1px] rounded-full bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover/header:opacity-100 blur-sm transition-opacity duration-500" />
 
-                <div className="relative rounded-full border border-white/10 bg-black/60 backdrop-blur-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] transition-all duration-300">
+                <div className="relative rounded-full border border-border bg-card/95 backdrop-blur-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] transition-all duration-300">
                     <div className="flex h-14 items-center justify-between px-2 pl-4 md:pl-6 md:pr-2">
 
                         {/* LEFT: Mobile Menu + Logo */}
@@ -127,7 +127,7 @@ export function Header() {
                                             <Menu className="h-5 w-5" />
                                         </Button>
                                     </SheetTrigger>
-                                    <SheetContent side="left" className="w-[300px] border-r border-white/10 bg-black/90 backdrop-blur-3xl">
+                                    <SheetContent side="left" className="w-[300px] border-r border-border bg-card/95 backdrop-blur-3xl">
                                         <SheetHeader className="text-left mb-6">
                                             <SheetTitle className="flex items-center gap-2">
                                                 <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 overflow-hidden">
@@ -202,7 +202,7 @@ export function Header() {
                                             Tools <Sparkles className="w-3 h-3 ml-1 opacity-50" />
                                         </button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="start" className="w-56 p-2 bg-black/90 backdrop-blur-xl border-white/10">
+                                    <DropdownMenuContent align="start" className="w-56 p-2 bg-card/95 backdrop-blur-xl border-border">
                                         {tools.slice(0, 6).map((tool) => (
                                             <DropdownMenuItem key={tool.href} asChild className="rounded-lg cursor-pointer">
                                                 <Link href={tool.href}>{tool.name}</Link>
@@ -229,7 +229,7 @@ export function Header() {
                                             {formattedTime}
                                         </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="bg-black/90 backdrop-blur-xl border-white/10">
+                                    <DropdownMenuContent align="end" className="bg-card/95 backdrop-blur-xl border-border">
                                         <div className="p-2 grid grid-cols-3 gap-1 w-48">
                                             {timerPresets.map(min => (
                                                 <Button key={min} variant="outline" size="sm" onClick={() => setDuration(min)} className="h-8 text-xs border-white/10 hover:bg-primary/20 hover:text-primary">
@@ -260,7 +260,7 @@ export function Header() {
                                             <Music className="w-3.5 h-3.5" />
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-64 p-3 bg-black/90 backdrop-blur-xl border-white/10 mr-4" align="end">
+                                    <PopoverContent className="w-64 p-3 bg-card/95 backdrop-blur-xl border-border mr-4" align="end">
                                         <div className="flex items-center justify-between mb-3">
                                             <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Soundscapes</span>
                                             {isPlaying && <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />}
@@ -296,7 +296,7 @@ export function Header() {
                                         </div>
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56 p-2 bg-black/90 backdrop-blur-xl border-white/10 mt-2">
+                                <DropdownMenuContent align="end" className="w-56 p-2 bg-card/95 backdrop-blur-xl border-border mt-2">
                                     <div className="px-2 py-1.5 pb-3">
                                         <p className="text-sm font-medium">My Account</p>
                                         <p className="text-xs text-muted-foreground">Manage settings & preferences</p>
