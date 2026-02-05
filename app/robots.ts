@@ -5,7 +5,7 @@ import { MetadataRoute } from 'next';
  * Instructs search engine crawlers on what to index
  */
 export default function robots(): MetadataRoute.Robots {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://padhloyaar-ai.vercel.app';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://plyai.vercel.app';
 
     return {
         rules: [

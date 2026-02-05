@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'PadhLoYaarAI',
   webDir: 'public', // Fallback
   server: {
-    url: 'https://padhloyaar-ai.vercel.app', // CHANGE THIS TO YOUR REAL URL
+    url: 'https://plyai.vercel.app', // CHANGE THIS TO YOUR REAL URL
     cleartext: true
   }
 };

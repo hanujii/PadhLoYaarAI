@@ -38,7 +38,7 @@ export function generateToolMetadata(toolValue: string): Metadata {
             title: `${title} | PadhLoYaarAI`,
             description,
             type: 'website',
-            url: `https://padhloyaar-ai.vercel.app${tool.href}`,
+            url: `https://plyai.vercel.app${tool.href}`,
             siteName: 'PadhLoYaarAI',
             images: [
                 {

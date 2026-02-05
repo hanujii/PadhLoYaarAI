@@ -6,7 +6,7 @@ import { TOOLS } from '@/lib/tools-data';
  * Helps search engines discover all pages and tools
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://padhloyaar-ai.vercel.app';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://plyai.vercel.app';
     const lastModified = new Date();
 
     // Core pages
