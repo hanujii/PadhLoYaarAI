@@ -22,14 +22,14 @@ export function FixedThemeToggle() {
     const [mounted, setMounted] = React.useState(false);
     const [isOpen, setIsOpen] = React.useState(false);
 
-    // Hide when notes are open to avoid overlap
-    if (isNotesOpen) return null;
-
     React.useEffect(() => {
         setMounted(true);
     }, []);
 
     if (!mounted) return null;
+
+    // Hide when notes are open to avoid overlap
+    if (isNotesOpen) return null;
 
     const themes = [
         { name: 'Cosmic (Default)', value: 'dark', color: 'bg-zinc-950' },
