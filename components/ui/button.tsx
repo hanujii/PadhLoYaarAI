@@ -17,16 +17,16 @@ const buttonVariants = cva(
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-primary/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: 
-          "hover:bg-accent hover:text-accent-foreground",
-        link: 
+        ghost:
+          "hover:bg-secondary hover:text-foreground",
+        link:
           "text-primary underline-offset-4 hover:underline",
         glow:
           "bg-primary text-primary-foreground shadow-[0_0_20px_hsla(var(--primary),0.4)] hover:shadow-[0_0_30px_hsla(var(--primary),0.6)] hover:-translate-y-0.5 transition-all duration-300",
         gradient:
           "bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:brightness-110 transition-all duration-300",
         glass:
-          "bg-white/10 backdrop-blur-md border border-white/20 text-foreground hover:bg-white/20 hover:border-white/30 transition-all duration-300",
+          "bg-secondary/50 backdrop-blur-md border border-border text-foreground hover:bg-secondary hover:border-primary/30 transition-all duration-300",
       },
       size: {
         default: "h-10 px-5 py-2.5",
