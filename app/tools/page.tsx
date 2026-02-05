@@ -33,7 +33,7 @@ export default function ToolsDirectory() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-zinc-400 max-w-2xl mx-auto text-lg"
+                        className="text-muted-foreground max-w-2xl mx-auto text-lg"
                     >
                         Access 21+ specialized AI agents designed for every aspect of your academic journey.
                     </motion.p>
@@ -67,7 +67,7 @@ export default function ToolsDirectory() {
                             <SpotlightCard className="h-full p-8 group border-white/5 bg-zinc-900/20 hover:bg-zinc-900/40" spotlightColor="rgba(139, 92, 246, 0.15)">
                                 <div className="flex items-start justify-between mb-6">
                                     <div className="p-3 rounded-xl bg-zinc-800/50 group-hover:bg-primary/20 transition-colors duration-300 ring-1 ring-white/5">
-                                        <tool.icon className="w-6 h-6 text-zinc-400 group-hover:text-primary transition-colors" />
+                                        <tool.icon className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
                                     </div>
                                     <div className="p-2 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
                                         <ArrowRight className="w-4 h-4 text-zinc-300" />
@@ -77,7 +77,7 @@ export default function ToolsDirectory() {
                                 <h3 className="text-xl font-bold mb-3 text-zinc-100 group-hover:text-primary transition-colors">
                                     {tool.title}
                                 </h3>
-                                <p className="text-sm text-zinc-500 leading-relaxed group-hover:text-zinc-400 transition-colors">
+                                <p className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
                                     {tool.description}
                                 </p>
                             </SpotlightCard>

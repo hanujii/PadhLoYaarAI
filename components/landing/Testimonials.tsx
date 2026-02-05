@@ -103,7 +103,7 @@ function TestimonialCard({ testimonial }: { testimonial: typeof TESTIMONIALS[0] 
                 ))}
             </div>
 
-            <p className="text-zinc-300 mb-8 leading-relaxed text-lg relative z-10">
+            <p className="text-muted-foreground mb-8 leading-relaxed text-lg relative z-10">
                 "{testimonial.content}"
             </p>
 
@@ -114,10 +114,10 @@ function TestimonialCard({ testimonial }: { testimonial: typeof TESTIMONIALS[0] 
                     </AvatarFallback>
                 </Avatar>
                 <div>
-                    <p className="font-bold text-white text-base">{testimonial.name}</p>
-                    <p className="text-xs text-zinc-400">{testimonial.role}</p>
+                    <p className="font-bold text-foreground text-base">{testimonial.name}</p>
+                    <p className="text-xs text-muted-foreground">{testimonial.role}</p>
                 </div>
-                <Quote className="ml-auto w-8 h-8 text-white/10" />
+                <Quote className="ml-auto w-8 h-8 text-muted-foreground/20" />
             </div>
         </Card>
     );

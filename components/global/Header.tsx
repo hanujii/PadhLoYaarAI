@@ -151,7 +151,7 @@ export function Header() {
                                                         "flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all",
                                                         pathname === item.href
                                                             ? "bg-primary/20 text-primary hover:bg-primary/30"
-                                                            : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                                                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                                                     )}
                                                 >
                                                     <item.icon className="w-4 h-4" />
@@ -166,10 +166,10 @@ export function Header() {
                             {/* BRAND LOGO */}
                             <Link href="/" className="flex items-center gap-2 group hover:opacity-90 transition-opacity">
                                 <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 overflow-hidden group-hover:scale-105 transition-transform duration-300">
-                                    <Logo className="w-5 h-5 text-white" />
+                                    <Logo className="w-5 h-5 text-primary" />
                                 </div>
                                 <span className="font-bold text-lg tracking-tight hidden xs:block">
-                                    <span className="text-white">ply</span>
+                                    <span className="text-foreground">ply</span>
                                     <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">AI</span>
                                 </span>
                             </Link>
@@ -188,7 +188,7 @@ export function Header() {
                                             "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
                                             pathname === item.href
                                                 ? "bg-primary text-white shadow-lg shadow-primary/25"
-                                                : "text-muted-foreground hover:text-white hover:bg-white/5"
+                                                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                                         )}
                                     >
                                         {item.name}
@@ -198,7 +198,7 @@ export function Header() {
 
                                 <DropdownMenu modal={false}>
                                     <DropdownMenuTrigger asChild>
-                                        <button className="px-3 py-1.5 rounded-full text-sm font-medium text-muted-foreground hover:text-white hover:bg-white/5 transition-all flex items-center gap-1">
+                                        <button className="px-3 py-1.5 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-all flex items-center gap-1">
                                             Tools <Sparkles className="w-3 h-3 ml-1 opacity-50" />
                                         </button>
                                     </DropdownMenuTrigger>

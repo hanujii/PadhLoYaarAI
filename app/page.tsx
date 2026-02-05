@@ -82,7 +82,7 @@ export default function Home() {
             <div className="flex -space-x-2">
               {[1, 2, 3].map(i => (
                 <div key={i} className="w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center text-[10px]">
-                  <Users className="w-3 h-3 text-zinc-400" />
+                  <Users className="w-3 h-3 text-muted-foreground" />
                 </div>
               ))}
             </div>
@@ -164,7 +164,7 @@ export default function Home() {
                   <div className="relative z-10 p-4 rounded-xl bg-card/80 border border-border backdrop-blur-sm transform rotate-3 group-hover/header:rotate-0 transition-transform duration-300">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-gradient-gold">A+</div>
-                      <div className="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest">Score</div>
+                      <div className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">Score</div>
                     </div>
                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                   </div>
