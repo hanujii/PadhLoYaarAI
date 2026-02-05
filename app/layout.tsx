@@ -18,6 +18,7 @@ import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { FixedThemeToggle } from "@/components/global/FixedThemeToggle";
+import { MusicMiniPlayer } from "@/components/music/MusicMiniPlayer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -147,6 +148,7 @@ export default function RootLayout({
               <ServiceWorkerRegister />
               <InstallPrompt />
               <FixedThemeToggle />
+              <MusicMiniPlayer />
 
               {/* Toast Notifications */}
               <Toaster
