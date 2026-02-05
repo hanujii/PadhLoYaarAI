@@ -35,8 +35,8 @@ export function FixedThemeToggle() {
     ];
 
     return (
-        <div className="fixed top-6 right-6 z-[60] hidden md:block">
-            <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <div className="fixed top-8 right-6 z-[60] hidden md:block">
+            <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
                 <DropdownMenuTrigger asChild>
                     <Button
                         variant="ghost"
@@ -45,6 +45,7 @@ export function FixedThemeToggle() {
                             "h-10 w-10 rounded-full shadow-lg transition-all duration-300 hover:scale-105",
                             isOpen ? "rotate-90 bg-primary text-white" : "bg-black/60 hover:bg-white/10 text-muted-foreground backdrop-blur-md border border-white/10"
                         )}
+                        onClick={(e) => e.preventDefault()}
                     >
                         {isOpen ? <X className="w-5 h-5" /> : <Palette className="w-5 h-5" />}
                     </Button>
