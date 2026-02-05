@@ -228,5 +228,15 @@ export const TOOLS = [
         value: "jarvis",
         keywords: ["jarvis", "voice", "assistant", "speak", "talk"],
         queryParam: "q"
+    },
+    {
+        title: "AI Examiner (Viva)",
+        description: "Practice oral exams with a strict AI examiner.",
+        href: "/tools/viva-examiner",
+        icon: Mic,
+        color: "bg-red-600/50 text-white dark:bg-red-600/50",
+        value: "viva-examiner",
+        keywords: ["viva", "exam", "oral", "interview", "voice"],
+        queryParam: "topic"
     }
 ];
