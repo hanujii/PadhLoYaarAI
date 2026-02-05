@@ -105,7 +105,7 @@ export default function Home() {
               title="AI Tutor"
               description="Socratic tutoring that adapts to your pace."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 p-5 border border-white/5 flex-col justify-end relative overflow-hidden group/header">
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 dark:from-violet-500/10 dark:to-purple-500/10 p-5 border border-border flex-col justify-end relative overflow-hidden group/header">
 
                   <div className="absolute inset-0 bg-dot-white/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
 
@@ -113,7 +113,7 @@ export default function Home() {
                   <div className="space-y-3 relative z-10 transition-transform duration-500 group-hover/header:-translate-y-2">
                     <div className="flex items-start gap-2">
                       <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px]">👤</div>
-                      <div className="bg-white/5 p-2 rounded-2xl rounded-tl-none text-xs text-zinc-300 max-w-[70%] border border-white/5">
+                      <div className="bg-secondary p-2 rounded-2xl rounded-tl-none text-xs text-foreground max-w-[70%] border border-border">
                         Explain recursion?
                       </div>
                     </div>
@@ -135,7 +135,7 @@ export default function Home() {
               title="Study Roadmaps"
               description="A-Z curriculum generation."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 p-4 border border-white/5 relative overflow-hidden group/header">
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-blue-500/5 to-cyan-500/10 dark:from-blue-500/10 dark:to-cyan-500/10 p-4 border border-border relative overflow-hidden group/header">
 
                   <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent z-10" />
 
@@ -158,7 +158,7 @@ export default function Home() {
               title="Exam Sim"
               description="Mock tests & instant grading."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/10 p-4 border border-white/5 relative overflow-hidden flex items-center justify-center group/header">
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500/5 to-red-500/10 dark:from-orange-500/10 dark:to-red-500/10 p-4 border border-border relative overflow-hidden flex items-center justify-center group/header">
 
                   {/* Score Card Visual */}
                   <div className="relative z-10 p-4 rounded-xl bg-card/80 border border-border backdrop-blur-sm transform rotate-3 group-hover/header:rotate-0 transition-transform duration-300">
@@ -179,7 +179,7 @@ export default function Home() {
               title="Global Knowledge"
               description="Real-time web search integration."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 p-5 border border-white/5 flex-col justify-center relative overflow-hidden group/header">
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-emerald-500/5 to-green-500/10 dark:from-emerald-500/10 dark:to-green-500/10 p-5 border border-border flex-col justify-center relative overflow-hidden group/header">
 
 
                   {/* Search Bar Visual */}
