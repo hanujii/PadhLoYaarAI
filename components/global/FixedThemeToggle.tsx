@@ -35,21 +35,21 @@ export function FixedThemeToggle() {
     ];
 
     return (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed top-6 right-6 z-[60] hidden md:block">
             <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                 <DropdownMenuTrigger asChild>
                     <Button
-                        variant="default"
+                        variant="ghost"
                         size="icon"
                         className={cn(
-                            "h-12 w-12 rounded-full shadow-2xl transition-all duration-300 hover:scale-105",
-                            isOpen ? "rotate-90 bg-primary" : "bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10"
+                            "h-10 w-10 rounded-full shadow-lg transition-all duration-300 hover:scale-105",
+                            isOpen ? "rotate-90 bg-primary text-white" : "bg-black/60 hover:bg-white/10 text-muted-foreground backdrop-blur-md border border-white/10"
                         )}
                     >
-                        {isOpen ? <X className="w-5 h-5 text-white" /> : <Palette className="w-5 h-5 text-primary" />}
+                        {isOpen ? <X className="w-5 h-5" /> : <Palette className="w-5 h-5" />}
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" side="top" className="w-56 p-2 bg-black/90 backdrop-blur-xl border-white/10 mb-2">
+                <DropdownMenuContent align="end" className="w-56 p-2 bg-black/90 backdrop-blur-xl border-white/10 mt-2">
                     <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-widest px-2">Select Theme</DropdownMenuLabel>
                     <DropdownMenuSeparator className="bg-white/10" />
                     <div className="grid gap-1">
