@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Send, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UniversalChatProps {
     tool: {
@@ -18,14 +19,33 @@ interface UniversalChatProps {
 }
 
 export function UniversalChat({ tool }: UniversalChatProps) {
-    const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    const { messages, append, isLoading } = useChat({
         api: '/api/universal-chat',
         body: {
             systemPrompt: `You are ${tool.title}. ${tool.description}. Provide helpful, concise, and expert assistance to the student.`
         }
     });
 
+    const [input, setInput] = useState('');
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    const handleSend = async (e?: React.FormEvent) => {
+        e?.preventDefault();
+        if (!input.trim() || isLoading) return;
+
+        const userMessage = input;
+        setInput('');
+
+        try {
+            await append({
+                role: 'user',
+                content: userMessage
+            });
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to send message");
+        }
+    };
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -64,7 +84,7 @@ export function UniversalChat({ tool }: UniversalChatProps) {
                             "max-w-[80%] rounded-2xl px-4 py-3 text-sm",
                             m.role === 'user'
                                 ? "bg-primary text-primary-foreground"
-                                : "bg-zinc-800 text-zinc-100 border border-white/5"
+                                "bg-zinc-800 text-zinc-100 border border-white/5"
                         )}>
                             {m.content}
                         </div>
@@ -81,11 +101,11 @@ export function UniversalChat({ tool }: UniversalChatProps) {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="py-4">
+            <form onSubmit={handleSend} className="py-4">
                 <div className="relative">
                     <Input
                         value={input}
-                        onChange={handleInputChange}
+                        onChange={(e) => setInput(e.target.value)}
                         placeholder={`Ask ${tool.title}...`}
                         className="pr-12 bg-zinc-900 border-white/10 h-14 rounded-full shadow-lg"
                     />
