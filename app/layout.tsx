@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://padhloyaar-ai.vercel.app",
+    url: "https://plyai.vercel.app",
     title: "PadhLoYaarAI - Your AI Study Companion",
     description: "Master any subject with AI-powered tools. Instant tutoring, exam prep, flashcards, and more. Completely free.",
     siteName: "PadhLoYaarAI",
