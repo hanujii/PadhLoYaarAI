@@ -9,32 +9,29 @@
   }
 
   :root {
-    /* Light Theme - Purple Palette Complement */
-    --background: 0 0% 99%;
-    --foreground: 270 38% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 270 38% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 270 38% 15%;
-    --primary: 240 27% 44%;
+    /* "Light Mode" (Requested Palette: Blue/Black) */
+    /* https://coolors.co/palette/00111c-001523-001a2c-002137-00253e-002945-002e4e-003356-003a61-00406c */
+    --background: 203 100% 5%;
+    --foreground: 0 0% 100%;
+    --card: 204 100% 7%;
+    --card-foreground: 0 0% 100%;
+    --popover: 204 100% 7%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 204 100% 21%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 201 26% 95%;
-    --secondary-foreground: 270 38% 15%;
-    --muted: 201 26% 95%;
-    --muted-foreground: 270 20% 40%;
-    --accent: 240 27% 44%;
+    --secondary: 204 100% 11%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 204 100% 11%;
+    --muted-foreground: 204 30% 60%;
+    --accent: 204 100% 21%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 201 20% 88%;
-    --input: 201 20% 88%;
-    --ring: 240 27% 44%;
+    --border: 204 100% 15%;
+    --input: 204 100% 15%;
+    --ring: 204 100% 21%;
     --radius: 0.75rem;
-
-    /* Custom Colors */
-    --glow: 240 27% 44%;
-    --success: 142 76% 36%;
-    --warning: 38 92% 50%;
+    --glow: 204 100% 30%;
   }
 
   .dark {
@@ -71,53 +68,7 @@
     --glow: 182 77% 66%;
   }
 
-  /* Sunset Theme - Energetic Orange & Rose */
-  [data-theme='sunset'] {
-    --primary: 10 80% 60%;
-    /* Rose */
-    --primary-foreground: 0 0% 100%;
-    --glow: 30 80% 60%;
-    /* Orange glow */
-    --ring: 10 80% 60%;
-    --accent: 30 80% 60%;
-  }
 
-  /* Ocean Theme - Calm Azure & Teal */
-  [data-theme='ocean'] {
-    --primary: 190 90% 50%;
-    /* Cyan */
-    --primary-foreground: 0 0% 100%;
-    --glow: 210 90% 60%;
-    /* Blue glow */
-    --ring: 190 90% 50%;
-    --accent: 210 90% 60%;
-  }
-
-  /* Matrix Theme - Hacker Green */
-  [data-theme='matrix'] {
-    --primary: 142 70% 50%;
-    /* Green */
-    --primary-foreground: 0 0% 0%;
-    --glow: 142 70% 50%;
-    --ring: 142 70% 50%;
-    --accent: 142 70% 50%;
-    --background: 0 0% 0%;
-    /* Pure Black */
-    --card: 0 0% 5%;
-  }
-
-  /* Luxury Theme - Gold & Slate */
-  [data-theme='luxury'] {
-    --primary: 45 90% 50%;
-    /* Gold */
-    --primary-foreground: 0 0% 0%;
-    --glow: 45 60% 50%;
-    --ring: 45 90% 50%;
-    --accent: 45 90% 50%;
-    --background: 220 20% 10%;
-    /* Slate Dark */
-    --card: 220 20% 14%;
-  }
 
   * {
     @apply border-border;
