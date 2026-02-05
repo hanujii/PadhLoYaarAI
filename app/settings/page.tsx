@@ -10,32 +10,33 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Moon, Sun, Volume2, Trash2, Shield, User, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/auth/AuthContext';
 
 export default function SettingsPage() {
     const { setTheme, theme } = useTheme();
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { user, loading } = useAuth();
 
-    // Auth check
+    // Redirect if not authenticated
     useEffect(() => {
-        const checkAuth = async () => {
-            const supabase = createClient();
-            const { data: { session } } = await supabase.auth.getSession();
+        if (!loading && !user) {
+            router.push('/login?redirect=/settings');
+        }
+    }, [user, loading, router]);
 
-            if (!session) {
-                router.push('/login?redirect=/settings');
-                return;
-            }
+    // Show loading while checking auth
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
-            setIsAuthenticated(true);
-            setIsLoading(false);
-        };
-
-        checkAuth();
-    }, [router]);
+    if (!user) {
+        return null; // Will redirect via useEffect
+    }
 
     const handleClearData = () => {
         if (confirm("Are you sure? This will delete your local history and preferences.")) {
@@ -44,19 +45,6 @@ export default function SettingsPage() {
             window.location.reload();
         }
     };
-
-    // Show loading while checking auth
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        );
-    }
-
-    if (!isAuthenticated) {
-        return null;
-    }
 
     return (
         <div className="max-w-4xl mx-auto space-y-8 pb-20">

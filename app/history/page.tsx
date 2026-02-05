@@ -25,11 +25,11 @@ import { FilterPanel } from '@/components/history/FilterPanel';
 import { ExportDialog } from '@/components/history/ExportDialog';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/auth/AuthContext';
 
 export default function HistoryPage() {
     const router = useRouter();
-    const [isAuthChecking, setIsAuthChecking] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { user, loading: authLoading } = useAuth();
 
     const {
         history,
@@ -51,24 +51,17 @@ export default function HistoryPage() {
 
     // Auth check and load history
     useEffect(() => {
-        const checkAuthAndLoad = async () => {
-            const supabase = createClient();
-            const { data: { session } } = await supabase.auth.getSession();
+        if (authLoading) return;
 
-            if (!session) {
-                router.push('/login?redirect=/history');
-                return;
-            }
+        if (!user) {
+            router.push('/login?redirect=/history');
+            return;
+        }
 
-            setIsAuthenticated(true);
-            setIsAuthChecking(false);
+        // Load history for authenticated user
+        loadFromSupabase(user.id);
 
-            // Load history for authenticated user
-            await loadFromSupabase(session.user.id);
-        };
-
-        checkAuthAndLoad();
-    }, [router, loadFromSupabase]);
+    }, [user, authLoading, router, loadFromSupabase]);
 
     const handleCopy = (text: string, id: string) => {
         navigator.clipboard.writeText(text);
@@ -126,7 +119,7 @@ export default function HistoryPage() {
     }, [history, searchQuery, selectedTools]);
 
     // Show loading while checking auth
-    if (isAuthChecking) {
+    if (authLoading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -134,7 +127,7 @@ export default function HistoryPage() {
         );
     }
 
-    if (!isAuthenticated) {
+    if (!user) {
         return null;
     }
 
