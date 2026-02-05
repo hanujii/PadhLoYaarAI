@@ -84,7 +84,7 @@ export function UniversalChat({ tool }: UniversalChatProps) {
                             "max-w-[80%] rounded-2xl px-4 py-3 text-sm",
                             m.role === 'user'
                                 ? "bg-primary text-primary-foreground"
-                                "bg-zinc-800 text-zinc-100 border border-white/5"
+                                : "bg-zinc-800 text-zinc-100 border border-white/5"
                         )}>
                             {m.content}
                         </div>
