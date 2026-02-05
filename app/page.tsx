@@ -106,6 +106,13 @@ export default function Home() {
               description="Socratic tutoring that adapts to your pace."
               header={
                 <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 p-5 border border-white/5 flex-col justify-end relative overflow-hidden group/header">
+                  {/* Scrolling Text Marquee */}
+                  <div className="absolute top-4 left-0 w-full overflow-hidden opacity-20 pointer-events-none">
+                    <div className="flex gap-4 animate-marquee whitespace-nowrap text-xs font-bold uppercase tracking-widest text-violet-300">
+                      <span>Math • Physics • Coding • History • Writing • Science • Literature • Python • Calculus • Biology •</span>
+                      <span>Math • Physics • Coding • History • Writing • Science • Literature • Python • Calculus • Biology •</span>
+                    </div>
+                  </div>
                   <div className="absolute inset-0 bg-dot-white/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
 
                   {/* Mock Chat UI */}
@@ -135,6 +142,13 @@ export default function Home() {
               description="A-Z curriculum generation."
               header={
                 <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 p-4 border border-white/5 relative overflow-hidden group/header">
+                  {/* Scrolling Text Marquee */}
+                  <div className="absolute top-2 left-0 w-full overflow-hidden opacity-20 pointer-events-none">
+                    <div className="flex gap-4 animate-marquee whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-blue-300">
+                      <span>Syllabus • Curriculum • Planning • Goals • Tracking • Milestones •</span>
+                      <span>Syllabus • Curriculum • Planning • Goals • Tracking • Milestones •</span>
+                    </div>
+                  </div>
                   <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent z-10" />
 
                   {/* Nodes Visual */}
@@ -157,6 +171,13 @@ export default function Home() {
               description="Mock tests & instant grading."
               header={
                 <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/10 p-4 border border-white/5 relative overflow-hidden flex items-center justify-center group/header">
+                  {/* Scrolling Text Marquee */}
+                  <div className="absolute top-2 left-0 w-full overflow-hidden opacity-20 pointer-events-none">
+                    <div className="flex gap-4 animate-marquee whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-orange-300">
+                      <span>Quiz • Test • Grade • Feedback • Score • Analysis • Improve •</span>
+                      <span>Quiz • Test • Grade • Feedback • Score • Analysis • Improve •</span>
+                    </div>
+                  </div>
                   {/* Score Card Visual */}
                   <div className="relative z-10 p-4 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm transform rotate-3 group-hover/header:rotate-0 transition-transform duration-300">
                     <div className="text-center">
@@ -177,6 +198,13 @@ export default function Home() {
               description="Real-time web search integration."
               header={
                 <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 p-5 border border-white/5 flex-col justify-center relative overflow-hidden group/header">
+                  {/* Scrolling Text Marquee */}
+                  <div className="absolute top-4 left-0 w-full overflow-hidden opacity-20 pointer-events-none">
+                    <div className="flex gap-4 animate-marquee whitespace-nowrap text-xs font-bold uppercase tracking-widest text-emerald-300">
+                      <span>Sources • Citations • Research • Data • Facts • News • Articles • Papers • Reference •</span>
+                      <span>Sources • Citations • Research • Data • Facts • News • Articles • Papers • Reference •</span>
+                    </div>
+                  </div>
 
                   {/* Search Bar Visual */}
                   <div className="w-full bg-black/40 border border-white/10 rounded-full h-10 flex items-center px-4 gap-3 backdrop-blur-sm shadow-xl transform group-hover/header:scale-105 transition-transform duration-300">
