@@ -6,10 +6,11 @@ import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings, Menu, Sparkles, Home, HelpCircle, CreditCard, LogIn } from 'lucide-react';
+import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings, Menu, Sparkles, Home, HelpCircle, CreditCard, LogIn, LogOut } from 'lucide-react';
 import { Logo } from '@/components/global/Logo';
 import { ProfilePopup } from '@/components/global/ProfilePopup';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/components/auth/AuthContext';
 import { ThemeCustomizer } from '@/components/global/ThemeCustomizer';
 import { TOOLS } from '@/lib/tools-data';
 import {
@@ -44,6 +45,7 @@ const SAFE_MUSIC_URLS: Record<string, string> = {
 export function Header() {
     const { setTheme } = useTheme();
     const pathname = usePathname();
+    const { user } = useAuth();
     const {
         timeLeft, isActive, startTimer, stopTimer, resetTimer, setDuration,
         isPlaying, togglePlay, genre, setGenre
@@ -195,16 +197,52 @@ export function Header() {
                                             </div>
                                         </div>
 
-                                        {/* Bottom Section - Login */}
+                                        {/* Bottom Section - User Profile or Login */}
                                         <div className="border-t border-border pt-4 mt-4">
-                                            <Link
-                                                href="/login"
-                                                onClick={() => setIsOpen(false)}
-                                                className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-                                            >
-                                                <LogIn className="w-4 h-4" />
-                                                Sign In
-                                            </Link>
+                                            {user ? (
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center gap-3 px-2">
+                                                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                                                            {user.user_metadata?.avatar_url ? (
+                                                                <img src={user.user_metadata?.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+                                                            ) : (
+                                                                (user.user_metadata?.full_name || user.email || 'U').charAt(0).toUpperCase()
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-medium truncate text-foreground">
+                                                                {user.user_metadata?.full_name || 'User'}
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground truncate">
+                                                                {user.email}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <Button
+                                                        variant="ghost"
+                                                        className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                                                        onClick={async () => {
+                                                            const { createClient } = require('@/lib/supabase/client');
+                                                            const supabase = createClient();
+                                                            await supabase.auth.signOut();
+                                                            window.location.reload();
+                                                        }}
+                                                    >
+                                                        <LogOut className="w-4 h-4 mr-2" />
+                                                        Sign Out
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Link
+                                                    href="/login"
+                                                    onClick={() => setIsOpen(false)}
+                                                    className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+                                                >
+                                                    <LogIn className="w-4 h-4" />
+                                                    Sign In
+                                                </Link>
+                                            )}
                                         </div>
                                     </SheetContent>
                                 </Sheet>
