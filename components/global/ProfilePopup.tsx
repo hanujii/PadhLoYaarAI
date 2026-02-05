@@ -35,75 +35,73 @@ interface UserProfile {
     role?: string;
 }
 
-export function ProfilePopup() {
+import { memo } from 'react';
+import { useAuth } from '@/components/auth/AuthContext';
+
+export const ProfilePopup = memo(function ProfilePopup() {
     const router = useRouter();
-    const [user, setUser] = useState<UserProfile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const { user: authUser, loading: authLoading } = useAuth();
+    const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [isLoadingProfile, setIsLoadingProfile] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
-        // Initial check
-        const getInitialUser = async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-
-                if (session?.user) {
-                    // Fetch profile data
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('full_name, avatar_url, subscription_tier, role')
-                        .eq('id', session.user.id)
-                        .single();
-
-                    setUser({
-                        id: session.user.id,
-                        email: session.user.email || '',
-                        full_name: profile?.full_name,
-                        avatar_url: profile?.avatar_url,
-                        subscription_tier: profile?.subscription_tier || 'free',
-                        role: profile?.role || 'user',
-                    });
-                } else {
-                    setUser(null);
-                }
-            } catch (error) {
-                console.error('Error fetching user:', error);
-                setUser(null);
-            } finally {
-                setIsLoading(false);
+        async function fetchProfile() {
+            if (!authUser) {
+                setProfile(null);
+                return;
             }
-        };
 
-        getInitialUser();
-
-        // Subscribe to auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'SIGNED_IN' && session?.user) {
-                const { data: profile } = await supabase
+            setIsLoadingProfile(true);
+            try {
+                // Fetch profile data
+                const { data: profileData, error } = await supabase
                     .from('profiles')
                     .select('full_name, avatar_url, subscription_tier, role')
-                    .eq('id', session.user.id)
+                    .eq('id', authUser.id)
                     .single();
 
-                setUser({
-                    id: session.user.id,
-                    email: session.user.email || '',
-                    full_name: profile?.full_name,
-                    avatar_url: profile?.avatar_url,
-                    subscription_tier: profile?.subscription_tier || 'free',
-                    role: profile?.role || 'user',
+                if (error) {
+                    console.error("Error fetching profile:", error);
+                    // Fallback to basic auth data if profile fetch fails
+                    setProfile({
+                        id: authUser.id,
+                        email: authUser.email || '',
+                        full_name: authUser.user_metadata?.full_name,
+                        avatar_url: authUser.user_metadata?.avatar_url,
+                        subscription_tier: 'free',
+                        role: 'user'
+                    });
+                } else {
+                    setProfile({
+                        id: authUser.id,
+                        email: authUser.email || '',
+                        full_name: profileData?.full_name || authUser.user_metadata?.full_name,
+                        avatar_url: profileData?.avatar_url || authUser.user_metadata?.avatar_url,
+                        subscription_tier: profileData?.subscription_tier || 'free',
+                        role: profileData?.role || 'user',
+                    });
+                }
+            } catch (error) {
+                console.error('Error in profile fetch:', error);
+                setProfile({
+                    id: authUser.id,
+                    email: authUser.email || '',
+                    full_name: authUser.user_metadata?.full_name,
+                    avatar_url: authUser.user_metadata?.avatar_url,
+                    subscription_tier: 'free',
+                    role: 'user'
                 });
-                setIsLoading(false);
-            } else if (event === 'SIGNED_OUT') {
-                setUser(null);
-                setIsLoading(false);
+            } finally {
+                setIsLoadingProfile(false);
             }
-        });
+        }
 
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, []);
+        fetchProfile();
+    }, [authUser]);
+
+    const isLoading = authLoading || (authUser && isLoadingProfile) && !profile;
+    const user = profile;
 
     const handleSignOut = async () => {
         try {
@@ -264,4 +262,4 @@ export function ProfilePopup() {
             </DropdownMenuContent>
         </DropdownMenu>
     );
-}
+});
