@@ -58,73 +58,74 @@ const TESTIMONIALS = [
 
 export function Testimonials() {
     return (
-        <section className="py-20 px-4">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            Loved by <span className="text-primary">10,000+</span> Students
-                        </h2>
-                        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                            Join thousands of students who are already studying smarter with AI.
-                        </p>
-                    </motion.div>
-                </div>
+        <section className="py-24 px-4 overflow-hidden bg-background relative">
+            <div className="absolute inset-0 bg-dot-white/[0.1] -z-10" />
+            <div className="max-w-7xl mx-auto mb-16 text-center">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
+                    <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
+                        Loved by <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">10,000+ Students</span>
+                    </h2>
+                    <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
+                        See what the community is saying about their AI learning journey.
+                    </p>
+                </motion.div>
+            </div>
 
-                {/* Testimonials Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {TESTIMONIALS.map((testimonial, index) => (
-                        <motion.div
-                            key={testimonial.name}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
-                        >
-                            <Card className="p-6 h-full hover:shadow-lg transition-shadow relative overflow-hidden group">
-                                {/* Background gradient */}
-                                <div className={`absolute inset-0 bg-gradient-to-br ${testimonial.color} opacity-0 group-hover:opacity-5 transition-opacity`} />
-
-                                {/* Quote icon */}
-                                <Quote className="absolute top-4 right-4 w-8 h-8 text-muted-foreground/20" />
-
-                                {/* Content */}
-                                <div className="relative">
-                                    {/* Rating */}
-                                    <div className="flex gap-1 mb-4">
-                                        {Array.from({ length: testimonial.rating }).map((_, i) => (
-                                            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                        ))}
-                                    </div>
-
-                                    {/* Review text */}
-                                    <p className="text-muted-foreground mb-6 leading-relaxed">
-                                        "{testimonial.content}"
-                                    </p>
-
-                                    {/* Author */}
-                                    <div className="flex items-center gap-3">
-                                        <Avatar>
-                                            <AvatarFallback className={`bg-gradient-to-r ${testimonial.color} text-white`}>
-                                                {testimonial.avatar}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <p className="font-semibold">{testimonial.name}</p>
-                                            <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Card>
-                        </motion.div>
+            <div className="relative max-w-[100vw] overflow-hidden">
+                <div className="flex gap-6 animate-marquee w-max hover:[animation-play-state:paused] mb-6">
+                    {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, i) => (
+                        <div key={i} className="w-[350px] md:w-[450px]">
+                            <TestimonialCard testimonial={testimonial} />
+                        </div>
                     ))}
                 </div>
+                <div className="flex gap-6 animate-marquee-reverse w-max hover:[animation-play-state:paused]">
+                    {[...TESTIMONIALS.reverse(), ...TESTIMONIALS].map((testimonial, i) => (
+                        <div key={i} className="w-[350px] md:w-[450px]">
+                            <TestimonialCard testimonial={testimonial} />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Fade edges */}
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-background to-transparent z-10" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-background to-transparent z-10" />
             </div>
         </section>
+    );
+}
+
+function TestimonialCard({ testimonial }: { testimonial: typeof TESTIMONIALS[0] }) {
+    return (
+        <Card className="p-8 h-full bg-black/40 border border-white/10 backdrop-blur-sm hover:border-white/20 transition-colors relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            <div className="flex gap-1 mb-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className={`w-4 h-4 ${i < testimonial.rating ? "fill-amber-400 text-amber-400" : "fill-zinc-700 text-zinc-700"}`} />
+                ))}
+            </div>
+
+            <p className="text-zinc-300 mb-8 leading-relaxed text-lg relative z-10">
+                "{testimonial.content}"
+            </p>
+
+            <div className="flex items-center gap-4 relative z-10">
+                <Avatar className="h-12 w-12 border border-white/10">
+                    <AvatarFallback className={`bg-gradient-to-br ${testimonial.color} text-white font-bold`}>
+                        {testimonial.avatar}
+                    </AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="font-bold text-white text-base">{testimonial.name}</p>
+                    <p className="text-xs text-zinc-400">{testimonial.role}</p>
+                </div>
+                <Quote className="ml-auto w-8 h-8 text-white/10" />
+            </div>
+        </Card>
     );
 }
