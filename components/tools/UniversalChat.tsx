@@ -1,6 +1,5 @@
 'use client';
 
-import { useChat } from '@ai-sdk/react';
 import { ToolBackButton } from '@/components/global/ToolBackButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,32 +17,63 @@ interface UniversalChatProps {
     }
 }
 
-export function UniversalChat({ tool }: UniversalChatProps) {
-    const { messages, append, isLoading } = useChat({
-        api: '/api/universal-chat',
-        body: {
-            systemPrompt: `You are ${tool.title}. ${tool.description}. Provide helpful, concise, and expert assistance to the student.`
-        }
-    });
+interface ChatMessage {
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+}
 
+export function UniversalChat({ tool }: UniversalChatProps) {
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault();
         if (!input.trim() || isLoading) return;
 
-        const userMessage = input;
+        const userMessage: ChatMessage = {
+            id: Date.now().toString(),
+            role: 'user',
+            content: input.trim()
+        };
+
+        setMessages(prev => [...prev, userMessage]);
         setInput('');
+        setIsLoading(true);
 
         try {
-            await append({
-                role: 'user',
-                content: userMessage
+            const response = await fetch('/api/universal-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [...messages, userMessage].map(m => ({
+                        role: m.role,
+                        content: m.content
+                    })),
+                    systemPrompt: `You are ${tool.title}. ${tool.description}. Provide helpful, concise, and expert assistance to the student.`
+                })
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to get response');
+            }
+
+            const text = await response.text();
+
+            const assistantMessage: ChatMessage = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                content: text
+            };
+
+            setMessages(prev => [...prev, assistantMessage]);
         } catch (error) {
             console.error(error);
             toast.error("Failed to send message");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -81,7 +111,7 @@ export function UniversalChat({ tool }: UniversalChatProps) {
                 {messages.map((m) => (
                     <div key={m.id} className={cn("flex w-full", m.role === 'user' ? "justify-end" : "justify-start")}>
                         <div className={cn(
-                            "max-w-[80%] rounded-2xl px-4 py-3 text-sm",
+                            "max-w-[80%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap",
                             m.role === 'user'
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-zinc-800 text-zinc-100 border border-white/5"
