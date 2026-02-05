@@ -39,7 +39,7 @@ export default function Home() {
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
 
       {/* HERO SECTION */}
-      <section className="relative pt-20 pb-20 sm:pt-32 sm:pb-32 px-4 max-w-7xl mx-auto flex flex-col items-center text-center space-y-8">
+      <section className="relative pt-12 pb-16 sm:pt-20 sm:pb-24 px-4 max-w-7xl mx-auto flex flex-col items-center text-center space-y-6">
 
         {/* Badge */}
         <motion.div
@@ -57,7 +57,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="space-y-4 max-w-4xl"
+          className="space-y-3 max-w-4xl"
         >
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1]">
             Master any subject with <br className="hidden sm:block" />
@@ -69,11 +69,21 @@ export default function Home() {
           </p>
         </motion.div>
 
+        {/* Command Center */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="w-full max-w-2xl z-10"
+        >
+          <CommandCenter onChatStart={handleSearch} />
+        </motion.div>
+
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center gap-4 pt-2"
         >
           <Link href="/login">
@@ -91,16 +101,6 @@ export default function Home() {
             </div>
             <span>10k+ Students</span>
           </div>
-        </motion.div>
-
-        {/* Command Center */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="w-full max-w-2xl z-10"
-        >
-          <CommandCenter onChatStart={handleSearch} />
         </motion.div>
       </section>
 
