@@ -6,8 +6,9 @@ import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings, Menu, Sparkles } from 'lucide-react';
+import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings, Menu, Sparkles, Home, HelpCircle, CreditCard, LogIn } from 'lucide-react';
 import { Logo } from '@/components/global/Logo';
+import { ProfilePopup } from '@/components/global/ProfilePopup';
 import { cn } from '@/lib/utils';
 import { ThemeCustomizer } from '@/components/global/ThemeCustomizer';
 import { TOOLS } from '@/lib/tools-data';
@@ -127,37 +128,83 @@ export function Header() {
                                             <Menu className="h-5 w-5" />
                                         </Button>
                                     </SheetTrigger>
-                                    <SheetContent side="left" className="w-[300px] border-r border-border bg-card/95 backdrop-blur-3xl">
+                                    <SheetContent side="left" className="w-[300px] border-r border-border bg-card/95 backdrop-blur-3xl flex flex-col">
                                         <SheetHeader className="text-left mb-6">
                                             <SheetTitle className="flex items-center gap-2">
-                                                <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 overflow-hidden">
-                                                    <Logo className="w-5 h-5 text-white" />
+                                                <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-primary/20 to-transparent border border-border overflow-hidden">
+                                                    <Logo className="w-5 h-5 text-primary" />
                                                 </div>
                                                 <span className="font-bold text-xl">ply<span className="text-primary">AI</span></span>
                                             </SheetTitle>
                                         </SheetHeader>
-                                        <div className="flex flex-col gap-1">
-                                            {[
-                                                { name: 'Dashboard', href: '/', icon: Sparkles },
-                                                { name: 'Tools', href: '/tools', icon: Menu },
-                                                { name: 'Pricing', href: '/pricing', icon: Bookmark },
-                                                { name: 'Help', href: '/help', icon: Settings },
-                                            ].map((item) => (
-                                                <Link
-                                                    key={item.href}
-                                                    href={item.href}
-                                                    onClick={() => setIsOpen(false)}
-                                                    className={cn(
-                                                        "flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all",
-                                                        pathname === item.href
-                                                            ? "bg-primary/20 text-primary hover:bg-primary/30"
-                                                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                                                    )}
-                                                >
-                                                    <item.icon className="w-4 h-4" />
-                                                    {item.name}
-                                                </Link>
-                                            ))}
+
+                                        {/* Navigation Section */}
+                                        <div className="flex-1 space-y-6">
+                                            <div>
+                                                <p className="text-xs font-medium text-muted-foreground px-3 mb-2">Navigation</p>
+                                                <div className="flex flex-col gap-1">
+                                                    {[
+                                                        { name: 'Dashboard', href: '/', icon: Home },
+                                                        { name: 'Tools', href: '/tools', icon: Sparkles },
+                                                        { name: 'Pricing', href: '/pricing', icon: CreditCard },
+                                                        { name: 'Help', href: '/help', icon: HelpCircle },
+                                                    ].map((item) => (
+                                                        <Link
+                                                            key={item.href}
+                                                            href={item.href}
+                                                            onClick={() => setIsOpen(false)}
+                                                            className={cn(
+                                                                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all",
+                                                                pathname === item.href
+                                                                    ? "bg-primary/10 text-primary"
+                                                                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                                            )}
+                                                        >
+                                                            <item.icon className="w-4 h-4" />
+                                                            {item.name}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* My Stuff Section */}
+                                            <div>
+                                                <p className="text-xs font-medium text-muted-foreground px-3 mb-2">My Stuff</p>
+                                                <div className="flex flex-col gap-1">
+                                                    {[
+                                                        { name: 'History', href: '/history', icon: History },
+                                                        { name: 'Saved', href: '/history?tab=saved', icon: Bookmark },
+                                                        { name: 'Settings', href: '/settings', icon: Settings },
+                                                    ].map((item) => (
+                                                        <Link
+                                                            key={item.href}
+                                                            href={item.href}
+                                                            onClick={() => setIsOpen(false)}
+                                                            className={cn(
+                                                                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all",
+                                                                pathname === item.href
+                                                                    ? "bg-primary/10 text-primary"
+                                                                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                                            )}
+                                                        >
+                                                            <item.icon className="w-4 h-4" />
+                                                            {item.name}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Bottom Section - Login */}
+                                        <div className="border-t border-border pt-4 mt-4">
+                                            <Link
+                                                href="/login"
+                                                onClick={() => setIsOpen(false)}
+                                                className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+                                            >
+                                                <LogIn className="w-4 h-4" />
+                                                Sign In
+                                            </Link>
                                         </div>
                                     </SheetContent>
                                 </Sheet>
@@ -287,28 +334,8 @@ export function Header() {
 
                             {/* Removed ThemeCustomizer as per user request */}
 
-                            {/* User Menu */}
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-white/10 hover:bg-white/5 hover:border-primary/50 transition-all ml-1 group">
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary/80 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
-                                            <User className="w-4 h-4" />
-                                        </div>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56 p-2 bg-card/95 backdrop-blur-xl border-border mt-2">
-                                    <div className="px-2 py-1.5 pb-3">
-                                        <p className="text-sm font-medium">My Account</p>
-                                        <p className="text-xs text-muted-foreground">Manage settings & preferences</p>
-                                    </div>
-                                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                                        <Link href="/account"><User className="mr-2 h-4 w-4" /> Profile</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                                        <Link href="/history"><History className="mr-2 h-4 w-4" /> History</Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            {/* Profile Popup - handles auth state */}
+                            <ProfilePopup />
 
                         </div>
                     </div>
