@@ -38,34 +38,37 @@
   }
 
   .dark {
-    /* Custom Purple Palette from Coolors */
-    /* #000000 → 0 0% 0% (Deepest) */
-    /* #231123 → 300 36% 10% (Background) */
-    /* #372554 → 270 38% 24% (Cards/Secondary) */
-    /* #52528C → 240 27% 44% (Primary) */
-    /* #7C9EB2 → 201 26% 59% (Accent/Muted) */
+    /* Custom Coolors Palette: https://coolors.co/001011-093a3e-3aafb9-64e9ee-97c8eb */
+    /* #001011 -> 184 100% 3% (Background) */
+    /* #093A3E -> 184 75% 14% (Card/Secondary) */
+    /* #3AAFB9 -> 185 52% 48% (Primary) */
+    /* #64E9EE -> 182 77% 66% (Accent/Ring) */
+    /* #97C8EB -> 205 68% 76% (Foreground/Text Base) */
 
-    --background: 300 36% 7%;
-    --foreground: 210 40% 98%;
-    --card: 270 38% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 270 38% 10%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 240 27% 44%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 270 38% 18%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 270 38% 18%;
-    --muted-foreground: 201 26% 59%;
-    --accent: 201 26% 59%;
-    --accent-foreground: 0 0% 100%;
+    --background: 184 100% 3%;
+    --foreground: 205 68% 95%;
+    /* Lighter version of 97C8EB for better text contrast */
+    --card: 184 75% 14%;
+    --card-foreground: 205 68% 90%;
+    --popover: 184 75% 10%;
+    --popover-foreground: 205 68% 95%;
+    --primary: 185 52% 48%;
+    --primary-foreground: 184 100% 3%;
+    --secondary: 184 50% 10%;
+    --secondary-foreground: 185 52% 48%;
+    --muted: 184 50% 10%;
+    --muted-foreground: 205 30% 60%;
+    --accent: 184 75% 14%;
+    --accent-foreground: 182 77% 66%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 270 38% 20%;
-    --input: 270 38% 20%;
-    --ring: 240 27% 44%;
+    --border: 184 75% 20%;
+    --input: 184 75% 20%;
+    --ring: 182 77% 66%;
     --radius: 0.75rem;
-    --glow: 240 27% 44%;
+
+    /* Custom Glow for this palette */
+    --glow: 182 77% 66%;
   }
 
   /* Sunset Theme - Energetic Orange & Rose */
