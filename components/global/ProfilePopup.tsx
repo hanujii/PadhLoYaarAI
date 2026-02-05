@@ -58,7 +58,10 @@ export const ProfilePopup = memo(function ProfilePopupComponent() {
                     .single();
 
                 if (error) {
-                    console.error("Error fetching profile:", error);
+                    // Only log real errors, ignore "Row not found" (PGRST116) as we have fallbacks
+                    if (error.code !== 'PGRST116') {
+                        console.error("Error fetching profile:", error);
+                    }
                     // Fallback to basic auth data if profile fetch fails
                     setProfile({
                         id: authUser.id,
