@@ -35,40 +35,30 @@
   }
 
   .dark {
-    /* Custom Coolors Palette: https://coolors.co/001011-093a3e-3aafb9-64e9ee-97c8eb */
-    /* #001011 -> 184 100% 3% (Background) */
-    /* #093A3E -> 184 75% 14% (Card/Secondary) */
-    /* #3AAFB9 -> 185 52% 48% (Primary) */
-    /* #64E9EE -> 182 77% 66% (Accent/Ring) */
-    /* #97C8EB -> 205 68% 76% (Foreground/Text Base) */
-
-    --background: 184 100% 3%;
-    --foreground: 205 68% 95%;
-    /* Lighter version of 97C8EB for better text contrast */
-    --card: 184 75% 14%;
-    --card-foreground: 205 68% 90%;
-    --popover: 184 75% 10%;
-    --popover-foreground: 205 68% 95%;
-    --primary: 185 52% 48%;
-    --primary-foreground: 184 100% 3%;
-    --secondary: 184 50% 10%;
-    --secondary-foreground: 185 52% 48%;
-    --muted: 184 50% 10%;
-    --muted-foreground: 205 30% 60%;
-    --accent: 184 75% 14%;
-    --accent-foreground: 182 77% 66%;
+    /* "Dark Mode" (Requested Palette: Gray/Purple) */
+    /* https://coolors.co/palette/363537-3e313c-ab9ba9-cec5cd-e0e0e0 */
+    --background: 270 2% 21%;
+    --foreground: 0 0% 88%;
+    --card: 293 11% 22%;
+    --card-foreground: 0 0% 88%;
+    --popover: 293 11% 22%;
+    --popover-foreground: 0 0% 88%;
+    --primary: 293 8% 64%;
+    --primary-foreground: 270 2% 21%;
+    --secondary: 293 11% 30%;
+    --secondary-foreground: 0 0% 88%;
+    --muted: 293 11% 30%;
+    --muted-foreground: 293 8% 60%;
+    --accent: 293 8% 64%;
+    --accent-foreground: 270 2% 21%;
     --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 184 75% 20%;
-    --input: 184 75% 20%;
-    --ring: 182 77% 66%;
+    --destructive-foreground: 0 0% 88%;
+    --border: 293 5% 30%;
+    --input: 293 5% 30%;
+    --ring: 293 8% 64%;
     --radius: 0.75rem;
-
-    /* Custom Glow for this palette */
-    --glow: 182 77% 66%;
+    --glow: 293 8% 64%;
   }
-
-
 
   * {
     @apply border-border;
