@@ -48,7 +48,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="space-y-4 max-w-4xl pt-4"
         >
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight" style={{ fontFamily: 'var(--font-hand), cursive' }}>
             Padh Lo Yaar.
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground font-medium">

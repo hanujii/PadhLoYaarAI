@@ -34,10 +34,10 @@ import {
 import { Separator } from '@/components/ui/separator';
 
 const SAFE_MUSIC_URLS: Record<string, string> = {
-    'lofi': '/sounds/lofi.mp3',
-    'soothing': '/sounds/soothing.mp3',
-    'meditation': '/sounds/meditation.ogg',
-    'nature': '/sounds/nature.ogg',
+    'lofi': 'https://cdn.pixabay.com/audio/2023/09/04/audio_c89e926532.mp3',
+    'soothing': 'https://cdn.pixabay.com/audio/2022/10/25/audio_cfb63ad2bf.mp3',
+    'meditation': 'https://cdn.pixabay.com/audio/2023/04/24/audio_86ef3e88c2.mp3',
+    'nature': 'https://cdn.pixabay.com/audio/2022/08/23/audio_4fc54e1a55.mp3',
 };
 
 export function Header() {
@@ -221,18 +221,18 @@ export function Header() {
                         <div className="flex items-center gap-2">
 
                             {/* Timer & Music Group */}
-                            <div className="flex items-center bg-white/5 rounded-full border border-white/5 p-1">
+                            <div className="flex items-center bg-secondary/50 rounded-full border border-border p-1">
                                 {/* Timer */}
                                 <DropdownMenu modal={false}>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-8 rounded-full px-3 text-xs font-mono hover:bg-white/10 hover:text-primary transition-colors">
+                                        <Button variant="ghost" size="sm" className="h-8 rounded-full px-3 text-xs font-mono hover:bg-secondary hover:text-primary transition-colors">
                                             {formattedTime}
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="bg-card/95 backdrop-blur-xl border-border">
                                         <div className="p-2 grid grid-cols-3 gap-1 w-48">
                                             {timerPresets.map(min => (
-                                                <Button key={min} variant="outline" size="sm" onClick={() => setDuration(min)} className="h-8 text-xs border-white/10 hover:bg-primary/20 hover:text-primary">
+                                                <Button key={min} variant="outline" size="sm" onClick={() => setDuration(min)} className="h-8 text-xs border-border hover:bg-primary/20 hover:text-primary">
                                                     {min}m
                                                 </Button>
                                             ))}
@@ -240,23 +240,23 @@ export function Header() {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
 
-                                <div className="w-px h-3 bg-white/10 mx-1" />
+                                <div className="w-px h-3 bg-border mx-1" />
 
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className={cn("h-8 w-8 rounded-full hover:bg-white/10 transition-all", isActive && "text-primary bg-primary/10")}
+                                    className={cn("h-8 w-8 rounded-full hover:bg-secondary transition-all", isActive && "text-primary bg-primary/10")}
                                     onClick={toggleTimer}
                                 >
                                     {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 ml-0.5" />}
                                 </Button>
 
-                                <div className="w-px h-3 bg-white/10 mx-1" />
+                                <div className="w-px h-3 bg-border mx-1" />
 
                                 {/* Music */}
                                 <Popover modal={false}>
                                     <PopoverTrigger asChild>
-                                        <Button variant="ghost" size="icon" className={cn("h-8 w-8 rounded-full hover:bg-white/10 transition-all", isPlaying && "text-primary bg-primary/10 animate-pulse")}>
+                                        <Button variant="ghost" size="icon" className={cn("h-8 w-8 rounded-full hover:bg-secondary transition-all", isPlaying && "text-primary bg-primary/10 animate-pulse")}>
                                             <Music className="w-3.5 h-3.5" />
                                         </Button>
                                     </PopoverTrigger>
@@ -314,6 +314,6 @@ export function Header() {
                     </div>
                 </div>
             </div>
-        </header>
+        </header >
     );
 }
