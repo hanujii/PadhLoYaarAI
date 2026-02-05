@@ -301,9 +301,6 @@
     animation: scale-in 0.3s ease-out;
   }
 
-  .animate-marquee {
-    animation: marquee 20s linear infinite;
-  }
 }
 
 /* Keyframes */

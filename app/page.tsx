@@ -106,13 +106,7 @@ export default function Home() {
               description="Socratic tutoring that adapts to your pace."
               header={
                 <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 p-5 border border-white/5 flex-col justify-end relative overflow-hidden group/header">
-                  {/* Scrolling Text Marquee */}
-                  <div className="absolute top-4 left-0 w-full overflow-hidden opacity-20 pointer-events-none">
-                    <div className="flex gap-4 animate-marquee whitespace-nowrap text-xs font-bold uppercase tracking-widest text-violet-300">
-                      <span>Math • Physics • Coding • History • Writing • Science • Literature • Python • Calculus • Biology •</span>
-                      <span>Math • Physics • Coding • History • Writing • Science • Literature • Python • Calculus • Biology •</span>
-                    </div>
-                  </div>
+
                   <div className="absolute inset-0 bg-dot-white/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
 
                   {/* Mock Chat UI */}
