@@ -96,13 +96,6 @@ export function CommandCenter({ onChatStart }: { onChatStart: (topic: string) =>
                     selectedTool={selectedTool}
                     onClearTool={() => setSelectedTool(null)}
                 />
-
-                {/* Keyboard Shortcut Indicator */}
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 pointer-events-none text-muted-foreground/50 text-xs font-mono">
-                    <span className="bg-white/10 px-1.5 py-0.5 rounded border border-white/10">Ctrl</span>
-                    <span>+</span>
-                    <span className="bg-white/10 px-1.5 py-0.5 rounded border border-white/10">K</span>
-                </div>
             </div>
 
             <CommandDialog open={isCommandOpen} onOpenChange={setIsCommandOpen}>
