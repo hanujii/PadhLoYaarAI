@@ -69,26 +69,16 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {/* Command Center */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-2xl z-10"
-        >
-          <CommandCenter onChatStart={handleSearch} />
-        </motion.div>
-
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center gap-4 pt-4"
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="flex flex-col sm:flex-row items-center gap-4 pt-2"
         >
-          <Link href="/tools">
-            <Button size="lg" className="h-12 px-8 rounded-full text-base font-semibold shadow-xl shadow-primary/20">
-              Get Started <ArrowRight className="ml-2 w-4 h-4" />
+          <Link href="/login">
+            <Button size="lg" className="h-12 px-8 rounded-full text-base font-semibold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 text-white border-none glow-sm btn-glow">
+              Get Started for Free <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -101,6 +91,16 @@ export default function Home() {
             </div>
             <span>10k+ Students</span>
           </div>
+        </motion.div>
+
+        {/* Command Center */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="w-full max-w-2xl z-10"
+        >
+          <CommandCenter onChatStart={handleSearch} />
         </motion.div>
       </section>
 
