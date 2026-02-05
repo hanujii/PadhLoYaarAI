@@ -19,6 +19,7 @@ import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { FixedThemeToggle } from "@/components/global/FixedThemeToggle";
 import { MusicMiniPlayer } from "@/components/music/MusicMiniPlayer";
+import { GlobalAuthCheck } from "@/components/global/GlobalAuthCheck";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -148,6 +149,7 @@ export default function RootLayout({
               <ServiceWorkerRegister />
               <FixedThemeToggle />
               <MusicMiniPlayer />
+              <GlobalAuthCheck />
 
               {/* Toast Notifications */}
               <Toaster

@@ -38,7 +38,7 @@ export default function LoginPage() {
 
                 if (data.session) {
                     toast.success("Welcome aboard!");
-                    router.push('/');
+                    router.push('/tools');
                     router.refresh();
                 } else {
                     toast.success("Check your email for the confirmation link!");
@@ -50,7 +50,7 @@ export default function LoginPage() {
                 });
                 if (error) throw error;
                 toast.success("Welcome back!");
-                router.push('/');
+                router.push('/tools');
                 router.refresh();
             }
         } catch (error: any) {

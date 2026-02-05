@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
@@ -8,11 +8,34 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Moon, Sun, Volume2, Trash2, Shield, User } from 'lucide-react';
+import { Moon, Sun, Volume2, Trash2, Shield, User, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
     const { setTheme, theme } = useTheme();
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    // Auth check
+    useEffect(() => {
+        const checkAuth = async () => {
+            const supabase = createClient();
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                router.push('/login?redirect=/settings');
+                return;
+            }
+
+            setIsAuthenticated(true);
+            setIsLoading(false);
+        };
+
+        checkAuth();
+    }, [router]);
 
     const handleClearData = () => {
         if (confirm("Are you sure? This will delete your local history and preferences.")) {
@@ -21,6 +44,19 @@ export default function SettingsPage() {
             window.location.reload();
         }
     };
+
+    // Show loading while checking auth
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <div className="max-w-4xl mx-auto space-y-8 pb-20">

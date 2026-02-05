@@ -24,8 +24,13 @@ import { SearchBar } from '@/components/history/SearchBar';
 import { FilterPanel } from '@/components/history/FilterPanel';
 import { ExportDialog } from '@/components/history/ExportDialog';
 import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 
 export default function HistoryPage() {
+    const router = useRouter();
+    const [isAuthChecking, setIsAuthChecking] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
     const {
         history,
         savedItems,
@@ -44,17 +49,26 @@ export default function HistoryPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedTools, setSelectedTools] = useState<Set<string>>(new Set());
 
-    // Load history from Supabase on mount
+    // Auth check and load history
     useEffect(() => {
-        const loadHistory = async () => {
+        const checkAuthAndLoad = async () => {
             const supabase = createClient();
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                await loadFromSupabase(user.id);
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                router.push('/login?redirect=/history');
+                return;
             }
+
+            setIsAuthenticated(true);
+            setIsAuthChecking(false);
+
+            // Load history for authenticated user
+            await loadFromSupabase(session.user.id);
         };
-        loadHistory();
-    }, [loadFromSupabase]);
+
+        checkAuthAndLoad();
+    }, [router, loadFromSupabase]);
 
     const handleCopy = (text: string, id: string) => {
         navigator.clipboard.writeText(text);
@@ -110,6 +124,19 @@ export default function HistoryPage() {
 
         return filtered;
     }, [history, searchQuery, selectedTools]);
+
+    // Show loading while checking auth
+    if (isAuthChecking) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <div className="container mx-auto max-w-6xl py-8 px-4">

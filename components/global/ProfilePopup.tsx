@@ -42,35 +42,67 @@ export function ProfilePopup() {
     const supabase = createClient();
 
     useEffect(() => {
-        async function getUser() {
+        // Initial check
+        const getInitialUser = async () => {
             try {
-                const { data: { user: authUser } } = await supabase.auth.getUser();
+                const { data: { session } } = await supabase.auth.getSession();
 
-                if (authUser) {
+                if (session?.user) {
                     // Fetch profile data
                     const { data: profile } = await supabase
                         .from('profiles')
                         .select('full_name, avatar_url, subscription_tier, role')
-                        .eq('id', authUser.id)
+                        .eq('id', session.user.id)
                         .single();
 
                     setUser({
-                        id: authUser.id,
-                        email: authUser.email || '',
+                        id: session.user.id,
+                        email: session.user.email || '',
                         full_name: profile?.full_name,
                         avatar_url: profile?.avatar_url,
                         subscription_tier: profile?.subscription_tier || 'free',
                         role: profile?.role || 'user',
                     });
+                } else {
+                    setUser(null);
                 }
             } catch (error) {
                 console.error('Error fetching user:', error);
+                setUser(null);
             } finally {
                 setIsLoading(false);
             }
-        }
+        };
 
-        getUser();
+        getInitialUser();
+
+        // Subscribe to auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN' && session?.user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('full_name, avatar_url, subscription_tier, role')
+                    .eq('id', session.user.id)
+                    .single();
+
+                setUser({
+                    id: session.user.id,
+                    email: session.user.email || '',
+                    full_name: profile?.full_name,
+                    avatar_url: profile?.avatar_url,
+                    subscription_tier: profile?.subscription_tier || 'free',
+                    role: profile?.role || 'user',
+                });
+                setIsLoading(false);
+            } else if (event === 'SIGNED_OUT') {
+                setUser(null);
+                setIsLoading(false);
+            }
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
     }, []);
 
     const handleSignOut = async () => {
