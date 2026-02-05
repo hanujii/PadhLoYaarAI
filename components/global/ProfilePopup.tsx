@@ -1,6 +1,4 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -25,6 +23,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useAuth } from '@/components/auth/AuthContext';
 
 interface UserProfile {
     id: string;
@@ -35,10 +34,7 @@ interface UserProfile {
     role?: string;
 }
 
-import { memo } from 'react';
-import { useAuth } from '@/components/auth/AuthContext';
-
-export const ProfilePopup = memo(function ProfilePopup() {
+export const ProfilePopup = memo(function ProfilePopupComponent() {
     const router = useRouter();
     const { user: authUser, loading: authLoading } = useAuth();
     const [profile, setProfile] = useState<UserProfile | null>(null);
