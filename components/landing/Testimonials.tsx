@@ -76,15 +76,8 @@ export function Testimonials() {
             </div>
 
             <div className="relative max-w-[100vw] overflow-hidden">
-                <div className="flex gap-6 animate-marquee w-max hover:[animation-play-state:paused] mb-6">
-                    {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, i) => (
-                        <div key={i} className="w-[350px] md:w-[450px]">
-                            <TestimonialCard testimonial={testimonial} />
-                        </div>
-                    ))}
-                </div>
-                <div className="flex gap-6 animate-marquee-reverse w-max hover:[animation-play-state:paused]">
-                    {[...TESTIMONIALS.reverse(), ...TESTIMONIALS].map((testimonial, i) => (
+                <div className="flex gap-6 animate-marquee w-max hover:[animation-play-state:paused]">
+                    {[...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, i) => (
                         <div key={i} className="w-[350px] md:w-[450px]">
                             <TestimonialCard testimonial={testimonial} />
                         </div>
