@@ -130,8 +130,8 @@ export function Header() {
                                     <SheetContent side="left" className="w-[300px] border-r border-white/10 bg-black/90 backdrop-blur-3xl">
                                         <SheetHeader className="text-left mb-6">
                                             <SheetTitle className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary via-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
-                                                    P
+                                                <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 overflow-hidden">
+                                                    <Logo className="w-5 h-5 text-white" />
                                                 </div>
                                                 <span className="font-bold text-xl">ply<span className="text-primary">AI</span></span>
                                             </SheetTitle>
@@ -285,7 +285,8 @@ export function Header() {
                                 </Popover>
                             </div>
 
-                            <ThemeCustomizer />
+                            {/* Removed ThemeCustomizer as per user request */}
+
                             {/* User Menu */}
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>

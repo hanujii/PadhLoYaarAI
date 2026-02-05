@@ -17,6 +17,7 @@ import { PostHogPageView } from "@/components/analytics/PostHogPageView";
 import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { FixedThemeToggle } from "@/components/global/FixedThemeToggle";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -145,6 +146,7 @@ export default function RootLayout({
               <WelcomeModal />
               <ServiceWorkerRegister />
               <InstallPrompt />
+              <FixedThemeToggle />
 
               {/* Toast Notifications */}
               <Toaster
