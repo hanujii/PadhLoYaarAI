@@ -53,15 +53,11 @@ export default function HistoryPage() {
     useEffect(() => {
         if (authLoading) return;
 
-        if (!user) {
-            router.push('/login?redirect=/history');
-            return;
+        if (user) {
+            // Load history for authenticated user
+            loadFromSupabase(user.id);
         }
-
-        // Load history for authenticated user
-        loadFromSupabase(user.id);
-
-    }, [user, authLoading, router, loadFromSupabase]);
+    }, [user, authLoading, loadFromSupabase]);
 
     const handleCopy = (text: string, id: string) => {
         navigator.clipboard.writeText(text);
@@ -128,7 +124,20 @@ export default function HistoryPage() {
     }
 
     if (!user) {
-        return null;
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
+                    <Bookmark className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h2 className="text-2xl font-bold">Library Access Restricted</h2>
+                <p className="text-muted-foreground max-w-md">
+                    Your history and saved items are stored securely. Please log in to view them.
+                </p>
+                <Button onClick={() => router.push('/login?redirect=/history')}>
+                    Sign In to Access Library
+                </Button>
+            </div>
+        );
     }
 
     return (

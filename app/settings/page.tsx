@@ -18,12 +18,8 @@ export default function SettingsPage() {
     const router = useRouter();
     const { user, loading } = useAuth();
 
-    // Redirect if not authenticated
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login?redirect=/settings');
-        }
-    }, [user, loading, router]);
+    // Redirect logic removed to prevent loops.
+    // Instead we render a specific unauthorized state below if not logged in.
 
     // Show loading while checking auth
     if (loading) {
@@ -35,7 +31,18 @@ export default function SettingsPage() {
     }
 
     if (!user) {
-        return null; // Will redirect via useEffect
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
+                <Shield className="w-16 h-16 text-muted-foreground opacity-50" />
+                <h2 className="text-2xl font-bold">Authentication Required</h2>
+                <p className="text-muted-foreground max-w-md">
+                    Please sign in to access your settings and preferences.
+                </p>
+                <Button onClick={() => router.push('/login?redirect=/settings')}>
+                    Sign In
+                </Button>
+            </div>
+        );
     }
 
     const handleClearData = () => {
