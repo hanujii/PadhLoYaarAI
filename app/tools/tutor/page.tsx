@@ -50,8 +50,17 @@ function TutorContent() {
     // Load URL Params
     useEffect(() => {
         const topicParam = searchParams.get('topic');
-        if (topicParam) setTopicInput(topicParam);
+        if (topicParam) {
+            setTopicInput(decodeURIComponent(topicParam));
+        }
     }, [searchParams]);
+
+    // Auto-scroll to output when response updates
+    useEffect(() => {
+        if (response && outputRef.current) {
+            outputRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, [response]);
 
     // Handle Generation
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -85,16 +94,25 @@ function TutorContent() {
 
         try {
             // Collapse config on mobile/desktop to focus on content
-            if (window.innerWidth < 768) setShowConfig(false);
+            if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                setShowConfig(false);
+            }
+
+            // Validate input before sending
+            if (!topicInput.trim() && !imageBase64) {
+                toast.error('Please enter a topic or upload an image');
+                setLoading(false);
+                return;
+            }
 
             const res = await fetch('/api/tutor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    prompt: topicInput,
-                    topic: topicInput,
+                    prompt: topicInput.trim(),
+                    topic: topicInput.trim(),
                     mode,
-                    instructions,
+                    instructions: instructions?.trim(),
                     image: imageBase64,
                     model: selectedModel
                 })

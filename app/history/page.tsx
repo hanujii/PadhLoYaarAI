@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useHistoryStore } from '@/lib/history-store';
+import { useHistoryStore, type HistoryItem } from '@/lib/history-store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,7 +42,7 @@ export default function HistoryPage() {
     } = useHistoryStore();
 
     const [copiedId, setCopiedId] = React.useState<string | null>(null);
-    const [selectedItem, setSelectedItem] = React.useState<any>(null);
+    const [selectedItem, setSelectedItem] = React.useState<HistoryItem | null>(null);
     const contentRef = React.useRef<HTMLDivElement>(null);
 
     // Search and filter state
@@ -65,7 +65,7 @@ export default function HistoryPage() {
         setTimeout(() => setCopiedId(null), 2000);
     };
 
-    const handleSaveFromHistory = (item: any) => {
+    const handleSaveFromHistory = (item: HistoryItem) => {
         const content = item.tool === 'code-transformer' || item.tool === 'cheat-sheet' || item.tool === 'exam-generator'
             ? item.result
             : `Query: ${item.query}\n\nResult:\n${item.result}`;

@@ -18,7 +18,14 @@ import { ToolBackButton } from '@/components/global/ToolBackButton';
 
 export default function YouTubeNotesPage() {
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<{ summary: string; quiz: any[] } | null>(null);
+    interface QuizQuestion {
+        question: string;
+        options: string[];
+        answer: string;
+        clarification: string;
+    }
+
+    const [result, setResult] = useState<{ summary: string; quiz: QuizQuestion[] } | null>(null);
     const { addToHistory } = useHistoryStore();
     const [url, setUrl] = useState('');
     const outputRef = useRef<HTMLDivElement>(null);

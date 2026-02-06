@@ -16,7 +16,7 @@ export const JarvisInterface = () => {
     const [transcript, setTranscript] = useState('');
     const [response, setResponse] = useState('');
 
-    const recognition = useRef<any>(null);
+    const recognition = useRef<SpeechRecognition | null>(null);
     const synth = useRef<SpeechSynthesis | null>(null);
     const jarvisVoice = useRef<SpeechSynthesisVoice | null>(null);
 
@@ -33,15 +33,18 @@ export const JarvisInterface = () => {
 
                 recognition.current.onstart = () => setIsListening(true);
                 recognition.current.onend = () => setIsListening(false);
-                recognition.current.onresult = (event: any) => {
+                recognition.current.onresult = (event: SpeechRecognitionEvent) => {
                     const text = event.results[0][0].transcript;
                     setTranscript(text);
                     handleQuery(text);
                 };
-                recognition.current.onerror = (event: any) => {
-                    console.error("Speech Error:", event.error);
+                recognition.current.onerror = (event: SpeechRecognitionErrorEvent) => {
+                    const errorMessage = event.error || 'Unknown error';
+                    if (process.env.NODE_ENV === 'development') {
+                        console.error("Speech Error:", errorMessage);
+                    }
                     setIsListening(false);
-                    toast.error("Microphone error. Please try again.");
+                    toast.error(`Microphone error: ${errorMessage}. Please try again.`);
                 };
             } else {
                 toast.error("Voice recognition not supported in this browser.");

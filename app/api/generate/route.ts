@@ -1,7 +1,30 @@
 import { streamText } from 'ai';
 import { aiEngine } from '@/lib/ai/engine';
+import { generateRequestSchema, type ContentPart } from '@/lib/validations/api-schemas';
+import { validatePrompt, validateImageDataUrl } from '@/lib/security/sanitize';
+import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from '@/lib/security/rate-limit';
+import { z } from 'zod';
+import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from '@/lib/security/rate-limit';
+import { validatePrompt, validateImageDataUrl } from '@/lib/security/sanitize';
 
 export const maxDuration = 60;
+export const maxBodySize = 10 * 1024 * 1024; // 10MB
+
+// Standardized error response
+interface ErrorResponse {
+    error: string;
+    code?: string;
+}
+
+function createErrorResponse(message: string, status: number, code?: string): Response {
+    const response: ErrorResponse = { error: message };
+    if (code) response.code = code;
+    
+    return new Response(JSON.stringify(response), {
+        status,
+        headers: { 'Content-Type': 'application/json' }
+    });
+}
 
 // System prompts for different tools
 const TOOL_PROMPTS: Record<string, string> = {
@@ -41,22 +64,62 @@ const MODE_MODIFIERS: Record<string, string> = {
 
 export async function POST(req: Request) {
     try {
+        // Rate limiting
+        const clientId = getClientIdentifier(req);
+        const rateLimitResult = checkRateLimit(clientId, RATE_LIMITS.aiGeneration);
+        
+        if (!rateLimitResult.allowed) {
+            return createErrorResponse(
+                'Rate limit exceeded. Please try again later.',
+                429,
+                'RATE_LIMIT_EXCEEDED'
+            );
+        }
+
+        // Check request size
+        const contentLength = req.headers.get('content-length');
+        if (contentLength && parseInt(contentLength) > maxBodySize) {
+            return createErrorResponse(
+                'Request body too large. Maximum size is 10MB.',
+                413,
+                'PAYLOAD_TOO_LARGE'
+            );
+        }
+
+        // Parse and validate request body
         const body = await req.json();
+        const validationResult = generateRequestSchema.safeParse(body);
+
+        if (!validationResult.success) {
+            return createErrorResponse(
+                `Invalid request: ${validationResult.error.errors.map(e => e.message).join(', ')}`,
+                400,
+                'VALIDATION_ERROR'
+            );
+        }
+
         const { 
-            tool = 'default',
+            tool,
             prompt,
-            mode = 'concise',
+            mode,
             instructions,
             image,
             model,
             context
-        } = body;
+        } = validationResult.data;
 
-        if (!prompt) {
-            return new Response(JSON.stringify({ error: 'Prompt is required' }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
+        // Validate and sanitize user inputs
+        const sanitizedPrompt = validatePrompt(prompt);
+        const sanitizedInstructions = instructions ? validatePrompt(instructions, 2000) : undefined;
+        const sanitizedContext = context ? validatePrompt(context, 5000) : undefined;
+
+        // Validate image if provided
+        if (image && !validateImageDataUrl(image)) {
+            return createErrorResponse(
+                'Invalid image format. Please provide a valid base64-encoded image (JPEG, PNG, GIF, or WebP).',
+                400,
+                'INVALID_IMAGE'
+            );
         }
 
         // Build system prompt
@@ -66,16 +129,18 @@ export async function POST(req: Request) {
             systemPrompt += `\n\n${MODE_MODIFIERS[mode]}`;
         }
 
-        if (instructions) {
-            systemPrompt += `\n\nAdditional instructions: ${instructions}`;
+        if (sanitizedInstructions) {
+            systemPrompt += `\n\nAdditional instructions: ${sanitizedInstructions}`;
         }
 
-        // Build user content
-        const userContent: any[] = [{ type: 'text', text: prompt }];
+        // Build user content with proper typing and sanitized inputs
+        const userContent: ContentPart[] = [];
 
-        if (context) {
-            userContent.unshift({ type: 'text', text: `Context:\n${context}\n\n---\n\n` });
+        if (sanitizedContext) {
+            userContent.push({ type: 'text', text: `Context:\n${sanitizedContext}\n\n---\n\n` });
         }
+
+        userContent.push({ type: 'text', text: sanitizedPrompt });
 
         if (image) {
             userContent.push({ type: 'image', image: image });
@@ -88,7 +153,9 @@ export async function POST(req: Request) {
             effectiveModel = aiEngine.getSmartDefaultModel();
         }
 
-        console.log(`[GenerateAPI] Tool: ${tool}, Model: ${effectiveModel}`);
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`[GenerateAPI] Tool: ${tool}, Model: ${effectiveModel}`);
+        }
 
         const aiModel = aiEngine.getModelInstance(effectiveModel);
 
@@ -96,34 +163,52 @@ export async function POST(req: Request) {
             model: aiModel,
             messages: [
                 { role: 'system', content: systemPrompt },
-                { role: 'user', content: userContent as any }
+                { role: 'user', content: userContent }
             ],
             onError: (err) => {
-                console.error("[GenerateAPI] Stream Error:", err);
+                if (process.env.NODE_ENV === 'development') {
+                    console.error("[GenerateAPI] Stream Error:", err);
+                }
             }
         });
 
         return result.toTextStreamResponse();
 
-    } catch (error: any) {
-        console.error("[GenerateAPI] Error:", error);
+    } catch (error) {
+        // Handle validation errors
+        if (error instanceof z.ZodError) {
+            return createErrorResponse(
+                `Invalid request: ${error.errors.map(e => e.message).join(', ')}`,
+                400,
+                'VALIDATION_ERROR'
+            );
+        }
 
+        // Handle other errors
+        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
         let status = 500;
-        let message = error.message || "Internal Server Error";
+        let code = 'INTERNAL_ERROR';
 
-        if (error.message?.includes("quota") || error.message?.includes("429")) {
+        if (errorMessage.includes('quota') || errorMessage.includes('429')) {
             status = 429;
-            message = "AI quota exceeded. Please try a different model or wait a moment.";
-        }
-
-        if (error.message?.includes("No AI configured") || error.message?.includes("not configured")) {
+            code = 'QUOTA_EXCEEDED';
+        } else if (errorMessage.includes('No AI configured') || errorMessage.includes('not configured')) {
             status = 503;
-            message = "No AI provider configured. Please add an API key to your .env.local file.";
+            code = 'SERVICE_UNAVAILABLE';
         }
 
-        return new Response(JSON.stringify({ error: message }), {
+        if (process.env.NODE_ENV === 'development') {
+            console.error("[GenerateAPI] Error:", error);
+        }
+
+        return createErrorResponse(
+            status === 429 
+                ? "AI quota exceeded. Please try a different model or wait a moment."
+                : status === 503
+                ? "No AI provider configured. Please add an API key to your .env.local file."
+                : "An error occurred while processing your request. Please try again.",
             status,
-            headers: { 'Content-Type': 'application/json' }
-        });
+            code
+        );
     }
 }

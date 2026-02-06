@@ -36,12 +36,20 @@ export async function getYouTubeNotes(formData: FormData) {
     }
 
     try {
-        console.log("Fetching transcript for:", url);
+        if (process.env.NODE_ENV === 'development') {
+            console.log("Fetching transcript for:", url);
+        }
 
-        // Extract Video ID for validation
+        // Validate and sanitize URL
         let videoId = '';
         try {
             const urlObj = new URL(url);
+            
+            // Only allow YouTube domains
+            if (!urlObj.hostname.includes('youtube.com') && !urlObj.hostname.includes('youtu.be')) {
+                return { success: false, error: 'Invalid URL. Please provide a valid YouTube URL.' };
+            }
+
             if (urlObj.hostname.includes('youtube.com')) {
                 videoId = urlObj.searchParams.get('v') || '';
             } else if (urlObj.hostname.includes('youtu.be')) {
@@ -54,14 +62,21 @@ export async function getYouTubeNotes(formData: FormData) {
         if (!videoId) return { success: false, error: 'Could not extract Video ID' };
 
         // Fetch Transcript
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const transcriptItems = await YoutubeTranscript.fetchTranscript(videoId).catch((err: any) => {
-            console.error("Transcript fetch failed:", err);
-            throw new Error("Could not fetch subtitles. Video might not have captions enabled.");
-        });
+        interface TranscriptItem {
+            text: string;
+            offset?: number;
+            duration?: number;
+        }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const fullTranscript = transcriptItems.map((item: any) => item.text).join(' ');
+        const transcriptItems = await YoutubeTranscript.fetchTranscript(videoId).catch((err: unknown) => {
+            const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+            if (process.env.NODE_ENV === 'development') {
+                console.error("Transcript fetch failed:", err);
+            }
+            throw new Error("Could not fetch subtitles. Video might not have captions enabled.");
+        }) as TranscriptItem[];
+
+        const fullTranscript = transcriptItems.map((item: TranscriptItem) => item.text).join(' ');
 
         // Truncate if too long (100k chars is plenty for a summary)
         const truncatedText = fullTranscript.slice(0, 100000);
@@ -86,7 +101,10 @@ export async function getYouTubeNotes(formData: FormData) {
         return { success: true, data: object };
 
     } catch (error) {
-        console.error('YouTube Notes error:', error);
-        return { success: false, error: error instanceof Error ? error.message : 'Failed to generate notes.' };
+        const errorMessage = error instanceof Error ? error.message : 'Failed to generate notes.';
+        if (process.env.NODE_ENV === 'development') {
+            console.error('YouTube Notes error:', error);
+        }
+        return { success: false, error: errorMessage };
     }
 }

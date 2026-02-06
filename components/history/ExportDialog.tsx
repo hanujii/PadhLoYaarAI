@@ -19,10 +19,10 @@ import {
 } from '@/components/ui/select';
 import { Download, FileJson, FileText } from 'lucide-react';
 import { useState } from 'react';
-import { HistoryItem } from '@/lib/history-store';
+import { HistoryItem, SavedItem } from '@/lib/history-store';
 
 interface ExportDialogProps {
-    items: HistoryItem[];
+    items: HistoryItem[] | SavedItem[];
     type: 'history' | 'saved';
 }
 
@@ -45,7 +45,13 @@ export function ExportDialog({ items, type }: ExportDialogProps) {
             // Markdown format
             content = items.map((item, index) => {
                 const date = new Date(item.timestamp).toLocaleString();
-                return `# ${index + 1}. ${item.tool}\n\n**Query:** ${item.query}\n\n**Result:**\n${item.result}\n\n**Date:** ${date}\n\n---\n\n`;
+                if (type === 'history') {
+                    const historyItem = item as HistoryItem;
+                    return `# ${index + 1}. ${historyItem.tool}\n\n**Query:** ${historyItem.query}\n\n**Result:**\n${historyItem.result}\n\n**Date:** ${date}\n\n---\n\n`;
+                } else {
+                    const savedItem = item as SavedItem;
+                    return `# ${index + 1}. ${savedItem.title}\n\n**Type:** ${savedItem.type}\n\n**Content:**\n${savedItem.content}\n\n**Date:** ${date}\n\n---\n\n`;
+                }
             }).join('\n');
             filename = `padhloyaar-${type}-${Date.now()}.md`;
             mimeType = 'text/markdown';
@@ -57,10 +63,15 @@ export function ExportDialog({ items, type }: ExportDialogProps) {
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        
+        // Cleanup after a short delay to ensure download starts
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
 
         setIsOpen(false);
     };

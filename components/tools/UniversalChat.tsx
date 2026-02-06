@@ -7,12 +7,13 @@ import { Loader2, Send, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import type { LucideIcon } from 'lucide-react';
 
 interface UniversalChatProps {
     tool: {
         title: string;
         description: string;
-        icon: any;
+        icon: LucideIcon;
         color: string;
     }
 }
@@ -70,8 +71,11 @@ export function UniversalChat({ tool }: UniversalChatProps) {
 
             setMessages(prev => [...prev, assistantMessage]);
         } catch (error) {
-            console.error(error);
-            toast.error("Failed to send message");
+            const errorMessage = error instanceof Error ? error.message : 'Failed to send message';
+            if (process.env.NODE_ENV === 'development') {
+                console.error('UniversalChat error:', error);
+            }
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false);
         }

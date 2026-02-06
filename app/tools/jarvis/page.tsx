@@ -1,5 +1,22 @@
-import { JarvisInterface } from '@/components/jarvis/JarvisInterface';
+import dynamic from 'next/dynamic';
 import { ToolBackButton } from '@/components/global/ToolBackButton';
+import { Loader2 } from 'lucide-react';
+
+// Code split voice interface component
+const JarvisInterface = dynamic(
+    () => import('@/components/jarvis/JarvisInterface').then(mod => ({ default: mod.JarvisInterface })),
+    {
+        ssr: false,
+        loading: () => (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <div className="text-center space-y-4">
+                    <Loader2 className="w-12 h-12 animate-spin mx-auto text-primary" />
+                    <p className="text-muted-foreground">Initializing Jarvis...</p>
+                </div>
+            </div>
+        ),
+    }
+);
 
 export default function JarvisPage() {
     return (

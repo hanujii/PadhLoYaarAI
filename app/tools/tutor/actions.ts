@@ -39,7 +39,8 @@ export async function getTutorResponse(formData: FormData) {
     else if (mode === 'eli5') systemPrompt += ` Explain like I'm 5.`;
     else systemPrompt += ` Provide clear, concise explanations.`;
 
-    let userContent: any[] = [{ type: 'text', text: `Topic/Question: "${topic}"` }];
+    type ContentPart = { type: 'text'; text: string } | { type: 'image'; image: string };
+    const userContent: ContentPart[] = [{ type: 'text', text: `Topic/Question: "${topic}"` }];
 
     if (instructions) {
         userContent.push({ type: 'text', text: `\nInstructions: ${instructions}` });
@@ -49,12 +50,11 @@ export async function getTutorResponse(formData: FormData) {
     if (imageFile && imageFile.size > 0) {
         const arrayBuffer = await imageFile.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        // Optimize: Convert to base64 data URI for standard AI SDK usage if needed, 
-        // OR pass buffer if provider supports it. Google provider supports 'image' part with buffer/base64.
+        // Convert to base64 data URI for standard AI SDK usage
         const base64 = buffer.toString('base64');
         userContent.push({
             type: 'image',
-            image: base64, // Vercel AI SDK expects base64 or buffer usually
+            image: base64,
         });
         systemPrompt += `\n\nAnalyze the attached image and answer the user's question about it.`;
     }
@@ -85,12 +85,17 @@ export async function getTutorResponse(formData: FormData) {
             temperature: 0.7
         });
 
-        console.log(`[Tutor] Generated using: ${providerUsed}`);
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`[Tutor] Generated using: ${providerUsed}`);
+        }
         return { success: true, data: text };
 
-    } catch (error: any) {
-        console.error("Tutor Error:", error);
-        return { success: false, error: error.message || 'Failed to generate response.' };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to generate response.';
+        if (process.env.NODE_ENV === 'development') {
+            console.error("Tutor Error:", error);
+        }
+        return { success: false, error: errorMessage };
     }
 }
 
@@ -127,9 +132,12 @@ export async function getChatResponse(messages: ChatMessage[]) {
 
         return { success: true, data: object };
 
-    } catch (error: any) {
-        console.error("Chat Error:", error);
-        return { success: false, error: error.message || 'Failed to get chat response.' };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to get chat response.';
+        if (process.env.NODE_ENV === 'development') {
+            console.error("Chat Error:", error);
+        }
+        return { success: false, error: errorMessage };
     }
 }
 
@@ -155,10 +163,14 @@ export async function checkUnderstanding(originalTopic: string, userExplanation:
             maxTokens: 1024,
         });
 
-        console.log(`[CheckUnderstanding] Used provider: ${providerUsed}`);
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`[CheckUnderstanding] Used provider: ${providerUsed}`);
+        }
         return object;
     } catch (error) {
-        console.error("Check Understanding Error:", error);
+        if (process.env.NODE_ENV === 'development') {
+            console.error("Check Understanding Error:", error);
+        }
         return { isCorrect: false, feedback: "Sorry, I couldn't assess your answer right now." };
     }
 }

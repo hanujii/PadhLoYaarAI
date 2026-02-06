@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { AIProvider, GenerationOptions, ModelDTO, ProviderId } from '../types';
+import { AIProvider, GenerationOptions, ModelDTO, ProviderId, GoogleContentPart } from '../types';
 import { generateObject } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
@@ -41,7 +41,7 @@ export class GoogleProvider implements AIProvider {
                 : prompt;
 
             // Build content parts - supports multimodal with images
-            const contentParts: any[] = [{ text: finalPrompt }];
+            const contentParts: GoogleContentPart[] = [{ text: finalPrompt }];
 
             if (options?.images && options.images.length > 0) {
                 for (const img of options.images) {
@@ -54,13 +54,19 @@ export class GoogleProvider implements AIProvider {
                 }
             }
 
-            console.log(`[GoogleProvider] Generating with ${modelName}...`);
+            if (process.env.NODE_ENV === 'development') {
+                console.log(`[GoogleProvider] Generating with ${modelName}...`);
+            }
+            
             const result = await model.generateContent(contentParts);
             const text = result.response.text();
             return text;
-        } catch (error: any) {
-            console.error('[GoogleProvider] Generation Failed:', error);
-            throw new Error(`Google AI Error: ${error.message || error}`);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            if (process.env.NODE_ENV === 'development') {
+                console.error('[GoogleProvider] Generation Failed:', error);
+            }
+            throw new Error(`Google AI Error: ${errorMessage}`);
         }
     }
 
@@ -89,7 +95,7 @@ export class GoogleProvider implements AIProvider {
         ];
     }
 
-    getModelInstance(modelId: string): any {
+    getModelInstance(modelId: string) {
         if (!this.sdkGoogle) throw new Error('Google Provider not configured');
         return this.sdkGoogle(modelId);
     }

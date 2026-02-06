@@ -32,18 +32,20 @@ class AIEngine {
         providers.forEach(p => {
             if (p.isConfigured()) {
                 this.providers.set(p.id, p);
-                console.log(`[AIEngine] Provider registered: ${p.name}`);
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`[AIEngine] Provider registered: ${p.name}`);
+                }
             }
         });
     }
-
-    // ... (reloadProviders, getProvider, getAllModels remain same) ...
 
     /**
      * Force reload of providers (useful if env vars change)
      */
     public reloadProviders() {
-        console.log('[AIEngine] Reloading providers...');
+        if (process.env.NODE_ENV === 'development') {
+            console.log('[AIEngine] Reloading providers...');
+        }
         this.initializeProviders();
     }
 
@@ -93,7 +95,9 @@ class AIEngine {
     async generateText(prompt: string, options?: GenerationOptions & { preferredProvider?: ProviderId, forceModel?: string }): Promise<{ text: string, providerUsed: string, modelUsed: string }> {
         // Ensure providers are loaded
         if (this.providers.size === 0) {
-            console.log('[AIEngine] No providers found, attempting initialization...');
+            if (process.env.NODE_ENV === 'development') {
+                console.log('[AIEngine] No providers found, attempting initialization...');
+            }
             this.initializeProviders();
         }
 
@@ -115,13 +119,18 @@ class AIEngine {
 
                 if (!model) continue;
 
-                console.log(`[AIEngine] Attempting generation with ${provider.name} (${model})...`);
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`[AIEngine] Attempting generation with ${provider.name} (${model})...`);
+                }
                 const text = await provider.generateText(model, prompt, options);
                 return { text, providerUsed: provider.name, modelUsed: model };
 
-            } catch (err: any) {
-                console.warn(`[AIEngine] ${provider.name} failed:`, err.message);
-                errors.push(`${provider.name}: ${err.message}`);
+            } catch (err) {
+                const errorMessage = err instanceof Error ? err.message : String(err);
+                if (process.env.NODE_ENV === 'development') {
+                    console.warn(`[AIEngine] ${provider.name} failed:`, errorMessage);
+                }
+                errors.push(`${provider.name}: ${errorMessage}`);
                 // Continue to next provider
             }
         }
@@ -142,13 +151,18 @@ class AIEngine {
                 const model = options?.forceModel || this.getDefaultModelForProvider(provider, isPro);
                 if (!model) continue;
 
-                console.log(`[AIEngine] Attempting structured generation with ${provider.name} (${model})...`);
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(`[AIEngine] Attempting structured generation with ${provider.name} (${model})...`);
+                }
                 const object = await provider.generateObject(model, prompt, schema, options);
                 return { object, providerUsed: provider.name };
 
-            } catch (err: any) {
-                console.warn(`[AIEngine] ${provider.name} strucutred generation failed:`, err.message);
-                errors.push(`${provider.name}: ${err.message}`);
+            } catch (err) {
+                const errorMessage = err instanceof Error ? err.message : String(err);
+                if (process.env.NODE_ENV === 'development') {
+                    console.warn(`[AIEngine] ${provider.name} structured generation failed:`, errorMessage);
+                }
+                errors.push(`${provider.name}: ${errorMessage}`);
             }
         }
 
@@ -159,7 +173,7 @@ class AIEngine {
      * Gets the Vercel AI SDK Model instance for a specific model ID.
      * Searches all providers to find who owns this model.
      */
-    getModelInstance(modelId: string): any {
+    getModelInstance(modelId: string) {
         // Ensure providers are loaded
         if (this.providers.size === 0) {
             this.initializeProviders();

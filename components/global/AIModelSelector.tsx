@@ -28,10 +28,32 @@ export function AIModelSelector({ value = 'auto', onValueChange, className }: AI
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let isCancelled = false;
+        
         getAvailableModels()
-            .then(setModels)
-            .catch(console.error)
-            .finally(() => setLoading(false));
+            .then((models) => {
+                if (!isCancelled) {
+                    setModels(models);
+                }
+            })
+            .catch((error) => {
+                if (!isCancelled) {
+                    if (process.env.NODE_ENV === 'development') {
+                        console.error('Failed to load AI models:', error);
+                    }
+                    // Set empty array on error to show "Auto" option only
+                    setModels([]);
+                }
+            })
+            .finally(() => {
+                if (!isCancelled) {
+                    setLoading(false);
+                }
+            });
+        
+        return () => {
+            isCancelled = true;
+        };
     }, []);
 
     // Group models by provider

@@ -10,6 +10,7 @@ import { Loader2, Upload, FileText, Send } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { ToolBackButton } from '@/components/global/ToolBackButton';
+import { toast } from 'sonner';
 
 // Use CDN for worker to avoid build hassles
 // pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -37,69 +38,109 @@ export default function PDFExplainerPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        // Validate file type
+        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+            toast.error('Please upload a PDF file.');
+            return;
+        }
+
+        // Validate file size (50MB limit)
+        if (file.size > 50 * 1024 * 1024) {
+            toast.error('PDF file size exceeds 50MB limit. Please choose a smaller file.');
+            return;
+        }
+
         setLoading(true);
         setFileName(file.name);
         setMessages([]);
         setSummary(null);
 
         try {
-            console.log("Loading PDF.js...");
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Loading PDF.js...");
+            }
             const pdfjsLib = await import('pdfjs-dist');
             // Force HTTPS and ensure version match
             pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
-            console.log("Reading file buffer...");
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Reading file buffer...");
+            }
             const arrayBuffer = await file.arrayBuffer();
 
-            console.log("Parsing PDF document...");
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Parsing PDF document...");
+            }
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             let fullText = '';
 
-            console.log(`PDF loaded. Pages: ${pdf.numPages}`);
+            if (process.env.NODE_ENV === 'development') {
+                console.log(`PDF loaded. Pages: ${pdf.numPages}`);
+            }
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const textContent = await page.getTextContent();
-                const pageText = textContent.items.map((item: any) => item.str).join(' ');
+                const pageText = textContent.items.map((item: { str?: string }) => item.str || '').join(' ');
                 fullText += pageText + '\n\n';
             }
 
-            console.log("Text extraction complete. Length:", fullText.length);
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Text extraction complete. Length:", fullText.length);
+            }
             setPdfText(fullText);
 
             // Generate initial summary
-            console.log("Generating summary...");
+            if (process.env.NODE_ENV === 'development') {
+                console.log("Generating summary...");
+            }
             const summaryResult = await summarizePDF(fullText);
             if (summaryResult.success && summaryResult.data) {
                 setSummary(summaryResult.data);
                 setMessages([{ role: 'assistant', content: "I've analyzed your PDF. Here is a summary. Ask me anything about it!" }]);
             } else {
-                console.error("Summary failed:", summaryResult.error);
+                if (process.env.NODE_ENV === 'development') {
+                    console.error("Summary failed:", summaryResult.error);
+                }
+                toast.error(summaryResult.error || 'Failed to generate summary');
             }
 
         } catch (error) {
-            console.error("PDF Parse/Process Error", error);
-            alert(`Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            if (process.env.NODE_ENV === 'development') {
+                console.error("PDF Parse/Process Error", error);
+            }
+            toast.error(`Failed to parse PDF: ${errorMessage}`);
         } finally {
             setLoading(false);
         }
     };
 
     const handleSend = async () => {
-        if (!input.trim() || !pdfText) return;
+        if (!input.trim() || !pdfText || loading) return;
 
-        const userMsg: Message = { role: 'user', content: input };
+        const userMsg: Message = { role: 'user', content: input.trim() };
         setMessages(prev => [...prev, userMsg]);
+        const currentInput = input.trim();
         setInput('');
         setLoading(true);
 
-        const result = await chatWithPDF(input, pdfText, messages);
+        try {
+            const result = await chatWithPDF(currentInput, pdfText, messages);
 
-        if (result.success && result.data) {
-            setMessages(prev => [...prev, { role: 'assistant', content: result.data }]);
-        } else {
-            setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I encountered an error." }]);
+            if (result.success && result.data) {
+                setMessages(prev => [...prev, { role: 'assistant', content: result.data }]);
+            } else {
+                const errorMessage = result.error || 'Sorry, I encountered an error.';
+                setMessages(prev => [...prev, { role: 'assistant', content: `**Error:** ${errorMessage}` }]);
+                toast.error(errorMessage);
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+            setMessages(prev => [...prev, { role: 'assistant', content: `**Error:** ${errorMessage}` }]);
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

@@ -9,7 +9,7 @@ export interface HistoryItem {
     query: string;
     result: string;
     timestamp: number;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 export interface SavedItem {
@@ -63,27 +63,49 @@ export const useHistoryStore = create<HistoryState>()(
                     history: [newItem, ...state.history].slice(0, 50)
                 }));
 
-                // Async save to Supabase (fire and forget)
+                // Async save to Supabase with proper error handling
                 const saveToSupabase = async () => {
                     try {
                         const supabase = createClient();
-                        const { data: { user } } = await supabase.auth.getUser();
+                        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+                        if (authError) {
+                            if (process.env.NODE_ENV === 'development') {
+                                console.error('Auth error in history sync:', authError);
+                            }
+                            return; // Silently fail if not authenticated
+                        }
 
                         if (user) {
-                            await supabase.from('user_history').insert({
+                            const { error: insertError } = await supabase.from('user_history').insert({
                                 user_id: user.id,
                                 tool: item.tool,
                                 query: item.query,
                                 result: { content: item.result }, // Store as JSONB
                                 metadata: item.metadata || {},
                             });
+
+                            if (insertError) {
+                                // Only log in development, don't spam production logs
+                                if (process.env.NODE_ENV === 'development') {
+                                    console.error('Failed to sync history to Supabase:', insertError);
+                                }
+                                // Could optionally show a toast here, but might be too noisy
+                            }
                         }
                     } catch (error) {
-                        console.error('Failed to sync history to Supabase:', error);
+                        // Unexpected errors - log in development only
+                        if (process.env.NODE_ENV === 'development') {
+                            console.error('Unexpected error syncing history:', error);
+                        }
                     }
                 };
 
-                saveToSupabase();
+                // Debounce: Only save if not already syncing
+                const state = get();
+                if (!state.isSyncing) {
+                    saveToSupabase();
+                }
             },
 
             removeFromHistory: async (id) => {

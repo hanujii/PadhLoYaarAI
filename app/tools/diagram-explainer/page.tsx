@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +10,7 @@ import { Loader2, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DownloadPDFButton } from '@/components/global/DownloadPDFButton';
 import { ToolBackButton } from '@/components/global/ToolBackButton';
+import { toast } from 'sonner';
 
 export default function DiagramExplainerPage() {
     const [loading, setLoading] = useState(false);
@@ -19,9 +20,39 @@ export default function DiagramExplainerPage() {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setPreviewUrl(URL.createObjectURL(e.target.files[0]));
+            const file = e.target.files[0];
+            
+            // Validate file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error('Image size exceeds 10MB limit. Please choose a smaller image.');
+                return;
+            }
+
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                toast.error('Invalid image format. Please use JPEG, PNG, GIF, or WebP.');
+                return;
+            }
+
+            // Cleanup previous URL
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
         }
     };
+
+    // Cleanup object URL on unmount
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -31,8 +62,12 @@ export default function DiagramExplainerPage() {
         if (result.success && result.data) {
             setResponse(result.data);
         } else {
-            console.error("Diagram Analysis Failed:", result.error);
-            setResponse(`**Error Analysis Failed**: ${result.error}. \n\nPlease try again or check if the API key supports the model.`);
+            const errorMessage = result.error || 'Something went wrong';
+            if (process.env.NODE_ENV === 'development') {
+                console.error("Diagram Analysis Failed:", result.error);
+            }
+            setResponse(`**Error:** ${errorMessage}`);
+            toast.error(errorMessage);
         }
         setLoading(false);
     }
@@ -41,7 +76,7 @@ export default function DiagramExplainerPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
             <ToolBackButton />
             <div className="space-y-2">
-                <h1 className="text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-bold">Diagram Explainer</h1>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Diagram Explainer</h1>
                 <p className="text-muted-foreground">Upload flowcharts, biology diagrams, or graphs.</p>
             </div>
 
@@ -53,7 +88,12 @@ export default function DiagramExplainerPage() {
                             <div className="border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center min-h-[200px]">
                                 {previewUrl ? (
                                     // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={previewUrl} alt="Preview" className="max-h-[300px] object-contain" />
+                                    <img 
+                                        src={previewUrl} 
+                                        alt="Diagram preview" 
+                                        className="max-h-[300px] object-contain"
+                                        loading="lazy"
+                                    />
                                 ) : (
                                     <div className="text-center text-muted-foreground">
                                         <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />

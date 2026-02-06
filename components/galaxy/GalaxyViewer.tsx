@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useHistoryStore } from '@/lib/history-store';
 import { useTheme } from 'next-themes';
-import { truncate } from 'fs';
+// Removed unused import
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -18,12 +18,34 @@ const ForceGraph3DNoSSR = dynamic(() => import('react-force-graph-3d'), {
     loading: () => <div className="flex items-center justify-center h-full text-primary animate-pulse">Initializing Galaxy...</div>
 });
 
+interface GraphNode {
+    id: string;
+    name: string;
+    val: number;
+    color: string;
+    type: 'core' | 'tool' | 'item';
+    fullQuery?: string;
+    result?: string;
+    timestamp?: number;
+    x?: number;
+    y?: number;
+    z?: number;
+}
+
+interface GraphLink {
+    source: string | GraphNode;
+    target: string | GraphNode;
+}
+
 export const GalaxyViewer = () => {
     const { history } = useHistoryStore();
     const { theme } = useTheme();
     const router = useRouter();
-    const graphRef = useRef<any>(null);
-    const [selectedNode, setSelectedNode] = useState<any>(null);
+    const graphRef = useRef<{ 
+        zoomToFit: (duration?: number) => void;
+        cameraPosition: (pos: { x: number; y: number; z: number }, lookAt: GraphNode, duration: number) => void;
+    } | null>(null);
+    const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
     // Handle Resize
@@ -42,9 +64,9 @@ export const GalaxyViewer = () => {
 
     // Transform History into Graph Data
     const graphData = useMemo(() => {
-        const nodes: any[] = [];
-        const links: any[] = [];
-        const existingNodes = new Set();
+        const nodes: GraphNode[] = [];
+        const links: GraphLink[] = [];
+        const existingNodes = new Set<string>();
 
         // 1. Create a center "You" node
         nodes.push({ id: 'root', name: 'Knowledge Core', val: 20, color: '#facc15', type: 'core' });
@@ -83,18 +105,21 @@ export const GalaxyViewer = () => {
         return { nodes, links };
     }, [history]);
 
-    const handleNodeClick = (node: any) => {
+    const handleNodeClick = (node: GraphNode) => {
         if (node.type === 'item') {
             setSelectedNode(node);
             // Fly to node
             const distance = 40;
-            const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+            const nodeX = node.x ?? 0;
+            const nodeY = node.y ?? 0;
+            const nodeZ = node.z ?? 0;
+            const distRatio = 1 + distance / Math.hypot(nodeX, nodeY, nodeZ);
 
-            if (graphRef.current) {
+            if (graphRef.current && node.x !== undefined && node.y !== undefined && node.z !== undefined) {
                 graphRef.current.cameraPosition(
-                    { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
-                    node, // lookAt ({ x, y, z })
-                    3000  // ms transition duration
+                    { x: nodeX * distRatio, y: nodeY * distRatio, z: nodeZ * distRatio },
+                    node as GraphNode,
+                    3000
                 );
             }
         }

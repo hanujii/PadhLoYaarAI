@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
+import { useTimer } from '@/lib/hooks/useTimer';
 import { Button } from '@/components/ui/button';
 import { Clock, Music, Linkedin, Instagram, Play, Pause, Volume2, User, Bookmark, History, Settings, Menu, Sparkles, Home, HelpCircle, CreditCard, LogIn, LogOut } from 'lucide-react';
 import { Logo } from '@/components/global/Logo';
@@ -42,49 +43,50 @@ const SAFE_MUSIC_URLS: Record<string, string> = {
     'nature': 'https://cdn.pixabay.com/audio/2022/08/23/audio_4fc54e1a55.mp3',
 };
 
-export function Header() {
+export const Header = React.memo(function Header() {
     const { setTheme } = useTheme();
     const pathname = usePathname();
     const { user } = useAuth();
     const {
-        timeLeft, isActive, startTimer, stopTimer, resetTimer, setDuration,
+        isActive, resetTimer, setDuration,
         isPlaying, togglePlay, genre, setGenre
     } = useStore();
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isOpen, setIsOpen] = React.useState(false);
 
-    // Audio Control Effect
+    // Audio Control Effect with proper cleanup
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = 0.4;
-            if (isPlaying) {
-                audioRef.current.play().catch(e => console.error("Audio play failed:", e));
-            } else {
-                audioRef.current.pause();
-            }
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        audio.volume = 0.4;
+
+        if (isPlaying) {
+            audio.play().catch((e: Error) => {
+                // Only log in development, use proper error handling in production
+                if (process.env.NODE_ENV === 'development') {
+                    console.error("Audio play failed:", e);
+                }
+            });
+        } else {
+            audio.pause();
         }
+
+        // Cleanup: pause audio when component unmounts or genre changes
+        return () => {
+            if (audio) {
+                audio.pause();
+                audio.src = '';
+            }
+        };
     }, [isPlaying, genre]);
 
-    // Timer Tick Effect
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isActive && timeLeft > 0) {
-            interval = setInterval(() => {
-                useStore.getState().tick();
-            }, 1000);
-        } else if (timeLeft === 0) {
-            useStore.getState().stopTimer();
-        }
-        return () => clearInterval(interval);
-    }, [isActive, timeLeft]);
-
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    // Use custom timer hook to prevent re-renders
+    const { formattedTime, startTimer, stopTimer: stopTimerFromHook } = useTimer();
 
     const toggleTimer = () => {
-        if (isActive) stopTimer();
+        if (isActive) stopTimerFromHook();
         else startTimer();
     };
 
@@ -111,7 +113,7 @@ export function Header() {
     return (
         <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center px-4 pointer-events-none">
             {/* Hidden Audio Element */}
-            <audio ref={audioRef} src={SAFE_MUSIC_URLS[genre]} loop />
+            <audio ref={audioRef} src={SAFE_MUSIC_URLS[genre]} loop aria-hidden="true" />
 
             <div className="relative w-full max-w-5xl group/header pointer-events-auto">
                 {/* Spotlight Border Effect */}
@@ -126,7 +128,12 @@ export function Header() {
                             <div className="md:hidden">
                                 <Sheet open={isOpen} onOpenChange={setIsOpen}>
                                     <SheetTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="hover:bg-white/10 rounded-full w-9 h-9">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="hover:bg-white/10 rounded-full w-9 h-9"
+                                            aria-label="Open navigation menu"
+                                        >
                                             <Menu className="h-5 w-5" />
                                         </Button>
                                     </SheetTrigger>
@@ -253,7 +260,7 @@ export function Header() {
                                 <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 overflow-hidden group-hover:scale-105 transition-transform duration-300">
                                     <Logo className="w-5 h-5 text-primary" />
                                 </div>
-                                <span className="font-bold text-lg tracking-tight hidden xs:block">
+                                <span className="font-bold text-lg tracking-tight hidden sm:block">
                                     <span className="text-foreground">ply</span>
                                     <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">AI</span>
                                 </span>
@@ -332,6 +339,8 @@ export function Header() {
                                     size="icon"
                                     className={cn("h-8 w-8 rounded-full hover:bg-secondary transition-all", isActive && "text-primary bg-primary/10")}
                                     onClick={toggleTimer}
+                                    aria-label={isActive ? "Pause timer" : "Start timer"}
+                                    aria-pressed={isActive}
                                 >
                                     {isActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 ml-0.5" />}
                                 </Button>
@@ -341,7 +350,13 @@ export function Header() {
                                 {/* Music */}
                                 <Popover modal={false}>
                                     <PopoverTrigger asChild>
-                                        <Button variant="ghost" size="icon" className={cn("h-8 w-8 rounded-full hover:bg-secondary transition-all", isPlaying && "text-primary bg-primary/10 animate-pulse")}>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className={cn("h-8 w-8 rounded-full hover:bg-secondary transition-all", isPlaying && "text-primary bg-primary/10 animate-pulse")}
+                                            aria-label={isPlaying ? "Music is playing - click to open music controls" : "Open music controls"}
+                                            aria-pressed={isPlaying}
+                                        >
                                             <Music className="w-3.5 h-3.5" />
                                         </Button>
                                     </PopoverTrigger>
@@ -381,4 +396,4 @@ export function Header() {
             </div>
         </header >
     );
-}
+});

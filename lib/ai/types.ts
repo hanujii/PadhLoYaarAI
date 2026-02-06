@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { LanguageModel } from 'ai';
 
 export type ProviderId = 'google' | 'openrouter' | 'github' | 'groq' | 'openai' | 'sambanova';
 
@@ -25,6 +26,16 @@ export interface ModelDTO {
     isPro: boolean; // "Pro" models are more expensive/smarter
     contextWindow: number;
 }
+
+// Type for Google Generative AI content parts
+export type GoogleContentPart = 
+    | { text: string }
+    | { 
+        inlineData: {
+            data: string;
+            mimeType: string;
+        }
+    };
 
 export interface AIProvider {
     id: ProviderId;
@@ -53,5 +64,5 @@ export interface AIProvider {
     /**
      * Get the Vercel AI SDK Model instance for streaming
      */
-    getModelInstance(modelId: string): any;
+    getModelInstance(modelId: string): LanguageModel;
 }

@@ -1,6 +1,7 @@
 import { streamText } from 'ai';
 import { aiEngine } from '@/lib/ai/engine';
 import { tutorRequestSchema, type ContentPart } from '@/lib/validations/api-schemas';
+import { sanitizeInput } from '@/lib/utils/sanitize';
 import { z } from 'zod';
 import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from '@/lib/security/rate-limit';
 import { validatePrompt, validateImageDataUrl } from '@/lib/security/sanitize';

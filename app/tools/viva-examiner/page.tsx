@@ -43,7 +43,7 @@ export default function VivaExaminerPage() {
                 recognitionRef.current.interimResults = true;
                 recognitionRef.current.lang = 'en-US';
 
-                recognitionRef.current.onresult = (event: any) => {
+                recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
                     let currentTranscript = '';
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         currentTranscript += event.results[i][0].transcript;
@@ -51,10 +51,13 @@ export default function VivaExaminerPage() {
                     setTranscript(currentTranscript);
                 };
 
-                recognitionRef.current.onerror = (event: any) => {
-                    console.error("Speech recognition error", event.error);
+                recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
+                    const errorMessage = event.error || 'Unknown error';
+                    if (process.env.NODE_ENV === 'development') {
+                        console.error("Speech recognition error", errorMessage);
+                    }
                     stopRecording();
-                    toast.error("Microphone error: " + event.error);
+                    toast.error(`Microphone error: ${errorMessage}`);
                 };
             }
         }
@@ -121,7 +124,7 @@ export default function VivaExaminerPage() {
         setIsProcessing(true);
 
         // Initial greeting / first question
-        const history: any[] = []; // Empty history for first prompt
+        const history: Array<{ role: 'user' | 'assistant'; content: string }> = []; // Empty history for first prompt
         const response = await conductViva(topic, history);
 
         setIsProcessing(false);

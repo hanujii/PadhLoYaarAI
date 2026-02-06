@@ -31,12 +31,24 @@ export function NotesWidget() {
     const [localNotes, setLocalNotes] = useState(notes || '');
     const [localTitle, setLocalTitle] = useState(notesTitle || '');
 
-    // Sync on mount
+    // Sync on mount and when store updates
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         setLocalNotes(notes || '');
         setLocalTitle(notesTitle || '');
     }, [notes, notesTitle]);
+
+    // Cleanup: Save notes when component unmounts
+    useEffect(() => {
+        return () => {
+            // Ensure notes are saved before unmount
+            if (localNotes !== notes) {
+                updateNotes(localNotes);
+            }
+            if (localTitle !== notesTitle) {
+                updateNotesTitle(localTitle);
+            }
+        };
+    }, [localNotes, localTitle, notes, notesTitle, updateNotes, updateNotesTitle]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
@@ -60,6 +72,7 @@ export function NotesWidget() {
                     <Button
                         size="icon"
                         className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all bg-background border hover:bg-muted text-foreground"
+                        aria-label="Open scratch pad"
                         title="Scratch Pad"
                     >
                         <StickyNote className="h-6 w-6" />
@@ -96,6 +109,7 @@ export function NotesWidget() {
                                     size="icon"
                                     onClick={toggleExpand}
                                     title={isExpanded ? "Collapse" : "Maximize"}
+                                    aria-label={isExpanded ? "Collapse scratch pad" : "Maximize scratch pad"}
                                     className="h-8 w-8 text-muted-foreground hover:text-foreground"
                                 >
                                     {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}

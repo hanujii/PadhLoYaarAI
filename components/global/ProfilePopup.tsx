@@ -35,6 +35,7 @@ interface UserProfile {
 }
 
 export const ProfilePopup = memo(function ProfilePopupComponent() {
+    // Memoized to prevent unnecessary re-renders
     const router = useRouter();
     const { user: authUser, loading: authLoading } = useAuth();
     const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -42,6 +43,8 @@ export const ProfilePopup = memo(function ProfilePopupComponent() {
     const supabase = createClient();
 
     useEffect(() => {
+        let isCancelled = false;
+
         async function fetchProfile() {
             if (!authUser) {
                 setProfile(null);
@@ -57,9 +60,21 @@ export const ProfilePopup = memo(function ProfilePopupComponent() {
                     .eq('id', authUser.id)
                     .single();
 
+                // Check if component unmounted during fetch
+                if (isCancelled) return;
+
                 if (error) {
-                    // Silent failure: standard for "no profile row" or network hiccups.
-                    // We fallback to basic auth data below.
+                    // Check if it's a "not found" error (PGRST116) vs actual error
+                    const isNotFoundError = error.code === 'PGRST116' || error.message.includes('No rows');
+                    
+                    if (!isNotFoundError) {
+                        // Log actual errors (not "no profile" which is expected)
+                        if (process.env.NODE_ENV === 'development') {
+                            console.error('Error fetching profile:', error);
+                        }
+                        // Show user-friendly error for real errors
+                        toast.error('Failed to load profile. Using basic information.');
+                    }
 
                     // Fallback to basic auth data if profile fetch fails
                     setProfile({
@@ -81,7 +96,17 @@ export const ProfilePopup = memo(function ProfilePopupComponent() {
                     });
                 }
             } catch (error) {
-                console.error('Error in profile fetch:', error);
+                if (isCancelled) return;
+                
+                // Log unexpected errors
+                if (process.env.NODE_ENV === 'development') {
+                    console.error('Unexpected error in profile fetch:', error);
+                }
+                
+                // Show user-friendly error
+                toast.error('An error occurred while loading your profile.');
+                
+                // Fallback to basic auth data
                 setProfile({
                     id: authUser.id,
                     email: authUser.email || '',
@@ -91,14 +116,21 @@ export const ProfilePopup = memo(function ProfilePopupComponent() {
                     role: 'user'
                 });
             } finally {
-                setIsLoadingProfile(false);
+                if (!isCancelled) {
+                    setIsLoadingProfile(false);
+                }
             }
         }
 
         fetchProfile();
+
+        // Cleanup function to prevent state updates after unmount
+        return () => {
+            isCancelled = true;
+        };
     }, [authUser]);
 
-    const isLoading = authLoading || (authUser && isLoadingProfile) && !profile;
+    const isLoading = authLoading || (authUser && isLoadingProfile && !profile);
     const user = profile;
 
     const handleSignOut = async () => {
@@ -153,6 +185,7 @@ export const ProfilePopup = memo(function ProfilePopupComponent() {
                     variant="ghost"
                     size="icon"
                     className="h-10 w-10 rounded-full border border-border hover:bg-secondary hover:border-primary/50 transition-all group"
+                    aria-label={`User menu for ${user?.full_name || user?.email || 'user'}`}
                 >
                     <div className={cn(
                         "w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium shadow-lg group-hover:scale-105 transition-transform",
