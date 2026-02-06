@@ -117,32 +117,81 @@ function TutorContent() {
             let fullText = '';
             let loopError = false;
 
+            let streamError: Error | null = null;
+            
             while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const text = decoder.decode(value, { stream: true });
+                try {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const text = decoder.decode(value, { stream: true });
+                    
+                    // Check for error in stream (proper JSON parsing)
+                    if (text.trim().startsWith('{') && text.includes('"error"')) {
+                        try {
+                            // Try to parse complete JSON error object
+                            const errorMatch = text.match(/\{[^}]*"error"[^}]*\}/);
+                            if (errorMatch) {
+                                const errorJson = JSON.parse(errorMatch[0]) as { error?: string; code?: string };
+                                if (errorJson.error) {
+                                    streamError = new Error(errorJson.error);
+                                    break;
+                                }
+                            }
+                        } catch (parseError) {
+                            // If JSON parsing fails, continue with stream (might be partial)
+                            if (process.env.NODE_ENV === 'development') {
+                                console.warn("Failed to parse error from stream:", parseError);
+                            }
+                        }
+                    }
 
-                // Panic checks
-                if (text.includes('"error":')) {
-                    try {
-                        const json = JSON.parse(text);
-                        if (json.error) throw new Error(json.error);
-                    } catch (e) { }
+                    fullText += text;
+                    setResponse(prev => (prev || '') + text);
+                } catch (readError) {
+                    streamError = readError instanceof Error ? readError : new Error(String(readError));
+                    break;
                 }
-
-                fullText += text;
-                setResponse(prev => (prev || '') + text);
             }
 
-            if (!fullText) {
-                console.warn("Stream completed with empty text");
-                setResponse("**⚠️ No Response Received**\n\nThe AI service returned an empty response. Please checks:\n1. Your API Key is valid\n2. The model `" + selectedModel + "` is supported\n3. Check the server console for errors.");
+            // Handle stream errors
+            if (streamError) {
+                throw streamError;
+            }
+
+            if (!fullText.trim()) {
+                if (process.env.NODE_ENV === 'development') {
+                    console.warn("Stream completed with empty text");
+                }
+                setResponse("**⚠️ No Response Received**\n\nThe AI service returned an empty response. Please check:\n1. Your API Key is valid\n2. The model is supported\n3. Try again in a moment");
                 return;
             }
 
-        } catch (e: any) {
-            console.error("Tutor Page Error:", e);
-            setResponse(`**Error:** ${e.message}\n\n*Technical Details:*\n\`\`\`\n${JSON.stringify(e, Object.getOwnPropertyNames(e), 2)}\n\`\`\``);
+            // Save to history on success
+            if (fullText && initialTopic) {
+                addToHistory({
+                    tool: 'tutor',
+                    type: mode || 'simple',
+                    query: initialTopic,
+                    result: fullText,
+                    metadata: { model: selectedModel }
+                });
+            }
+
+        } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : 'An unexpected error occurred';
+            const errorDetails = e instanceof Error ? e.stack : String(e);
+            
+            if (process.env.NODE_ENV === 'development') {
+                console.error("Tutor Page Error:", e);
+            }
+            
+            setResponse(`**Error:** ${errorMessage}\n\n*Please try again or contact support if the issue persists.*`);
+            
+            // Show user-friendly toast
+            toast.error(errorMessage.includes('Quota') || errorMessage.includes('429') 
+                ? 'API quota exceeded. Please try a different model.'
+                : 'Failed to generate response. Please try again.');
         } finally {
             setLoading(false);
         }
